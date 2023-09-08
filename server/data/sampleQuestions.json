@@ -2,10 +2,7 @@
     {
     "id": 1,
     "title": "Reverse a String",
-    "description": "Write a function that reverses a string. The input string is given as an array of characters s.<br><br>" + 
-        "You must do this by modifying the input array in-place with O(1) extra memory.<br><br> Example 1:<br> Input: s = ['h','e','l','l','o']<br>" + 
-        "Output: ['o','l','l','e','h']<br><br> Example 2:<br> Input: s = ['H','a','n','n','a','h']<br> Output: ['h','a','n','n','a','H']<br><br>" +
-        "Constraints:<br> <ul><li>1 <= s.length <= 10^5</li><li>s[i] is a printable ASCII character.</li></ul>",
+    "description": "Write a function that reverses a string. The input string is given as an array of characters s.<br><br> You must do this by modifying the input array in-place with O(1) extra memory.<br><br> Example 1:<br> Input: s = ['h','e','l','l','o']<br> Output: ['o','l','l','e','h']<br><br> Example 2:<br> Input: s = ['H','a','n','n','a','h']<br> Output: ['h','a','n','n','a','H']<br><br> Constraints:<br> <ul><li>1 <= s.length <= 10^5</li><li>s[i] is a printable ASCII character.</li></ul>",
     "category": "Strings, Algorithms",
     "complexity": "Easy",
     "descriptionImage": ""
@@ -13,15 +10,7 @@
   {
     "id": 2,
     "title": "Linked List Cycle Detection",
-    "description": "Given head, the head of a linked list, determine if the linked list has a cycle in it.<br><br>" +
-        "There is a cycle in a linked list if there is some node in the list that can be reached again by continuously following the next pointer. Internally, pos is used to denote the index of the node that tail's next pointer is connected to. Note that pos is not passed as a parameter.<br><br>" +
-        "Return true if there is a cycle in the linked list. Otherwise, return false.<br><br>" +
-        "Example 1:<br> <img src = '/images/q2_1.png' alt = 'q2_1'/> <br> Input: head = [3,2,0,-4], pos = 1<br> Output: true<br>" +
-        "Explanation: There is a cycle in the linked list, where the tail connects to the 1st node (0-indexed).<br><br>" +
-        "Example 2:<br> <img src = '/images/q2_2.png' alt = 'q2_2' /><br> Input: head = [1,2], pos = 0<br> Output: true<br> Explanation: There is a cycle in the linked list, where the tail connects to the 0th node.<br><br>" +
-        "Example 3:<br> <img src = '/images/q2_3.png' alt = 'q2_3' /> <br> Input: head = [1], pos = -1<br> Output: false<br> Explanation: There is no cycle in the linked list.<br><br>" +
-        "Constraints:<br><ul><li>1 <= The number of nodes in the list <= 10^4</li><li>-10^5 <= Node.val <= 10^5</li> <li>pos is -1 or a valid index in the linked-list.</li>" +
-        "</ul> Follow up: Can you solve it using O(1) (i.e., constant) memory?",
+    "description": "Given head, the head of a linked list, determine if the linked list has a cycle in it.<br><br> There is a cycle in a linked list if there is some node in the list that can be reached again by continuously following the next pointer. Internally, pos is used to denote the index of the node that tail's next pointer is connected to. Note that pos is not passed as a parameter.<br><br> Return true if there is a cycle in the linked list. Otherwise, return false.<br><br> Example 1:<br> <img src = '/images/q2_1.png' alt = 'q2_1' style='max-width: 300px; max-height: 150px;'/> <br> Input: head = [3,2,0,-4], pos = 1<br> Output: true<br> Explanation: There is a cycle in the linked list, where the tail connects to the 1st node (0-indexed).<br><br> Example 2:<br> <img src = '/images/q2_2.png' alt = 'q2_2' style='max-width: 300px; max-height: 150px;' /><br> Input: head = [1,2], pos = 0<br> Output: true<br> Explanation: There is a cycle in the linked list, where the tail connects to the 0th node.<br><br> Example 3:<br> <img src = '/images/q2_3.png' alt = 'q2_3' style='max-width: 300px; max-height: 150px;' /> <br> Input: head = [1], pos = -1<br> Output: false<br> Explanation: There is no cycle in the linked list.<br><br> Constraints:<br><ul><li>1 <= The number of nodes in the list <= 10^4</li><li>-10^5 <= Node.val <= 10^5</li> <li>pos is -1 or a valid index in the linked-list.</li> </ul> Follow up: Can you solve it using O(1) (i.e., constant) memory?",
     "category": "Data Structures, Algorithms",
     "complexity": "Easy",
     "descriptionImage": ""

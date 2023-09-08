@@ -7,21 +7,22 @@ interface Question {
     description: string;
     category: string;
     complexity: string;
-  }
+}
 
 const QuestionBank: React.FC = () => {
   // State to store the list of questions
   const [questions, setQuestions] = useState<Question[]>([]); 
-
-  const fetchQuestions = async () => {
-    const response = await fetch('http://localhost:3001/questions');
-    const data = await response.json();
-    setQuestions(data);
-  };
+  const [expandedQuestionId, setExpandedQuestionId] = useState<number | null>(null);
 
   useEffect(() => {
-    fetchQuestions();
+    fetch('http://localhost:3001/questions')
+      .then((res) => res.json())
+      .then((data) => setQuestions(data));
   }, []);
+
+  const toggleQuestionDetails = (id: number) => {
+    setExpandedQuestionId(expandedQuestionId === id ? null : id);
+  };
 
   return (
     <div>
@@ -36,11 +37,26 @@ const QuestionBank: React.FC = () => {
         </thead>
         <tbody>
           {questions.map((question) => (
-            <tr key={question.id}>
-              <td>{question.title}</td>
-              <td>{question.category}</td>
-              <td>{question.complexity}</td>
-            </tr>
+            <React.Fragment key={question.id}>
+              <tr>
+                <td>
+                  <button onClick={() => toggleQuestionDetails(question.id)}>
+                    {question.title}
+                  </button>
+                </td>
+                <td>{question.category}</td>
+                <td>{question.complexity}</td>
+              </tr>
+              {expandedQuestionId === question.id && (
+                <tr>
+                  <td colSpan={3}>
+                    <div
+                      dangerouslySetInnerHTML={{ __html: question.description }}
+                    ></div>
+                  </td>
+                </tr>
+              )}
+            </React.Fragment>
           ))}
         </tbody>
       </table>

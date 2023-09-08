@@ -1,17 +1,9 @@
 import express from "express";
+import fs from "fs";
+import path from "path"; // for reading file
+
 const app = express();
 const port = 3001;
-
-// Sample data
-const questions = [
-  {
-    id: 1,
-    title: 'Sample Question 1',
-    description: 'This is a sample question 1 description.',
-    category: 'Category 1',
-    complexity: 'Easy',
-  },
-];
 
 // Enable CORS for all routes (Not recommended for production)
 app.use((req, res, next) => {
@@ -20,9 +12,17 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use('/images', express.static(path.join(__dirname, 'data/images')));
+
 app.get('/questions', (req, res) => {
-  res.json(questions);
+  fs.readFile(path.join(__dirname, 'data/sampleQuestions.json'), 'utf8', (err, data) => {
+    if (err) {
+      return res.status(500).send('An error occurred');
+    }
+    return res.json(JSON.parse(data));
+  });
 });
+
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
