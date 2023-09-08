@@ -48,42 +48,60 @@ const QuestionBank: React.FC = () => {
     .then((data) => setQuestions(data));
   };
 
+  const deleteQuestion = (id: number) => {
+    fetch(`http://localhost:3001/questions/${id}`, {
+      method: 'DELETE',
+    })
+    .then(() => {
+      // Re-fetch questions to update UI
+      return fetch('http://localhost:3001/questions');
+    })
+    .then((res) => res.json())
+    .then((data) => setQuestions(data));
+  };
+  
+
   return (
     <div>
       <h1>Question Bank</h1>
       <table>
         <thead>
-          <tr>
+            <tr>
             <th>Title</th>
             <th>Category</th>
             <th>Complexity</th>
-          </tr>
+            <th>Actions</th> {/* New column header */}
+            </tr>
         </thead>
         <tbody>
-          {questions.map((question) => (
+            {questions.map((question) => (
             <React.Fragment key={question.id}>
-              <tr>
-                <td>
-                  <button onClick={() => toggleQuestionDetails(question.id)}>
-                    {question.title}
-                  </button>
-                </td>
-                <td>{question.category}</td>
-                <td>{question.complexity}</td>
-              </tr>
-              {expandedQuestionId === question.id && (
                 <tr>
-                  <td colSpan={3}>
-                    <div
-                      dangerouslySetInnerHTML={{ __html: question.description }}
-                    ></div>
-                  </td>
+                    <td>
+                        <button onClick={() => toggleQuestionDetails(question.id)}>
+                        {question.title}
+                        </button>
+                    </td>
+                    <td>{question.category}</td>
+                    <td>{question.complexity}</td>
+                    <td> {/* New table cell for actions */}
+                        <button onClick={() => deleteQuestion(question.id)}>Delete</button>
+                        <button>Update</button>
+                    </td>
                 </tr>
-              )}
+                {expandedQuestionId === question.id && (
+                <tr>
+                    <td colSpan={4}> {/* Updated colspan */}
+                        <div
+                            dangerouslySetInnerHTML={{ __html: question.description }}
+                        ></div>
+                    </td>
+                </tr>
+                )}
             </React.Fragment>
-          ))}
+            ))}
         </tbody>
-      </table>
+        </table>
 
       {/* Create new Questions */}
       <h2>Add a New Question</h2>

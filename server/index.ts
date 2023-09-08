@@ -1,6 +1,7 @@
 import express from "express";
 import fs from "fs";
 import path from "path"; // for reading file
+import cors from 'cors';
 
 const app = express();
 const port = 3001;
@@ -19,6 +20,14 @@ app.use((req, res, next) => {
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
   next();
 });
+
+// enable DELETE HTTP methods
+const corsOptions = {
+  origin: 'http://localhost:5173',
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+};
+
+app.use(cors(corsOptions));
 
 app.use('/images', express.static(path.join(__dirname, 'data/images')));
 
@@ -50,6 +59,14 @@ app.post('/addQuestion', (req, res) => {
 });
 
 
+// Delete a question by ID
+app.delete('/questions/:id', (req, res) => {
+  const id = parseInt(req.params.id, 10);
+  let questions: Question[] = JSON.parse(fs.readFileSync('data/sampleQuestions.json', 'utf8'));
+  questions = questions.filter((q) => q.id !== id);
+  fs.writeFileSync('data/sampleQuestions.json', JSON.stringify(questions, null, 2));
+  res.status(200).send('Question deleted');
+});
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
