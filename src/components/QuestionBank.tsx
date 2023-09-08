@@ -13,6 +13,7 @@ const QuestionBank: React.FC = () => {
   // State to store the list of questions
   const [questions, setQuestions] = useState<Question[]>([]); 
   const [expandedQuestionId, setExpandedQuestionId] = useState<number | null>(null);
+  const [updatingQuestionId, setUpdatingQuestionId] = useState<number | null>(null);
 
   const [newQuestion, setNewQuestion] = useState({
     title: '',
@@ -20,6 +21,12 @@ const QuestionBank: React.FC = () => {
     category: '',
     complexity: ''
   });
+
+  // Create refs outside the map
+  const titleRef = React.createRef<HTMLInputElement>();
+  const categoryRef = React.createRef<HTMLInputElement>();
+  const complexityRef = React.createRef<HTMLInputElement>();
+  const descriptionRef = React.createRef<HTMLTextAreaElement>();
 
   useEffect(() => {
     fetch('http://localhost:3001/questions')
@@ -59,49 +66,94 @@ const QuestionBank: React.FC = () => {
     .then((res) => res.json())
     .then((data) => setQuestions(data));
   };
+
+  const updateQuestion = (updatedQuestion: Question, id: string | number) => {
+    // Assume your backend has an API endpoint to update a question at `http://localhost:3001/updateQuestion`
+    fetch(`http://localhost:3001/updateQuestion`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(updatedQuestion),
+    })
+    .then(() => fetch('http://localhost:3001/questions'))
+    .then((res) => res.json())
+    .then((data) => {
+      setQuestions(data);
+      setUpdatingQuestionId(null);
+    });
+  };
   
 
   return (
     <div>
       <h1>Question Bank</h1>
       <table>
-        <thead>
-            <tr>
-            <th>Title</th>
-            <th>Category</th>
-            <th>Complexity</th>
-            <th>Actions</th> {/* New column header */}
-            </tr>
-        </thead>
-        <tbody>
-            {questions.map((question) => (
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>Category</th>
+      <th>Complexity</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+          {questions.map((question) => (
             <React.Fragment key={question.id}>
+              {updatingQuestionId === question.id ? (
                 <tr>
-                    <td>
-                        <button onClick={() => toggleQuestionDetails(question.id)}>
-                        {question.title}
-                        </button>
-                    </td>
-                    <td>{question.category}</td>
-                    <td>{question.complexity}</td>
-                    <td> {/* New table cell for actions */}
-                        <button onClick={() => deleteQuestion(question.id)}>Delete</button>
-                        <button>Update</button>
-                    </td>
+                  <td><input ref={titleRef} type="text" defaultValue={question.title} /></td>
+                  <td><input ref={categoryRef} type="text" defaultValue={question.category} /></td>
+                  <td><input ref={complexityRef} type="text" defaultValue={question.complexity} /></td>
+                  {/* Textarea for description */}
+                  <td><textarea ref={descriptionRef} defaultValue={question.description}></textarea></td>
+                  <td>
+                    <button onClick={() => setUpdatingQuestionId(null)}>Cancel</button>
+                    <button onClick={() => {
+                      const updatedTitle = titleRef.current?.value || "";
+                      const updatedCategory = categoryRef.current?.value || "";
+                      const updatedComplexity = complexityRef.current?.value || "";
+                      const updatedDescription = descriptionRef.current?.value || ""; // New line
+                      
+                      const updatedQuestion = {
+                        id: question.id,
+                        title: updatedTitle,
+                        category: updatedCategory,
+                        complexity: updatedComplexity,
+                        description: updatedDescription // New field
+                      };
+                      
+                      updateQuestion(updatedQuestion, question.id);
+                      setUpdatingQuestionId(null);
+                    }}>Save</button>
+                  </td>
                 </tr>
-                {expandedQuestionId === question.id && (
+              ) : (
                 <tr>
-                    <td colSpan={4}> {/* Updated colspan */}
-                        <div
-                            dangerouslySetInnerHTML={{ __html: question.description }}
-                        ></div>
-                    </td>
+                  <td>
+                    <button onClick={() => toggleQuestionDetails(question.id)}>
+                      {question.title}
+                    </button>
+                  </td>
+                  <td>{question.category}</td>
+                  <td>{question.complexity}</td>
+                  <td>
+                    <button onClick={() => deleteQuestion(question.id)}>Delete</button>
+                    <button onClick={() => setUpdatingQuestionId(question.id)}>Update</button> {/* Fixed */}
+                  </td>
                 </tr>
-                )}
+              )}
+              {expandedQuestionId === question.id && (
+                <tr>
+                  <td colSpan={4}>
+                    <div dangerouslySetInnerHTML={{ __html: question.description }}></div>
+                  </td>
+                </tr>
+              )}
             </React.Fragment>
-            ))}
+          ))}
         </tbody>
-        </table>
+</table>
 
       {/* Create new Questions */}
       <h2>Add a New Question</h2>

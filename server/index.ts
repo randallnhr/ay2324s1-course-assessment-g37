@@ -71,3 +71,21 @@ app.delete('/questions/:id', (req, res) => {
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
+
+
+// Update question
+app.put('/updateQuestion', (req, res) => {
+  const updatedQuestion = req.body;
+  const questions = JSON.parse(fs.readFileSync('data/sampleQuestions.json', 'utf8'));
+
+  // Find the index of the question that has the same id as `updatedQuestion.id`
+  const index = questions.findIndex((q: Question) => q.id === updatedQuestion.id);
+  if (index !== -1) {
+    // Update the question at the found index
+    questions[index] = updatedQuestion;
+    fs.writeFileSync('data/sampleQuestions.json', JSON.stringify(questions, null, 2));
+    res.status(200).send('Question updated');
+  } else {
+    res.status(404).send('Question not found');
+  }
+});
