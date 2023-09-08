@@ -6,7 +6,7 @@
   "scripts": {
     "build": "npx tsc",
     "start": "node ./bin/www",
-    "devstart": "nodemon ./bin/www",
+    "devstart": "nodemon ./bin/www --exec \"npm run build && npm run start\" --ignore dist/",
     "serverstart": "SET DEBUG=true:* & npm run devstart"
   },
   "dependencies": {
