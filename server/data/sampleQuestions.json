@@ -1,0 +1,173 @@
+[
+    {
+    "id": 1,
+    "title": "Reverse a String",
+    "description": "Write a function that reverses a string. The input string is given as an array of characters s.<br><br>" + 
+        "You must do this by modifying the input array in-place with O(1) extra memory.<br><br> Example 1:<br> Input: s = ['h','e','l','l','o']<br>" + 
+        "Output: ['o','l','l','e','h']<br><br> Example 2:<br> Input: s = ['H','a','n','n','a','h']<br> Output: ['h','a','n','n','a','H']<br><br>" +
+        "Constraints:<br> <ul><li>1 <= s.length <= 10^5</li><li>s[i] is a printable ASCII character.</li></ul>",
+    "category": "Strings, Algorithms",
+    "complexity": "Easy",
+    "descriptionImage": ""
+  },
+  {
+    "id": 2,
+    "title": "Linked List Cycle Detection",
+    "description": "Given head, the head of a linked list, determine if the linked list has a cycle in it.<br><br>" +
+        "There is a cycle in a linked list if there is some node in the list that can be reached again by continuously following the next pointer. Internally, pos is used to denote the index of the node that tail's next pointer is connected to. Note that pos is not passed as a parameter.<br><br>" +
+        "Return true if there is a cycle in the linked list. Otherwise, return false.<br><br>" +
+        "Example 1:<br> <img src = '/images/q2_1.png' alt = 'q2_1'/> <br> Input: head = [3,2,0,-4], pos = 1<br> Output: true<br>" +
+        "Explanation: There is a cycle in the linked list, where the tail connects to the 1st node (0-indexed).<br><br>" +
+        "Example 2:<br> <img src = '/images/q2_2.png' alt = 'q2_2' /><br> Input: head = [1,2], pos = 0<br> Output: true<br> Explanation: There is a cycle in the linked list, where the tail connects to the 0th node.<br><br>" +
+        "Example 3:<br> <img src = '/images/q2_3.png' alt = 'q2_3' /> <br> Input: head = [1], pos = -1<br> Output: false<br> Explanation: There is no cycle in the linked list.<br><br>" +
+        "Constraints:<br><ul><li>1 <= The number of nodes in the list <= 10^4</li><li>-10^5 <= Node.val <= 10^5</li> <li>pos is -1 or a valid index in the linked-list.</li>" +
+        "</ul> Follow up: Can you solve it using O(1) (i.e., constant) memory?",
+    "category": "Data Structures, Algorithms",
+    "complexity": "Easy",
+    "descriptionImage": ""
+  },
+  {
+    "id": 3,
+    "title": "Roman to Integer",
+    "description": "",
+    "category": "Algorithms",
+    "complexity": "Easy",
+    "descriptionImage": ""
+  },
+  {
+    "id": 4,
+    "title": "Add Binary",
+    "description": "",
+    "category": "Bit Manipulation, Algorithms",
+    "complexity": "Easy",
+    "descriptionImage": ""
+  },
+  {
+    "id": 5,
+    "title": "Fibonacci Number",
+    "description": "",
+    "category": "Recursion, Algorithms",
+    "complexity": "Easy",
+    "descriptionImage": ""
+  },
+  {
+    "id": 6,
+    "title": "Implement Stack using Queues",
+    "description": "",
+    "category": "Data Structures",
+    "complexity": "Easy",
+    "descriptionImage": ""
+  },
+  {
+    "id": 7,
+    "title": "Combine Two Tables",
+    "description": "",
+    "category": "Databases",
+    "complexity": "Easy",
+    "descriptionImage": ""
+  },
+  {
+    "id": 8,
+    "title": "Repeated DNA Sequences",
+    "description": "",
+    "category": "Algorithms, Bit Manipulation",
+    "complexity": "Medium",
+    "descriptionImage": ""
+  },
+  {
+    "id": 9,
+    "title": "Course Schedule",
+    "description": "",
+    "category": "Data Structures, Algorithms",
+    "complexity": "Medium",
+    "descriptionImage": ""
+  },
+  {
+    "id": 10,
+    "title": "LRU Cache Design",
+    "description": "",
+    "category": "Data Structures",
+    "complexity": "Medium",
+    "descriptionImage": ""
+  },
+  {
+    "id": 11,
+    "title": "Longest Common Subsequence",
+    "description": "",
+    "category": "Strings, Algorithms",
+    "complexity": "Medium",
+    "descriptionImage": ""
+  },
+  {
+    "id": 12,
+    "title": "Rotate Image",
+    "description": "",
+    "category": "Arrays, Algorithms",
+    "complexity": "Medium",
+    "descriptionImage": ""
+  },
+  {
+    "id": 13,
+    "title": "Airplane Seat Assignment Probability",
+    "description": "",
+    "category": "Brainteaser",
+    "complexity": "Medium",
+    "descriptionImage": ""
+  },
+  {
+    "id": 14,
+    "title": "Validate Binary Search Tree",
+    "description": "",
+    "category": "Data Structures, Algorithms",
+    "complexity": "Medium",
+    "descriptionImage": ""
+  },
+  {
+    "id": 15,
+    "title": "Sliding Window Maximum",
+    "description": "",
+    "category": "Arrays, Algorithms",
+    "complexity": "Hard",
+    "descriptionImage": ""
+  },
+  {
+    "id": 16,
+    "title": "N-Queen Problem",
+    "description": "",
+    "category": "Algorithms",
+    "complexity": "Hard",
+    "descriptionImage": ""
+  },
+  {
+    "id": 17,
+    "title": "Serialize and Deserialize a Binary Tree",
+    "description": "",
+    "category": "Data Structures, Algorithms",
+    "complexity": "Hard",
+    "descriptionImage": ""
+  },
+  {
+    "id": 18,
+    "title": "Wildcard Matching",
+    "description": "",
+    "category": "Strings, Algorithms",
+    "complexity": "Hard",
+    "descriptionImage": ""
+  },
+  {
+    "id": 19,
+    "title": "Chalkboard XOR Game",
+    "description": "",
+    "category": "Brainteaser",
+    "complexity": "Hard",
+    "descriptionImage": ""
+  },
+  {
+    "id": 20,
+    "title": "Trips and Users",
+    "description": "",
+    "category": "Databases",
+    "complexity": "Hard",
+    "descriptionImage": ""
+  }
+]
