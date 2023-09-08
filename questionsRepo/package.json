@@ -1,15 +1,21 @@
 {
-  "name": "questionsrepo",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "name": "helloworld",
+  "version": "0.0.0",
+  "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node ./bin/www",
+    "devstart": "nodemon ./bin/www",
+    "serverstart": "SET DEBUG=true:* & npm run devstart"
   },
-  "author": "",
-  "license": "ISC",
   "dependencies": {
-    "@types/node": "^20.5.9",
-    "express": "^4.18.2"
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
+    "express": "~4.16.1",
+    "http-errors": "~1.6.3",
+    "jade": "~1.11.0",
+    "morgan": "~1.9.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
   }
 }
