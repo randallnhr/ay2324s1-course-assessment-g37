@@ -152,6 +152,20 @@ app.post("/api/auth/sign-up", async (req, res) => {
   }
 });
 
+app.delete("/api/auth/log-out", (req, res) => {
+  req.session.destroy((error) => {
+    if (error) {
+      console.error(error);
+      res.send(error);
+    } else {
+      // the default name of the session cookie is "connect.sid"
+      // source: https://expressjs.com/en/resources/middleware/session.html
+      res.clearCookie("connect.sid");
+      res.status(200).send();
+    }
+  });
+});
+
 app.get("/api/auth/secret", passport.authenticate("local"), (req, res) => {
   res.send("secret");
 });
