@@ -7,10 +7,18 @@ import session from "express-session";
 import mongodb, { MongoClient, ServerApiVersion } from "mongodb";
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
+import { UserDocument } from "./types";
 
 dotenv.config();
 
 const PORT = process.env.PORT || 8080;
+
+if (
+  process.env.MONGODB_URI === undefined ||
+  process.env.SESSION_SECRET === undefined
+) {
+  throw new Error("dotenv is not configured!");
+}
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(process.env.MONGODB_URI, {
@@ -62,17 +70,18 @@ passport.use(
   })
 );
 
-// convert userDocument to id
-passport.serializeUser((userDocument, done) => {
+// convert {expressUser / userDocument} to id
+passport.serializeUser((expressUser, done) => {
+  const userDocument = expressUser as UserDocument;
   return done(null, userDocument._id);
 });
 
-// convert id to userDocument
-passport.deserializeUser(async (_id, done) => {
+// convert id to {expressUser / userDocument}
+passport.deserializeUser(async (_id: string, done) => {
   try {
     const users = client.db("main-db").collection("users");
     const userDocument = await users.findOne({
-      _id: mongodb.ObjectId(_id),
+      _id: new mongodb.ObjectId(_id),
     });
 
     if (userDocument === null) {
