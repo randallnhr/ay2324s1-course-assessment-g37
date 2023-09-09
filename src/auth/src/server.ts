@@ -119,7 +119,7 @@ app.get("/", (req, res) => {
   res.send("rainbow");
 });
 
-app.post("/auth/sign-up", async (req, res) => {
+app.post("/api/auth/sign-up", async (req, res) => {
   try {
     const { email, password } = req.body;
 
@@ -152,7 +152,7 @@ app.post("/auth/sign-up", async (req, res) => {
   }
 });
 
-app.get("/secret", passport.authenticate("local"), (req, res) => {
+app.get("/api/auth/secret", passport.authenticate("local"), (req, res) => {
   res.send("secret");
 });
 
