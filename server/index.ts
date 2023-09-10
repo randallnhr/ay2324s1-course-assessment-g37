@@ -82,13 +82,19 @@ app.post('/login', (req, res) => {
 // allow update of password
 app.put('/login/:username', (req, res) => {
   const username = req.params.username;
+  const oldPassword = req.body.oldPassword;
   const newPassword = req.body.newPassword;
   const users: User[] = JSON.parse(fs.readFileSync('data/users.json', 'utf8'));
 
   const user = users.find((u: User) => u.username === username);
 
   if (!user) {
-    res.status(404).send('User not found');
+      res.status(401).send('User not found');
+      return;
+  }
+
+  if (user.password !== oldPassword) {
+    res.status(401).send('Old password is incorrect');
     return;
   }
 

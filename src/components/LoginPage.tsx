@@ -9,6 +9,8 @@ const LoginPage: React.FC = () => {
     const [loginFailed, setLoginFailed] = useState<boolean>(false); // initially set as false
 
     const [changingPassword, setChangingPassword] = useState<boolean>(false);
+    const [userkey, setUserkey] = useState<string>("");
+    const [oldPassword, setOldPassword] = useState<string>('');
     const [newPassword, setNewPassword] = useState<string>('');
     const [confirmPassword, setConfirmPassword] = useState<string>('');
 
@@ -44,14 +46,31 @@ const LoginPage: React.FC = () => {
                 return;
             }
             try {
-                const response = await axios.put(`http://localhost:3001/login/${username}`, {newPassword});
+                const response = await axios.put(`http://localhost:3001/login/${userkey}`, {
+                    userkey,
+                    oldPassword,
+                    newPassword
+                });
                 if (response.status === 200) {
                     alert("Password changed successfully");
+
+                    setUserkey('');
+                    setOldPassword('');
+                    setNewPassword('');
+                    setConfirmPassword('');
+
                     setChangingPassword(false);
                 }
-            } catch (error) {
-                console.error('Change password failed:', error);
-        }
+            } catch (error: unknown) {
+                if (axios.isAxiosError(error)) {
+                    console.error('Change password failed:', error);
+                    if (error.response && error.response.status === 401) {
+                        alert("User credential is incorrect");
+                    }
+                } else {
+                    console.error('An unknown error occurred:', error);
+                }
+            }
     };
 
     const handleCancel = () => {
@@ -66,6 +85,19 @@ const LoginPage: React.FC = () => {
 
             {changingPassword ? (
                 <>
+                    <div className='input-field'>
+                        <label htmlFor="userkey">Username</label>
+                        <input id="userkey" type="text" 
+                        value={userkey} 
+                        onChange={(e) => setUserkey(e.target.value)} />
+                    </div>
+                    <div className='input-field'>
+                        <label htmlFor="oldPassword">Old Password</label>
+                        <input id="oldPassword" type="password" 
+                        value={oldPassword} 
+                        onChange={(e) => setOldPassword(e.target.value)} />
+                    </div>                  
+                    
                     <div className='input-field'>
                         <label htmlFor="newPassword">New Password</label>
                         <input id="newPassword" type="password" 
