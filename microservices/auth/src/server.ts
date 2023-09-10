@@ -119,6 +119,13 @@ app.get("/", (req, res) => {
   res.send("rainbow");
 });
 
+app.post("/api/auth/log-in", passport.authenticate("local"), (req, res) => {
+  const expressUser = req.user;
+  const userDocument = expressUser as UserDocument;
+
+  return res.status(200).send({ _id: userDocument._id });
+});
+
 app.post("/api/auth/sign-up", async (req, res) => {
   try {
     const { username, password } = req.body;
