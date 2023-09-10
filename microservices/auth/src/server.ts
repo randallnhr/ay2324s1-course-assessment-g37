@@ -127,9 +127,9 @@ app.post("/api/auth/log-in", passport.authenticate("local"), (req, res) => {
 });
 
 app.post("/api/auth/sign-up", async (req, res) => {
-  try {
-    const { username, password } = req.body;
+  const { username, password } = req.body;
 
+  try {
     // check whether this username already exists
     const users = client.db("main-db").collection("users");
     const userDocument = await users.findOne({ username });
