@@ -2,15 +2,19 @@
 // import reactLogo from './assets/react.svg'
 // import viteLogo from '/vite.svg'
 import './App.css'
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import QuestionBank from './components/QuestionBank'
+import LoginPage from './components/LoginPage'
 
 function App() {
   return (
-    <>
-      <div className='App'>
-        <QuestionBank />
-      </div>
-    </>
+    <Router>
+      <Routes>
+        <Route path = "/login" element = {<LoginPage/>} />
+        <Route path='/question-bank' element = {<QuestionBank/> } />
+        <Route path="*" element={<Navigate to="/login" />} /> {/* Catch-all route */}
+      </Routes>
+    </Router>
   )
 }
 

@@ -58,6 +58,22 @@ app.post('/addQuestion', (req, res) => {
   res.status(201).send('New question added');
 });
 
+// Check password and login
+app.post('/login', (req, res) => {
+  const { username, password } = req.body;
+
+  const users = JSON.parse(fs.readFileSync('data/users.json', 'utf-8'));
+
+  // Search for a match
+  const foundUser = users.find((user: { username: string, password: string }) => user.username === username && user.password === password);
+
+  if (foundUser) {
+    return res.status(200).json({ message: 'Login successful' });
+  }
+
+  return res.status(401).json({ message: 'Invalid username or password' });
+});
+
 
 // Delete a question by ID
 app.delete('/questions/:id', (req, res) => {
@@ -67,11 +83,6 @@ app.delete('/questions/:id', (req, res) => {
   fs.writeFileSync('data/sampleQuestions.json', JSON.stringify(questions, null, 2));
   res.status(200).send('Question deleted');
 });
-
-app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
-});
-
 
 // Update question
 app.put('/updateQuestion', (req, res) => {
@@ -89,3 +100,12 @@ app.put('/updateQuestion', (req, res) => {
     res.status(404).send('Question not found');
   }
 });  
+
+
+app.listen(port, () => {
+  console.log(`Server is running on http://localhost:${port}`);
+});
+
+
+
+
