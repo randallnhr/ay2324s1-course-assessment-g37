@@ -42,10 +42,10 @@ const client = new MongoClient(process.env.MONGODB_URI, {
 })();
 
 passport.use(
-  new LocalStrategy(async (email, password, done) => {
+  new LocalStrategy(async (username, password, done) => {
     try {
       const users = client.db("main-db").collection("users");
-      const userDocument = await users.findOne({ email });
+      const userDocument = await users.findOne({ username });
 
       // check if user exists
       if (userDocument === null) {
@@ -121,21 +121,21 @@ app.get("/", (req, res) => {
 
 app.post("/api/auth/sign-up", async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { username, password } = req.body;
 
-    // check whether this email already exists
+    // check whether this username already exists
     const users = client.db("main-db").collection("users");
-    const userDocument = await users.findOne({ email });
+    const userDocument = await users.findOne({ username });
 
     if (userDocument) {
-      // this email already exists
-      res.status(409).send("Duplicated email");
+      // this username already exists
+      res.status(409).send("Duplicated username");
       return;
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUserDocument = {
-      email,
+      username,
       password: hashedPassword,
     };
 
