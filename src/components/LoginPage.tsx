@@ -6,7 +6,12 @@ import './LoginPage.css';
 const LoginPage: React.FC = () => {
     const [username, setUsername] = useState<string>("");
     const [password, setPassword] = useState<string>("");
-    const [loginFailed, setLoginFailed] = useState<boolean>(false);
+    const [loginFailed, setLoginFailed] = useState<boolean>(false); // initially set as false
+
+    const [changingPassword, setChangingPassword] = useState<boolean>(false);
+    const [newPassword, setNewPassword] = useState<string>('');
+    const [confirmPassword, setConfirmPassword] = useState<string>('');
+
     const navigate = useNavigate();
 
     const handleLogin = async () => {
@@ -33,33 +38,74 @@ const LoginPage: React.FC = () => {
         }
     };
 
-    const handleChangePassword = () => {
+    const handleChangePassword = async () => {
+        if (newPassword !== confirmPassword) {
+                alert("Passwords do not match");
+                return;
+            }
+            try {
+                const response = await axios.put(`http://localhost:3001/login/${username}`, {newPassword});
+                if (response.status === 200) {
+                    alert("Password changed successfully");
+                    setChangingPassword(false);
+                }
+            } catch (error) {
+                console.error('Change password failed:', error);
+        }
+    };
 
+    const handleCancel = () => {
+        setChangingPassword(false);
+        setNewPassword('');
+        setConfirmPassword('');
     };
 
     return (
         <div className='login-container'>
             <h1 className='login-header'>Login Page</h1>
-            <div className='input-field'>
-                <label htmlFor="username">Username</label>
-                <input 
-                id="username" 
-                type="text" 
-                value={username} 
-                onChange={(e) => setUsername(e.target.value)} 
-                />
-            </div>
-            <div className='input-field'>
-                <label htmlFor="password">Password</label>
-                <input 
-                id="password" 
-                type="password" 
-                value={password} 
-                onChange={(e) => setPassword(e.target.value)} 
-                />
-            </div>
-            <button className='action-button' onClick={handleLogin}>Login</button>
-            <button className='action-button'>Change Password</button>
+
+            {changingPassword ? (
+                <>
+                    <div className='input-field'>
+                        <label htmlFor="newPassword">New Password</label>
+                        <input id="newPassword" type="password" 
+                        value={newPassword} 
+                        onChange={(e) => setNewPassword(e.target.value)} />
+                    </div>
+                    <div className='input-field'>
+                        <label htmlFor="confirmPassword">Confirm Password</label>
+                        <input id="confirmPassword" type="password" 
+                        value={confirmPassword} 
+                        onChange={(e) => setConfirmPassword(e.target.value)} />
+                    </div>
+                    <button className='action-button' onClick={handleChangePassword}>Save</button>
+                    <button className='action-button' onClick={handleCancel}>Cancel</button>
+                </>
+            ) : (
+                <>
+                    <div className='input-field'>
+                        <label htmlFor="username">Username</label>
+                        <input 
+                        id="username" 
+                        type="text" 
+                        value={username} 
+                        onChange={(e) => setUsername(e.target.value)} 
+                        />
+                    </div>
+                    <div className='input-field'>
+                        <label htmlFor="password">Password</label>
+                        <input 
+                        id="password" 
+                        type="password" 
+                        value={password} 
+                        onChange={(e) => setPassword(e.target.value)} 
+                        />
+                    </div>
+                    <button className='action-button' onClick={handleLogin}>Login</button>
+                    <button className='action-button' onClick={() => setChangingPassword(true)}>Change Password</button>
+                </>
+            )}
+
             {loginFailed && <h2 className='failed'>Login failed</h2>}
         </div>
     );

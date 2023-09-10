@@ -14,6 +14,11 @@ interface Question {
   complexity: string;
 }
 
+interface User {
+  username: string;
+  password: string;
+}
+
 // Enable CORS for all routes (Not recommended for production)
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
@@ -74,23 +79,44 @@ app.post('/login', (req, res) => {
   return res.status(401).json({ message: 'Invalid username or password' });
 });
 
+// allow update of password
+app.put('/login/:username', (req, res) => {
+  const username = req.params.username;
+  const newPassword = req.body.newPassword;
+  const users: User[] = JSON.parse(fs.readFileSync('data/users.json', 'utf8'));
+
+  const user = users.find((u: User) => u.username === username);
+
+  if (!user) {
+    res.status(404).send('User not found');
+    return;
+  }
+
+  user.password = newPassword;
+
+  fs.writeFileSync('data/users.json', JSON.stringify(users, null, 2));
+  res.status(200).send('Password changed successfully');
+});
+
 
 // Delete a question by ID
 app.delete('/questions/:id', (req, res) => {
   const id = parseInt(req.params.id, 10);
   let questions: Question[] = JSON.parse(fs.readFileSync('data/sampleQuestions.json', 'utf8'));
+
   questions = questions.filter((q) => q.id !== id);
   fs.writeFileSync('data/sampleQuestions.json', JSON.stringify(questions, null, 2));
   res.status(200).send('Question deleted');
 });
 
 // Update question
-app.put('/updateQuestion', (req, res) => {
+app.put('/questions/:id', (req, res) => {
+  const id = parseInt(req.params.id, 10);
   const updatedQuestion = req.body;
   const questions = JSON.parse(fs.readFileSync('data/sampleQuestions.json', 'utf8'));
 
   // Find the index of the question that has the same id as `updatedQuestion.id`
-  const index = questions.findIndex((q: Question) => q.id === updatedQuestion.id);
+  const index = questions.findIndex((q: Question) => q.id === id);
   if (index !== -1) {
     // Update the question at the found index
     questions[index] = updatedQuestion;

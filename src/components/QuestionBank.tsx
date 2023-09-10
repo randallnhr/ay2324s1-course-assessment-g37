@@ -70,7 +70,7 @@ const QuestionBank: React.FC = () => {
 
   const updateQuestion = (updatedQuestion: Question, id: string | number) => {
     // Assume your backend has an API endpoint to update a question at `http://localhost:3001/updateQuestion`
-    fetch(`http://localhost:3001/updateQuestion`, {
+    fetch(`http://localhost:3001/questions/${id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
