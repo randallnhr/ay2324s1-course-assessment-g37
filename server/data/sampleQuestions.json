@@ -2,10 +2,9 @@
   {
     "id": 1,
     "title": "Reverse a String",
-    "description": "Write a function that reverses a string. The input string is given as an array of characters s.<br><br> You must do this by modifying the input array in-place with O(1) extra memory.<br><br> Example 1:<br> Input: s = ['h','e','l','l','o']<br> Output: ['o','l','l','e','h']<br><br> Example 2:<br> Input: s = ['H','a','n','n','a','h']<br> Output: ['h','a','n','n','a','H']<br><br> Constraints:<br> <ul><li>1 <= s.length <= 10^5</li><li>s[i] is a printable ASCII character.</li></ul>",
     "category": "Strings, Algorithms",
     "complexity": "Easy",
-    "descriptionImage": ""
+    "description": "Write a function that reverses a string. The input string is given as an array of characters s.<br><br> You must do this by modifying the input array in-place with O(1) extra memory.<br><br> Example 1:<br> Input: s = ['h','e','l','l','o']<br> Output: ['o','l','l','e','h']<br><br> Example 2:<br> Input: s = ['H','a','n','n','a','h']<br> Output: ['h','a','n','n','a','H']<br><br> Constraints:<br> <ul><li>1 <= s.length <= 10^5</li><li>s[i] is a printable ASCII character.</li></ul>"
   },
   {
     "id": 2,

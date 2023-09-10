@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import "./QuestionBank.css";
 
 // Need to define a Question type. ? = optional fields
 interface Question {
@@ -25,7 +26,7 @@ const QuestionBank: React.FC = () => {
   // Create refs outside the map
   const titleRef = React.createRef<HTMLInputElement>();
   const categoryRef = React.createRef<HTMLInputElement>();
-  const complexityRef = React.createRef<HTMLInputElement>();
+  const complexityRef = React.createRef<HTMLSelectElement>();
   const descriptionRef = React.createRef<HTMLTextAreaElement>();
 
   useEffect(() => {
@@ -89,74 +90,93 @@ const QuestionBank: React.FC = () => {
     <div>
       <h1>Question Bank</h1>
       <table>
-  <thead>
-    <tr>
-      <th>Title</th>
-      <th>Category</th>
-      <th>Complexity</th>
-      <th>Actions</th>
-    </tr>
-  </thead>
-  <tbody>
-          {questions.map((question) => (
-            <React.Fragment key={question.id}>
-              {updatingQuestionId === question.id ? (
+            <thead>
                 <tr>
-                  <td><input ref={titleRef} type="text" defaultValue={question.title} /></td>
-                  <td><input ref={categoryRef} type="text" defaultValue={question.category} /></td>
-                  <td><input ref={complexityRef} type="text" defaultValue={question.complexity} /></td>
-                  {/* Textarea for description */}
-                  <td><textarea ref={descriptionRef} defaultValue={question.description}></textarea></td>
-                  <td>
-                    <button onClick={() => setUpdatingQuestionId(null)}>Cancel</button>
-                    <button onClick={() => {
-                      const updatedTitle = titleRef.current?.value || "";
-                      const updatedCategory = categoryRef.current?.value || "";
-                      const updatedComplexity = complexityRef.current?.value || "";
-                      const updatedDescription = descriptionRef.current?.value || ""; // New line
-                      
-                      const updatedQuestion = {
-                        id: question.id,
-                        title: updatedTitle,
-                        category: updatedCategory,
-                        complexity: updatedComplexity,
-                        description: updatedDescription // New field
-                      };
-                      
-                      updateQuestion(updatedQuestion, question.id);
-                      setUpdatingQuestionId(null);
-                    }}>Save</button>
-                  </td>
+                <th className='table-header'>Title</th>
+                <th className='table-header'>Category</th>
+                <th className='table-header'>Complexity</th>
+                <th className='table-header'>Actions</th>
                 </tr>
-              ) : (
-                <tr>
-                  <td>
-                    <button onClick={() => toggleQuestionDetails(question.id)}>
-                      {question.title}
-                    </button>
-                  </td>
-                  <td>{question.category}</td>
-                  <td>{question.complexity}</td>
-                  <td>
-                    <button onClick={() => deleteQuestion(question.id)}>Delete</button>
-                    <button onClick={() => setUpdatingQuestionId(question.id)}>Update</button> {/* Fixed */}
-                  </td>
-                </tr>
-              )}
-              {expandedQuestionId === question.id && (
-                <tr>
-                  <td colSpan={4}>
-                    <div dangerouslySetInnerHTML={{ __html: question.description }}></div>
-                  </td>
-                </tr>
-              )}
-            </React.Fragment>
-          ))}
-        </tbody>
-</table>
+            </thead>
+            <tbody>
+            {questions.map((question) => (
+                <React.Fragment key={question.id}>
+                {updatingQuestionId === question.id ? (
+                    <tr>
+                        <td colSpan={3}>
+                            <div className='update-form'>
+                                <div>
+                                    <label>Title</label>
+                                    <input ref={titleRef} type="text" defaultValue={question.title} />
+                                </div>
+                                <div>
+                                    <label>Category</label>
+                                    <input ref={categoryRef} type="text" defaultValue={question.category} />
+                                </div>
+                                <div>
+                                    <label>Complexity</label>
+                                    <select ref={complexityRef} defaultValue={question.complexity}>
+                                    <option value="Easy">Easy</option>
+                                    <option value="Medium">Medium</option>
+                                    <option value="Hard">Hard</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label>Description</label>
+                                    <textarea ref={descriptionRef} defaultValue={question.description}></textarea>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <button className='action-button' onClick={() => setUpdatingQuestionId(null)}>Cancel</button>
+                            <button className='action-button' onClick={() => {
+                            const updatedTitle = titleRef.current?.value || "";
+                            const updatedCategory = categoryRef.current?.value || "";
+                            const updatedComplexity = complexityRef.current?.value || "";
+                            const updatedDescription = descriptionRef.current?.value || ""; // New line
+                            
+                            const updatedQuestion = {
+                                id: question.id,
+                                title: updatedTitle,
+                                category: updatedCategory,
+                                complexity: updatedComplexity,
+                                description: updatedDescription // New field
+                            };
+                            
+                            updateQuestion(updatedQuestion, question.id);
+                            setUpdatingQuestionId(null);
+                            }}>Save</button>
+                        </td>
+                    </tr>
+                ) : (
+                    <tr>
+                    <td>
+                        <button onClick={() => toggleQuestionDetails(question.id)}>
+                        {question.title}
+                        </button>
+                    </td>
+                    <td className='center-align-cell'>{question.category}</td>
+                    <td className='center-align-cell'>{question.complexity}</td>
+                    <td>
+                        <button className='action-button' onClick={() => deleteQuestion(question.id)}>Delete</button>
+                        <button className='action-button' onClick={() => setUpdatingQuestionId(question.id)}>Update</button> {/* Fixed */}
+                    </td>
+                    </tr>
+                )}
+                {expandedQuestionId === question.id && (
+                    <tr>
+                    <td colSpan={4}>
+                        <div dangerouslySetInnerHTML={{ __html: question.description }}></div>
+                    </td>
+                    </tr>
+                )}
+                </React.Fragment>
+            ))}
+            </tbody>
+      </table>
 
       {/* Create new Questions */}
-      <h2>Add a New Question</h2>
+      <h2 className='add-header'>Add a New Question</h2>
       <form onSubmit={(e) => {
         e.preventDefault();
         addQuestion(newQuestion);
@@ -175,9 +195,13 @@ const QuestionBank: React.FC = () => {
         </div>
         <div>
           <label>Complexity</label>
-          <input type="text" value={newQuestion.complexity} onChange={e => setNewQuestion({ ...newQuestion, complexity: e.target.value })} />
+          <select value={newQuestion.complexity} onChange={e => setNewQuestion({ ...newQuestion, complexity: e.target.value })}>
+            <option value="Easy">Easy</option>
+            <option value="Medium">Medium</option>
+            <option value="Hard">Hard</option>
+          </select>
         </div>
-        <button type="submit">Add Question</button>
+        <button className='action-button' type="submit">Add Question</button>
       </form>
 
     </div>
