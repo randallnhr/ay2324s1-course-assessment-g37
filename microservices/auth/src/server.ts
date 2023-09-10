@@ -123,7 +123,7 @@ app.post("/api/auth/log-in", passport.authenticate("local"), (req, res) => {
   const expressUser = req.user;
   const userDocument = expressUser as UserDocument;
 
-  return res.status(200).send({ _id: userDocument._id });
+  return res.status(200).send({ username: userDocument.username });
 });
 
 app.post("/api/auth/sign-up", async (req, res) => {
@@ -176,6 +176,38 @@ app.delete("/api/auth/log-out", (req, res) => {
 app.get("/api/auth/secret", passport.authenticate("local"), (req, res) => {
   res.send("secret");
 });
+
+app.post(
+  "/api/auth/change-password",
+  passport.authenticate("local"),
+  async (req, res) => {
+    const expressUser = req.user;
+    const userDocument = expressUser as UserDocument;
+
+    const { newPassword } = req.body;
+    const newHashedPassword = await bcrypt.hash(newPassword, 10);
+
+    try {
+      const users = client.db("main-db").collection("users");
+
+      const result = await users.updateOne(
+        { _id: new mongodb.ObjectId(userDocument._id) },
+        {
+          $set: { password: newHashedPassword },
+        }
+      );
+
+      if (result.acknowledged) {
+        res.status(200).send();
+      } else {
+        throw new Error("Database failed to acknowledge request");
+      }
+    } catch (error) {
+      console.error(error);
+      res.status(503).send(error);
+    }
+  }
+);
 
 app.listen(PORT, () => {
   console.log(`Listening on http://localhost:${PORT}`);
