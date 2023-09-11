@@ -134,6 +134,7 @@ const LoginPage: React.FC = () => {
                         />
                     </div>
                     <button className='action-button' onClick={handleLogin}>Login</button>
+                    <button className='action-button' onClick={() => navigate('/signup')}>Sign Up</button>
                     <button className='action-button' onClick={() => setChangingPassword(true)}>Change Password</button>
                 </>
             )}
