@@ -1,6 +1,16 @@
+import mongoose from "mongoose";
 import rawQuestions from "../data/questions.json";
 import { Question } from "../types";
 import { CODE_NOT_FOUND, CODE_OK, hasKey, isQuestion } from "../utility";
+
+const QuestionSchema = new mongoose.Schema({
+  title: String,
+  categories: [String],
+  complexity: String,
+  description: String
+})
+
+const QuestionModel = mongoose.model('Question', QuestionSchema);
 
 function parseJsonQuestions(rawJson: {}) {
   if (!hasKey(rawJson, 'questions') || !Array.isArray(rawJson.questions)) {
@@ -39,7 +49,9 @@ export function getQuestions() {
   }
 }
 
-export function addQuestion(question: Question) {
+export async function addQuestion(question: Question) {
+  const result = await (new QuestionModel(question)).save();
+  const id2 = result.id;
   const id = String(getQuestions().body.length);
   questions[id] = question;
   return {

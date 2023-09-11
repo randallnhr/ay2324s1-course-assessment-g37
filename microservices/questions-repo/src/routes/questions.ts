@@ -24,13 +24,13 @@ router.get('/:id', function(req: Request, res: Response) {
 });
 
 /* POST question. */
-router.post('/', function(req: Request, res: Response) {
+router.post('/', async function(req: Request, res: Response) {
   const question = req.body;
   if (!isQuestion(question)) {
     res.status(CODE_BAD_REQUEST).end();
     return;
   }
-  const id = addQuestion(question).body;
+  const id = (await addQuestion(question)).body;
   res.location(`${ROUTE_QUESTIONS}/${id}`).end();
 });
 
