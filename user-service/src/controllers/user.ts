@@ -6,7 +6,7 @@ export const getUser: RequestHandler = async (req: Request, res: Response) => {
   const username = req.params.username;
 
   const result = await userService.getUser(username);
-  res.json(result);
+  res.status(200).json(result);
 };
 
 export const createUser: RequestHandler = async (
@@ -19,7 +19,7 @@ export const createUser: RequestHandler = async (
   };
 
   const result = await userService.createUser(user);
-  res.status(200);
+  res.sendStatus(200);
 };
 
 export const updateUser: RequestHandler = async (
@@ -30,7 +30,7 @@ export const updateUser: RequestHandler = async (
   const displayName = req.body.displayName;
 
   const result = await userService.updateUser(username, displayName);
-  res.status(200);
+  res.sendStatus(200);
 };
 
 export const deleteUser: RequestHandler = async (
@@ -40,5 +40,5 @@ export const deleteUser: RequestHandler = async (
   const username = req.params.username;
 
   const result = await userService.deleteUser(username);
-  res.status(200);
+  res.sendStatus(200);
 };
