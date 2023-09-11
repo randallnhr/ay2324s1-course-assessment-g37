@@ -105,3 +105,9 @@ select:focus {
 .update-form > div {
     margin-bottom: 1rem;
 }
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}

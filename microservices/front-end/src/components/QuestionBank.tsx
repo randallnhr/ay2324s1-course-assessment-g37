@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import "./QuestionBank.css";
 
 // Need to define a Question type. ? = optional fields
@@ -23,6 +24,8 @@ const QuestionBank: React.FC = () => {
     complexity: ''
   });
 
+  const navigate = useNavigate();
+
   // Create refs outside the map
   const titleRef = React.createRef<HTMLInputElement>();
   const categoryRef = React.createRef<HTMLInputElement>();
@@ -34,6 +37,10 @@ const QuestionBank: React.FC = () => {
       .then((res) => res.json())
       .then((data) => setQuestions(data));
   }, []);
+
+  const handleSignout = () => {
+    navigate('/login');
+  }
 
   const toggleQuestionDetails = (id: number) => {
     setExpandedQuestionId(expandedQuestionId === id ? null : id);
@@ -88,7 +95,10 @@ const QuestionBank: React.FC = () => {
 
   return (
     <div>
-      <h1>Question Bank</h1>
+      <div className='header-container'>
+        <h1>Question Bank</h1>
+        <button onClick={handleSignout}>Sign Out</button>
+      </div>
       <table>
             <thead>
                 <tr>
