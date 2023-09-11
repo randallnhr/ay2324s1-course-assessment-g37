@@ -18,7 +18,7 @@ const LoginPage: React.FC = () => {
 
     const handleLogin = async () => {
         try {
-            const response = await axios.post("http://localhost:3001/login", {
+            const response = await axios.post("/api/auth/log-in", {
                 username,
                 password
             });
@@ -46,7 +46,7 @@ const LoginPage: React.FC = () => {
                 return;
             }
             try {
-                const response = await axios.put(`http://localhost:3001/login/${userkey}`, {
+                const response = await axios.put(`/api/auth/log-in/${userkey}`, {
                     userkey,
                     oldPassword,
                     newPassword
