@@ -8,7 +8,7 @@ interface Question {
     title: string;
     description: string;
     category: string;
-    complexity: string;
+    complexity: 'Easy' | 'Medium' | 'Hard';
 }
 
 const QuestionBank: React.FC = () => {
@@ -21,7 +21,7 @@ const QuestionBank: React.FC = () => {
     title: '',
     description: '',
     category: '',
-    complexity: ''
+    complexity: 'Easy' as 'Easy' | 'Medium' | 'Hard' // default value
   });
 
   const navigate = useNavigate();
@@ -142,7 +142,7 @@ const QuestionBank: React.FC = () => {
                             <button className='action-button' onClick={() => {
                             const updatedTitle = titleRef.current?.value || "";
                             const updatedCategory = categoryRef.current?.value || "";
-                            const updatedComplexity = complexityRef.current?.value || "";
+                            const updatedComplexity = complexityRef.current?.value as 'Easy' | 'Medium' | 'Hard'; // type assertion
                             const updatedDescription = descriptionRef.current?.value || ""; // New line
                             
                             const updatedQuestion = {
@@ -205,7 +205,9 @@ const QuestionBank: React.FC = () => {
         </div>
         <div>
           <label>Complexity</label>
-          <select value={newQuestion.complexity} onChange={e => setNewQuestion({ ...newQuestion, complexity: e.target.value })}>
+          <select value={newQuestion.complexity as 'Easy' | 'Medium' | 'Hard'} 
+          onChange={e => setNewQuestion({ ...newQuestion, 
+          complexity: e.target.value as 'Easy' | 'Medium' | 'Hard' })}>
             <option value="Easy">Easy</option>
             <option value="Medium">Medium</option>
             <option value="Hard">Hard</option>
