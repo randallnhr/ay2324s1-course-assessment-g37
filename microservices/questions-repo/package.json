@@ -2,16 +2,15 @@
   "name": "helloworld",
   "version": "0.0.0",
   "private": true,
-  "main": "dist/index.js",
+  "main": "dist/app.js",
   "scripts": {
     "build": "npx tsc",
-    "start": "node ./bin/www",
-    "devstart": "nodemon ./bin/www -e ts --exec \"npm run build && npm run start\" --ignore dist/",
+    "start": "node ./dist/app.js",
+    "devstart": "nodemon ./dist/app.js -e ts --exec \"npm run build && npm run start\" --ignore dist/",
     "serverstart": "SET DEBUG=true:* & npm run devstart"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
-    "debug": "~2.6.9",
     "dotenv": "^16.3.1",
     "express": "~4.16.1",
     "http-errors": "~1.6.3",
