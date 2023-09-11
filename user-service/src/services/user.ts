@@ -6,7 +6,7 @@ export const getUser = async (username: string) => {
   const values = [username];
 
   const result = await db.query(text, values);
-  return result;
+  return result.rows[0];
 };
 
 export const createUser = async (user: User) => {
@@ -18,7 +18,7 @@ export const createUser = async (user: User) => {
 };
 
 export const updateUser = async (username: string, displayName: string) => {
-  const text = "UPDATE users SET displayName = $1 WHERE username = $2";
+  const text = "UPDATE users SET display_name = $1 WHERE username = $2";
   const values = [displayName, username];
 
   const result = await db.query(text, values);

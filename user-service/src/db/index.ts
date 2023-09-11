@@ -1,8 +1,19 @@
 import { Pool, QueryArrayConfig } from "pg";
+import dotenv from "dotenv";
+import path from "path";
 
-const pool = new Pool();
+dotenv.config({ path: path.resolve(__dirname, "../../.env") });
+
+// pools will use environment variables
+// for connection information
+const pool = new Pool({
+  ssl: {
+    rejectUnauthorized: false,
+  },
+});
+
 pool.query(
-  "CREATE TABLE IF NOT EXIST users(username TEXT PRIMARY KEY, display_name TEXT);"
+  "CREATE TABLE IF NOT EXISTS users (username TEXT PRIMARY KEY, display_name TEXT);"
 );
 
 export const query = async (
