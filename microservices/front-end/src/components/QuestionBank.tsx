@@ -48,20 +48,30 @@ const QuestionBank: React.FC = () => {
 
   // newQuestion only have 4 fields, unlike Question have 5, need to use Partial
   const addQuestion = (newQuestion: Partial<Question>) => {
-    fetch('http://localhost:3001/addQuestion', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(newQuestion),
-    })
-    .then(() => {
-      // Re-fetch questions to update UI
-      return fetch('http://localhost:3001/questions');
-    })
+    // First fetch all questions to check for duplicates
+    fetch('http://localhost:3001/questions')
     .then((res) => res.json())
-    .then((data) => setQuestions(data));
+    .then((existingQuestions: Question[]) => {
+      const duplicate = existingQuestions.find(q => q.title === newQuestion.title);
+      if (duplicate) {
+        alert('Question with this title already exists.');
+        return;
+      }
+  
+      // If no duplicates, proceed to add question
+      fetch('http://localhost:3001/addQuestion', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newQuestion),
+      })
+      .then(() => fetch('http://localhost:3001/questions'))
+      .then((res) => res.json())
+      .then((data) => setQuestions(data));
+    });
   };
+  
 
   const deleteQuestion = (id: number) => {
     fetch(`http://localhost:3001/questions/${id}`, {
@@ -76,7 +86,18 @@ const QuestionBank: React.FC = () => {
   };
 
   const updateQuestion = (updatedQuestion: Question, id: string | number) => {
-    // Assume your backend has an API endpoint to update a question at `http://localhost:3001/updateQuestion`
+    // Do the check first
+    fetch('http://localhost:3001/questions')
+    .then((res) => res.json())
+    .then((existingQuestions: Question[]) => {
+      const duplicate = existingQuestions.find(
+        q => q.title == updatedQuestion.title
+      );
+      if (duplicate) {
+        alert("Question with this title already exists. ");
+        return;
+    }
+
     fetch(`http://localhost:3001/questions/${id}`, {
       method: 'PUT',
       headers: {
@@ -90,7 +111,8 @@ const QuestionBank: React.FC = () => {
       setQuestions(data);
       setUpdatingQuestionId(null);
     });
-  };
+  });
+};
   
 
   return (
