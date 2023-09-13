@@ -33,6 +33,14 @@ button:focus-visible {
 .center-align-cell {
     text-align: center;
 }
+  
+/* Style the header row of the table */
+/* th {
+    font-size: 1.25em;
+    background-color: #C4C5C5;
+    text-align: center;
+    padding: 10px;
+} */
 
 .table-header {
     font-size: 1.25em; /* Equivalent to h4 size */
@@ -102,4 +110,4 @@ select:focus {
     display: flex;
     justify-content: space-between;
     align-items: center;
-}
+  }

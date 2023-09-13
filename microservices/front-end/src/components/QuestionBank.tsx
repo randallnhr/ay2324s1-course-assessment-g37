@@ -8,7 +8,7 @@ interface Question {
     title: string;
     description: string;
     category: string;
-    complexity: 'Easy' | 'Medium' | 'Hard';
+    complexity: string;
 }
 
 const QuestionBank: React.FC = () => {
@@ -21,7 +21,7 @@ const QuestionBank: React.FC = () => {
     title: '',
     description: '',
     category: '',
-    complexity: 'Easy' as 'Easy' | 'Medium' | 'Hard' // default value
+    complexity: ''
   });
 
   const navigate = useNavigate();
@@ -33,7 +33,7 @@ const QuestionBank: React.FC = () => {
   const descriptionRef = React.createRef<HTMLTextAreaElement>();
 
   useEffect(() => {
-    fetch('/api/questions')
+    fetch('http://localhost:3001/questions')
       .then((res) => res.json())
       .then((data) => setQuestions(data));
   }, []);
@@ -48,7 +48,7 @@ const QuestionBank: React.FC = () => {
 
   // newQuestion only have 4 fields, unlike Question have 5, need to use Partial
   const addQuestion = (newQuestion: Partial<Question>) => {
-    fetch('/api/questions', {
+    fetch('http://localhost:3001/addQuestion', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -57,19 +57,19 @@ const QuestionBank: React.FC = () => {
     })
     .then(() => {
       // Re-fetch questions to update UI
-      return fetch('/api/questions');
+      return fetch('http://localhost:3001/questions');
     })
     .then((res) => res.json())
     .then((data) => setQuestions(data));
   };
 
   const deleteQuestion = (id: number) => {
-    fetch(`/api/questions/${id}`, {
+    fetch(`http://localhost:3001/questions/${id}`, {
       method: 'DELETE',
     })
     .then(() => {
       // Re-fetch questions to update UI
-      return fetch('/api/questions');
+      return fetch('http://localhost:3001/questions');
     })
     .then((res) => res.json())
     .then((data) => setQuestions(data));
@@ -77,14 +77,14 @@ const QuestionBank: React.FC = () => {
 
   const updateQuestion = (updatedQuestion: Question, id: string | number) => {
     // Assume your backend has an API endpoint to update a question at `http://localhost:3001/updateQuestion`
-    fetch(`/api/questions/${id}`, {
+    fetch(`http://localhost:3001/questions/${id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(updatedQuestion),
     })
-    .then(() => fetch('/api/questions'))
+    .then(() => fetch('http://localhost:3001/questions'))
     .then((res) => res.json())
     .then((data) => {
       setQuestions(data);
@@ -142,7 +142,7 @@ const QuestionBank: React.FC = () => {
                             <button className='action-button' onClick={() => {
                             const updatedTitle = titleRef.current?.value || "";
                             const updatedCategory = categoryRef.current?.value || "";
-                            const updatedComplexity = complexityRef.current?.value as 'Easy' | 'Medium' | 'Hard'; // type assertion
+                            const updatedComplexity = complexityRef.current?.value || "";
                             const updatedDescription = descriptionRef.current?.value || ""; // New line
                             
                             const updatedQuestion = {
@@ -205,9 +205,7 @@ const QuestionBank: React.FC = () => {
         </div>
         <div>
           <label>Complexity</label>
-          <select value={newQuestion.complexity as 'Easy' | 'Medium' | 'Hard'} 
-          onChange={e => setNewQuestion({ ...newQuestion, 
-          complexity: e.target.value as 'Easy' | 'Medium' | 'Hard' })}>
+          <select value={newQuestion.complexity} onChange={e => setNewQuestion({ ...newQuestion, complexity: e.target.value })}>
             <option value="Easy">Easy</option>
             <option value="Medium">Medium</option>
             <option value="Hard">Hard</option>
