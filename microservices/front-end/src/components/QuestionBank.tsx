@@ -18,7 +18,7 @@ const allCategories = [
   'Two Pointers', 'Binary Tree', 'Bit Manipulation', 'Heap (Priority Queue)',
   'Stack', 'Prefix Sum', 'Graph', 'Simulation', 'Design',
   'Counting', 'Backtracking', 'Queue', 'Algorithms', 'Data Structures',
-  'Recursion', 'Brainteaser'
+  'Recursion', 'Brainteaser', 'Others'
 ]
 
 const QuestionBank: React.FC = () => {
@@ -62,6 +62,16 @@ const QuestionBank: React.FC = () => {
 
   // newQuestion only have 4 fields, unlike Question have 5, need to use Partial
   const addQuestion = (newQuestion: Partial<Question>) => {
+    // empty field check
+    if (!newQuestion.title || !newQuestion.description) {
+      alert('Question title and description cannot be empty.');
+      return;
+    }
+    // set to others if no category
+    if (!newQuestion.category || newQuestion.category.length == 0) {
+      newQuestion.category = ["Others"];
+    }
+
     // First fetch all questions to check for duplicates
     fetch('http://localhost:3001/questions')
     .then((res) => res.json())
@@ -99,7 +109,16 @@ const QuestionBank: React.FC = () => {
   };
 
   const updateQuestion = (updatedQuestion: Question, id: string | number) => {
-    // Do the check first
+    // Empty field check
+    if (!updatedQuestion.title || !updatedQuestion.description) {
+      alert('Question title and description cannot be empty.');
+      return;
+    }
+    if (!updatedQuestion.category || updatedQuestion.category.length === 0) {
+      updatedQuestion.category = ["Others"];
+    }
+    
+    // Do the duplicate check
     fetch('http://localhost:3001/questions')
     .then((res) => res.json())
     .then((existingQuestions: Question[]) => {
