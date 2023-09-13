@@ -48,19 +48,28 @@ const QuestionBank: React.FC = () => {
 
   // newQuestion only have 4 fields, unlike Question have 5, need to use Partial
   const addQuestion = (newQuestion: Partial<Question>) => {
-    fetch('/api/questions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(newQuestion),
-    })
-    .then(() => {
-      // Re-fetch questions to update UI
-      return fetch('/api/questions');
-    })
+    // First fetch all questions to check for duplicates
+    fetch('/api/questions')
     .then((res) => res.json())
-    .then((data) => setQuestions(data));
+    .then((existingQuestions: Question[]) => {
+      const duplicate = existingQuestions.find(q => q.title === newQuestion.title);
+      if (duplicate) {
+        alert('Question with this title already exists.');
+        return;
+      }
+
+      // If no duplicates, proceed to add question
+      fetch('/api/questions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newQuestion),
+      })
+      .then(() => fetch('/api/questions')) // re-fetch questions, update UI
+      .then((res) => res.json())
+      .then((data) => setQuestions(data));
+    });
   };
 
   const deleteQuestion = (id: number) => {
@@ -76,19 +85,31 @@ const QuestionBank: React.FC = () => {
   };
 
   const updateQuestion = (updatedQuestion: Question, id: string | number) => {
-    // Assume your backend has an API endpoint to update a question at `http://localhost:3001/updateQuestion`
-    fetch(`/api/questions/${id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(updatedQuestion),
-    })
-    .then(() => fetch('/api/questions'))
+    // Do the check first
+    fetch('/api/questions')
     .then((res) => res.json())
-    .then((data) => {
-      setQuestions(data);
-      setUpdatingQuestionId(null);
+    .then((existingQuestions: Question[]) => {
+      const duplicate = existingQuestions.find(
+        q => q.title == updatedQuestion.title
+      );
+      if (duplicate) {
+        alert("Question with this title already exists. ");
+        return;
+    }
+
+      fetch(`/api/questions/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedQuestion),
+      })
+      .then(() => fetch('/api/questions'))
+      .then((res) => res.json())
+      .then((data) => {
+        setQuestions(data);
+        setUpdatingQuestionId(null);
+      });
     });
   };
   
