@@ -10,8 +10,8 @@ interface Question {
   id: number;
   title: string;
   description: string;
-  category: string;
-  complexity: string;
+  category: string[];  // Updated to array of strings
+  complexity: 'Easy' | 'Medium' | 'Hard'; // Updated type
 }
 
 interface User {
@@ -118,14 +118,14 @@ app.delete('/questions/:id', (req, res) => {
 // Update question
 app.put('/questions/:id', (req, res) => {
   const id = parseInt(req.params.id, 10);
-  const updatedQuestion = req.body;
-  const questions = JSON.parse(fs.readFileSync('data/sampleQuestions.json', 'utf8'));
+  const updatedQuestion: Partial<Question> = req.body;
+  const questions: Question[] = JSON.parse(fs.readFileSync('data/sampleQuestions.json', 'utf8'));
 
   // Find the index of the question that has the same id as `updatedQuestion.id`
   const index = questions.findIndex((q: Question) => q.id === id);
   if (index !== -1) {
     // Update the question at the found index
-    questions[index] = updatedQuestion;
+    questions[index] = {...questions[index], ...updatedQuestion};
     fs.writeFileSync('data/sampleQuestions.json', JSON.stringify(questions, null, 2));
     res.status(200).send('Question updated');
   } else {
