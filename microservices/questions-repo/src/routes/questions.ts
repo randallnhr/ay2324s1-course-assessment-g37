@@ -10,7 +10,7 @@ export const router = express.Router();
 /* GET all questions. */
 router.get('/', async function(req: Request, res: Response) {
   QuestionModel.find()
-    .then(res.json)
+    .then(questions => res.json(questions))
     .catch((err) => {
       console.error(err);
       res.status(CODE_INTERNAL_SERVER_ERROR);
