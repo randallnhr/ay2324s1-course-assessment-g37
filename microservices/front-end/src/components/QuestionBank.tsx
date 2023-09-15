@@ -194,6 +194,10 @@ const QuestionBank: React.FC = () => {
                                     <input ref={titleRef} type="text" defaultValue={question.title} />
                                 </div>
                                 <div>
+                                    <label>Description</label>
+                                    <textarea ref={descriptionRef} defaultValue={question.description}></textarea>
+                                </div>
+                                <div>
                                     <label>Category</label>
 
                                     <div>
@@ -227,10 +231,6 @@ const QuestionBank: React.FC = () => {
                                     <option value="Medium">Medium</option>
                                     <option value="Hard">Hard</option>
                                     </select>
-                                </div>
-                                <div>
-                                    <label>Description</label>
-                                    <textarea ref={descriptionRef} defaultValue={question.description}></textarea>
                                 </div>
                             </div>
                         </td>
