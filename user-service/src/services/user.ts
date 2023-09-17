@@ -10,8 +10,8 @@ export const getUser = async (username: string) => {
 };
 
 export const createUser = async (user: User) => {
-  const text = "INSERT INTO users VALUES($1, $2)";
-  const values = [user.username, user.displayName];
+  const text = "INSERT INTO users VALUES($1, $2, $3, $4)";
+  const values = [user.username, user.displayName, user.password, user.role];
 
   const result = await db.query(text, values);
   return result;
@@ -32,5 +32,5 @@ export const deleteUser = async (username: string) => {
   const values = [username];
 
   const result = await db.query(text, values);
-  return result;
+  return result.rowCount === 1;
 };

@@ -25,7 +25,7 @@ const validateUser = checkSchema({
   role: {
     isString: { errorMessage: "Role should be a string" },
     isIn: {
-      options: [["Basic", "Admin"]],
+      options: [["basic", "admin"]],
       errorMessage: "Role is invalid",
     },
   },
