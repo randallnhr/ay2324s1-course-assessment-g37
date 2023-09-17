@@ -17,9 +17,11 @@ export const createUser = async (user: User) => {
   return result;
 };
 
-export const updateUser = async (username: string, displayName: string) => {
-  const text = "UPDATE users SET display_name = $1 WHERE username = $2";
-  const values = [displayName, username];
+export const updateUser = async (user: User) => {
+  // Role will never be updated through an api call
+  const text =
+    "UPDATE users SET display_name = $1, password = $2 WHERE username = $3";
+  const values = [user.displayName, user.password, user.username];
 
   const result = await db.query(text, values);
   return result;

@@ -16,6 +16,8 @@ export const createUser: RequestHandler = async (
   const user: User = {
     username: req.body.username,
     displayName: req.body.displayName,
+    password: req.body.password,
+    role: "basic", // Admin role have to be done manually
   };
 
   const result = await userService.createUser(user);
@@ -26,10 +28,14 @@ export const updateUser: RequestHandler = async (
   req: Request,
   res: Response
 ) => {
-  const username = req.body.username;
-  const displayName = req.body.displayName;
+  const user: User = {
+    username: req.body.username,
+    displayName: req.body.displayName,
+    password: req.body.password,
+    role: req.body.role,
+  };
 
-  const result = await userService.updateUser(username, displayName);
+  const result = await userService.updateUser(user);
   res.sendStatus(200);
 };
 
