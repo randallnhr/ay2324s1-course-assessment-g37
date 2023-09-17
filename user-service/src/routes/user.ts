@@ -1,11 +1,13 @@
 import { Router } from "express";
 import * as userController from "../controllers/user";
+import userValidator from "../validators/user-validator";
+import usernameValidator from "../validators/username-validator";
 
 const router = Router();
 
-router.post("/", userController.createUser);
-router.get("/:username", userController.getUser);
-router.put("/", userController.updateUser);
-router.delete("/:username", userController.deleteUser);
+router.post("/", userValidator, userController.createUser);
+router.get("/:username", usernameValidator, userController.getUser);
+router.put("/", userValidator, userController.updateUser);
+router.delete("/:username", usernameValidator, userController.deleteUser);
 
 export default router;

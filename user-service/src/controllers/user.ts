@@ -1,6 +1,10 @@
 import { Request, Response, RequestHandler, NextFunction } from "express";
 import * as userService from "../services/user";
+import { query, validationResult } from "express-validator";
 import { User } from "../models/user";
+
+// express validator schema
+const userSchema = {};
 
 export const getUser: RequestHandler = async (
   req: Request,
