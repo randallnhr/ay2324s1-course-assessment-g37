@@ -13,7 +13,7 @@ const pool = new Pool({
 });
 
 pool.query(
-  "CREATE TABLE IF NOT EXISTS users (username TEXT PRIMARY KEY, display_name TEXT);"
+  "CREATE TABLE IF NOT EXISTS users (username TEXT PRIMARY KEY, display_name TEXT, password TEXT, role TEXT);"
 );
 
 export const query = async (
