@@ -1,17 +1,28 @@
-import { Request, Response, RequestHandler } from "express";
+import { Request, Response, RequestHandler, NextFunction } from "express";
 import * as userService from "../services/user";
 import { User } from "../models/user";
 
-export const getUser: RequestHandler = async (req: Request, res: Response) => {
-  const username = req.params.username;
+export const getUser: RequestHandler = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const username: string = req.params.username;
+  let result;
 
-  const result = await userService.getUser(username);
+  try {
+    result = await userService.getUser(username);
+  } catch (error) {
+    next(error);
+  }
+
   res.status(200).json(result);
 };
 
 export const createUser: RequestHandler = async (
   req: Request,
-  res: Response
+  res: Response,
+  next: NextFunction
 ) => {
   const user: User = {
     username: req.body.username,
@@ -20,13 +31,24 @@ export const createUser: RequestHandler = async (
     role: "basic", // Admin role have to be done manually
   };
 
-  const result = await userService.createUser(user);
+  try {
+    await userService.createUser(user);
+  } catch (error: any) {
+    if (error.code == "23505") {
+      res.sendStatus(422);
+      return;
+    }
+
+    next(error);
+  }
+
   res.sendStatus(200);
 };
 
 export const updateUser: RequestHandler = async (
   req: Request,
-  res: Response
+  res: Response,
+  next: NextFunction
 ) => {
   const user: User = {
     username: req.body.username,
@@ -35,16 +57,27 @@ export const updateUser: RequestHandler = async (
     role: req.body.role,
   };
 
-  const result = await userService.updateUser(user);
+  try {
+    await userService.updateUser(user);
+  } catch (error) {
+    next(error);
+  }
+
   res.sendStatus(200);
 };
 
 export const deleteUser: RequestHandler = async (
   req: Request,
-  res: Response
+  res: Response,
+  next: NextFunction
 ) => {
   const username = req.params.username;
 
-  const result = await userService.deleteUser(username);
+  try {
+    await userService.deleteUser(username);
+  } catch (error) {
+    next(error);
+  }
+
   res.sendStatus(200);
 };
