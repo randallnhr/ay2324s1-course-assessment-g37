@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import "./QuestionBank.css";
 
 // Need to define a Question type. ? = optional fields
+// TODO: Change all id from number to string
 interface Question {
     id: number;
     title: string;
