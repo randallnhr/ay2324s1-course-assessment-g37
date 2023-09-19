@@ -1,7 +1,7 @@
 import { Request, Response, RequestHandler, NextFunction } from "express";
 import * as userService from "../services/user";
 import { User } from "../models/user";
-import isRequesValid from "../utility/validation-result-processor";
+import isRequestValid from "../utility/validation-result-processor";
 
 // express validator schema
 const userSchema = {};
@@ -11,7 +11,7 @@ export const getUser: RequestHandler = async (
   res: Response,
   next: NextFunction
 ) => {
-  if (!isRequesValid(req)) {
+  if (!isRequestValid(req)) {
     return res.sendStatus(400);
   }
 
@@ -36,7 +36,7 @@ export const createUser: RequestHandler = async (
   res: Response,
   next: NextFunction
 ) => {
-  if (!isRequesValid(req)) {
+  if (!isRequestValid(req)) {
     return res.sendStatus(400);
   }
 
@@ -66,7 +66,7 @@ export const updateUser: RequestHandler = async (
   res: Response,
   next: NextFunction
 ) => {
-  if (!isRequesValid(req)) {
+  if (!isRequestValid(req)) {
     return res.sendStatus(400);
   }
 
@@ -91,20 +91,20 @@ export const deleteUser: RequestHandler = async (
   res: Response,
   next: NextFunction
 ) => {
-  if (!isRequesValid(req)) {
+  if (!isRequestValid(req)) {
     return res.sendStatus(400);
   }
 
   const username = req.params.username;
-  let usenameExists;
+  let usernameExists;
 
   try {
-    usenameExists = await userService.deleteUser(username);
+    usernameExists = await userService.deleteUser(username);
   } catch (error) {
     next(error);
   }
 
-  if (!usenameExists) {
+  if (!usernameExists) {
     return res.sendStatus(404);
   }
   res.sendStatus(200);
