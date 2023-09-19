@@ -7,6 +7,7 @@ import QuestionBank from './components/QuestionBank'
 import LoginPage from './components/LoginPage'
 import SignupPage from './components/SignupPage';
 import ChangePasswordPage from './components/ChangePasswordPage';
+import ChangeDisplayName from './components/ChangeDisplayName';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route path='/question-bank' element = {<QuestionBank/> } />
         <Route path = "/signup" element = {<SignupPage /> } />
         <Route path = "/change-password" element = {<ChangePasswordPage /> } />
+        <Route path = "/change-display-name" element = {<ChangeDisplayName /> } />
         <Route path="*" element={<Navigate to="/login" />} /> {/* Catch-all route */}
       </Routes>
     </Router>

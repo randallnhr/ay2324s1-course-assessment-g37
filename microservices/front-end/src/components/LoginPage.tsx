@@ -41,6 +41,13 @@ const LoginPage: React.FC = () => {
         navigate('/change-password');
     };
 
+    const handleChangeDisplayName = () => {
+        setUsername('');
+        setPassword('');
+        setLoginFailed(false);
+        navigate('/change-display-name');
+    }
+
 
     return (
         <div className='login-container'>
@@ -67,6 +74,7 @@ const LoginPage: React.FC = () => {
                     <button className='action-button' onClick={handleLogin}>Login</button>
                     <button className='action-button' onClick={() => navigate('/signup')}>Sign Up</button>
                     <button className='action-button' onClick={handleChangePassword}>Change Password</button>
+                    <button className='action-button' onClick={handleChangeDisplayName}>Change Display Name</button>
 
             {loginFailed && <h2 className='failed'>Login failed</h2>}
         </div>
