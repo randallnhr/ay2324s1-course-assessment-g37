@@ -27,5 +27,6 @@ dist-ssr
 .next/
 
 # server specific
+server/
 server/node_modules/
 server/dist/

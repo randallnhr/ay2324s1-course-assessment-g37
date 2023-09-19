@@ -48,7 +48,7 @@ const QuestionBank: React.FC = () => {
   const descriptionRef = React.createRef<HTMLTextAreaElement>();
 
   useEffect(() => {
-    fetch('http://localhost:3001/questions')
+    fetch('/api/questions')
       .then((res) => res.json())
       .then((data) => setQuestions(data));
   }, []);
@@ -74,7 +74,7 @@ const QuestionBank: React.FC = () => {
     }
 
     // First fetch all questions to check for duplicates
-    fetch('http://localhost:3001/questions')
+    fetch('/api/questions')
     .then((res) => res.json())
     .then((existingQuestions: Question[]) => {
       const duplicate = existingQuestions.find(q => q.title === newQuestion.title);
@@ -84,14 +84,14 @@ const QuestionBank: React.FC = () => {
       }
 
       // If no duplicates, proceed to add question
-      fetch('http://localhost:3001/addQuestion', {
+      fetch('/api/questions/add', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(newQuestion),
       })
-      .then(() => fetch('http://localhost:3001/questions')) // re-fetch questions, update UI
+      .then(() => fetch('/api/questions')) // re-fetch questions, update UI
       .then((res) => res.json())
       .then((data) => setQuestions(data));
     });
