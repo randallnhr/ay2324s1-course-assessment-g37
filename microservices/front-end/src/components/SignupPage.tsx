@@ -3,13 +3,6 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import './SignupPage.css'
 
-interface User {
-    username: string;
-    displayName: string;
-    password: string;
-    role: "basic" | "admin";
-}
-
 // Do not allow editing of roles, default to "basic"
 const SignupPage: React.FC = () => {
     const [username, setUsername] = useState<string>("");
@@ -31,7 +24,7 @@ const SignupPage: React.FC = () => {
             return;
         }
         try {
-            const response = await axios.post("/api/users", {
+            const response = await axios.post("/api/auth/sign-up", {
                 username,
                 displayName,
                 password,

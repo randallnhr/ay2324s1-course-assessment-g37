@@ -23,7 +23,7 @@ const ChangeDisplayName: React.FC = () => {
         }
 
         try {
-            const response = await axios.put(`/api/users/${userkey}`, {
+            const response = await axios.put(`/api/auth/log-in/${userkey}`, {
                 userkey,
                 password,
                 displayName

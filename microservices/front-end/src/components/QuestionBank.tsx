@@ -84,7 +84,7 @@ const QuestionBank: React.FC = () => {
       }
 
       // If no duplicates, proceed to add question
-      fetch('/api/questions/add', {
+      fetch('/api/questions', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -98,12 +98,12 @@ const QuestionBank: React.FC = () => {
   };
 
   const deleteQuestion = (id: number) => {
-    fetch(`http://localhost:3001/questions/${id}`, {
+    fetch(`/api/questions/${id}`, {
       method: 'DELETE',
     })
     .then(() => {
       // Re-fetch questions to update UI
-      return fetch('http://localhost:3001/questions');
+      return fetch('/api/questions');
     })
     .then((res) => res.json())
     .then((data) => setQuestions(data));
@@ -120,7 +120,7 @@ const QuestionBank: React.FC = () => {
     }
     
     // Do the duplicate check
-    fetch('http://localhost:3001/questions')
+    fetch('/api/questions')
     .then((res) => res.json())
     .then((existingQuestions: Question[]) => {
       const duplicate = existingQuestions.find(
@@ -131,14 +131,14 @@ const QuestionBank: React.FC = () => {
         return;
     }
 
-      fetch(`http://localhost:3001/questions/${id}`, {
+      fetch(`/api/questions/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(updatedQuestion),
       })
-      .then(() => fetch('http://localhost:3001/questions'))
+      .then(() => fetch('/api/questions'))
       .then((res) => res.json())
       .then((data) => {
         setQuestions(data);
