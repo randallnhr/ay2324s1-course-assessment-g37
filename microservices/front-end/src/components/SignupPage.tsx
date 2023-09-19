@@ -1,16 +1,31 @@
 import React, { useState } from 'react';
-import axios, { AxiosError } from 'axios';
+import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import './SignupPage.css'
 
+interface User {
+    username: string;
+    displayName: string;
+    password: string;
+    role: "basic" | "admin";
+}
+
+// Do not allow editing of roles, default to "basic"
 const SignupPage: React.FC = () => {
     const [username, setUsername] = useState<string>("");
+    const [displayName, setDisplayName] = useState<string>("");
     const [password, setPassword] = useState<string>("");   
     const [confirmPassword, setConfirmPassword] = useState<string>('');
+    const [role, setRole] = useState<"basic" | "admin">("basic");
 
     const navigate = useNavigate();
 
     const handleSignup = async () => {
+        if (!username || !displayName || !password) {
+            alert("Required fields not filled up");
+            return;
+        }
+
         if (password != confirmPassword) {
             alert("Passwords do not match");
             return;
@@ -18,7 +33,9 @@ const SignupPage: React.FC = () => {
         try {
             const response = await axios.post("http://localhost:3001/signup", {
                 username,
-                password
+                displayName,
+                password,
+                role
             });
 
             if (response.status == 200) {
@@ -39,8 +56,10 @@ const SignupPage: React.FC = () => {
 
     const handleCancel = () => {
         setUsername('');
+        setDisplayName('');
         setPassword('');
         setConfirmPassword('');
+        setRole('basic');
         navigate('/login');
     };
 
@@ -56,7 +75,16 @@ const SignupPage: React.FC = () => {
                 value={username} 
                 onChange={(e) => setUsername(e.target.value)} 
                 />
-                </div>
+            </div>
+            <div className='input-field'>
+                <label htmlFor="displayName">Display Name</label>
+                <input 
+                id="displayName" 
+                type="text" 
+                value={displayName} 
+                onChange={(e) => setUsername(e.target.value)} 
+                />
+            </div>
             <div className='input-field'>
                 <label htmlFor="password">Password</label>
                 <input 
