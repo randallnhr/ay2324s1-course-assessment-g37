@@ -18,7 +18,7 @@ function App() {
         <Route path = "/signup" element = {<SignupPage /> } />
         <Route path = "/change-password" element = {<ChangePasswordPage /> } />
         <Route path = "/change-display-name" element = {<ChangeDisplayName /> } />
-        <Route path="*" element={<Navigate to="/question-bank" />} /> {/* Catch-all route */}
+        <Route path="*" element={<Navigate to="/login" />} /> {/* Catch-all route */}
       </Routes>
     </Router>
   )

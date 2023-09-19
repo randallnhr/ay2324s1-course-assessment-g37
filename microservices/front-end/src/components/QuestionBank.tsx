@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import "./QuestionBank.css";
+import { AppBar } from '@mui/material';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
 
 // Need to define a Question type. ? = optional fields
 // TODO: Change all id from number to string
@@ -170,9 +174,20 @@ const QuestionBank: React.FC = () => {
 
   return (
     <div>
+      <div>
+        <AppBar position="static">
+          <Toolbar>
+            <Typography variant="h6" style={{ flexGrow: 1 }}>
+              HOME
+            </Typography>
+            <Button color="inherit" onClick={handleSignout}>
+              Sign Out
+            </Button>
+          </Toolbar>
+        </AppBar>
+      </div>
       <div className='header-container'>
         <h1>Question Bank</h1>
-        <button onClick={handleSignout}>Sign Out</button>
       </div>
       <table>
             <thead>
