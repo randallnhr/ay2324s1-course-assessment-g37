@@ -13,6 +13,16 @@ const ChangePasswordPage: React.FC = () => {
     const navigate = useNavigate();
 
     const handleChangePassword = async () => {
+        if (!userkey || !oldPassword) {
+            alert("User credentials required to change password");
+            return;
+        }
+
+        if (!newPassword) {
+            alert("New password cannot be empty");
+            return;
+        }
+
         if (newPassword !== confirmPassword) {
             alert("Passwords do not match");
             return;

@@ -21,6 +21,11 @@ const SignupPage: React.FC = () => {
     const navigate = useNavigate();
 
     const handleSignup = async () => {
+        if (!username || !displayName || !password) {
+            alert("Required fields not filled up");
+            return;
+        }
+
         if (password != confirmPassword) {
             alert("Passwords do not match");
             return;

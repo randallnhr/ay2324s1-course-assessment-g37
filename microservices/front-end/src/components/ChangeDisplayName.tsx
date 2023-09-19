@@ -12,6 +12,16 @@ const ChangeDisplayName: React.FC = () => {
     const navigate = useNavigate();
 
     const handleChangeDisplayName = async () => {
+        if (!userkey || !password) {
+            alert("User credentials required to change display name");
+            return;
+        }
+
+        if (!displayName) {
+            alert("New display name cannot be empty");
+            return;
+        }
+
         try {
             const response = await axios.put(`http://localhost:3001/login/${userkey}`, {
                 userkey,
