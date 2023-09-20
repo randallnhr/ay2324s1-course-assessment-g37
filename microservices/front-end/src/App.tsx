@@ -3,7 +3,7 @@
 // import viteLogo from '/vite.svg'
 import './App.css'
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
-import QuestionBank from './components/QuestionBank'
+import QuestionBank from './components/MainQuestionBank'
 import LoginPage from './components/LoginPage'
 import SignupPage from './components/SignupPage';
 import ChangePasswordPage from './components/ChangePasswordPage';

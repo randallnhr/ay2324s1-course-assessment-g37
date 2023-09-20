@@ -5,11 +5,21 @@ import { Question } from './types';
 // SetStateAction = set or update current state
 // interface = define a contract. Includes value + function
 interface QuestionFormProps {
-    newQuestion: Partial<Question>;
+    newQuestion: {
+        title: string;
+        description: string;
+        category: string[];
+        complexity: 'Easy' | 'Medium' | 'Hard';
+    };
     allCategories: string[];
     selectedCategory: string;
-    setNewQuestion: React.Dispatch<React.SetStateAction<Partial<Question>>>;
-    addQuestion: (question: Partial<Question>) => void;
+    setNewQuestion: React.Dispatch<React.SetStateAction<{
+        title: string;
+        description: string;
+        category: string[];
+        complexity: 'Easy' | 'Medium' | 'Hard';
+    }>>;
+    handleAddQuestions: (question: Partial<Question>) => void;
     setSelectedCategory: React.Dispatch<React.SetStateAction<string>>;
 }
 
@@ -18,14 +28,14 @@ const AddQuestionForm: React.FC<QuestionFormProps> = ({
     allCategories,
     selectedCategory,
     setNewQuestion,
-    addQuestion,
+    handleAddQuestions,
     setSelectedCategory
     // Using destructuring to extract the properties form props
 }) => {
     return (
         <form onSubmit={(e) => {
             e.preventDefault();
-            addQuestion(newQuestion);
+            handleAddQuestions(newQuestion);
             setNewQuestion({
                 title: '',
                 description: '',
