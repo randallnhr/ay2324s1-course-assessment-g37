@@ -36,11 +36,18 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 import './App.css'
 import { UserProvider } from './UserContext'
 import LoginPage from './components/LoginPage'
+import AnotherPage from './components/AnotherPage';
 
 function App() {
   return (
     <UserProvider>
-      <LoginPage></LoginPage>
+      <Router>
+        <Routes>
+        <Route path = "/login" element = {<LoginPage/>} />
+        <Route path = "/another" element = {<AnotherPage/>} />
+        <Route path="*" element={<Navigate to="/login" />} /> {/* Catch-all route */}
+        </Routes>
+      </Router>
     </UserProvider>
   )
 }
