@@ -55,6 +55,10 @@ const QuestionBank: React.FC = () => {
         navigate('/login');
     }
 
+    const handleProfile = () => {
+        navigate('/profile');
+    }
+
     const toggleQuestionDetails = (id: number) => {
         setExpandedQuestionId(expandedQuestionId === id ? null : id);
     };
@@ -100,6 +104,7 @@ const QuestionBank: React.FC = () => {
         <div>
         <div className='header-container'>
             <h1>Question Bank</h1>
+            <button onClick={handleProfile}>Profile</button>
             <button onClick={handleSignout}>Sign Out</button>
         </div>
         <table>

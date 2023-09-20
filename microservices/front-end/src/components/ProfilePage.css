@@ -1,0 +1,10 @@
+.login-container {
+    /* display: flex;
+    flex-direction: column; */
+    align-items: center;
+    padding: 2rem;
+}
+
+.login-header {
+    margin-top: -100px;
+}

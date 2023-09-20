@@ -1,11 +1,7 @@
 // should be able to carry both attribute & function
-import React, {useState, useContext, ReactNode} from 'react';
-
-interface User {
-    username: string;
-    displayName: string;
-    role: "basic" | "admin";
-}
+import React, {useState, useContext, ReactNode, useEffect} from 'react';
+import Cookies from 'js-cookie';
+import { User } from './components/types';
 
 interface UserContextType {
     currentUser: User | null;
@@ -24,6 +20,14 @@ interface UserProviderProps {
 
 export function UserProvider({ children }: UserProviderProps) {
     const [currentUser, setCurrentUser] = useState<User | null>(null);
+
+    // read cookie and update context
+    useEffect(() => {
+        const cookieValue = Cookies.get('currentUser');
+        if (cookieValue) {
+            setCurrentUser(JSON.parse(cookieValue));
+        }
+    }, []);
     
     const value: UserContextType = {
         currentUser,

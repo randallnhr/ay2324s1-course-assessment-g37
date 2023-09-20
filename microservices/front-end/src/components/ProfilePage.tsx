@@ -1,21 +1,37 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-
-interface UserProfile {
-    username: string;
-    displayName: string;
-    role: "basic" | "admin";
-}
+import { useUser } from '../UserContext';
 
 const ProfilePage: React.FC = () => {
-    const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+    const context = useUser();
+    const navigate = useNavigate();
 
-    useEffect(() => {
-        const fetchUserProfile = async () => {
-            
-        }
-    })
+    if (!context) {
+        console.log("Context not available");
+        return <div>Error: Context not available</div>;
+    } 
+
+    const {
+        currentUser,
+        setCurrentUser
+    } = context;
+
+    return (
+        <div className='login-container'>
+            <h1 className='login-header'>Personal Profile</h1>
+
+            <div className="profile-detail">
+                <span>Username: {currentUser?.username}</span>
+            </div>
+            <div className="profile-detail">
+                <span>Display Name: {currentUser?.displayName}</span>
+            </div>
+            <div className="profile-detail">
+                <span>Role: {currentUser?.role}</span>
+            </div>
+        </div>
+    )
 
 };
 

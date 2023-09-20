@@ -1,20 +1,9 @@
-import React, { useState, useContext, MouseEvent } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import './LoginPage.css';
 import { useUser } from '../UserContext';
-
-interface User {
-    username: string;
-    displayName: string;
-    role: "basic" | "admin";
-}
-
-const defaultUser: User = {
-    username: "Hihihi",
-    displayName: "Mewo",
-    role: "basic"
-}
+import { User } from './types';
 
 const LoginPage: React.FC = () => {
     const [username, setUsername] = useState<string>("");
@@ -35,49 +24,66 @@ const LoginPage: React.FC = () => {
     } = context;
 
     const handleLogin = async () => {
-        // e.preventDefault();
         try {
             const response = await axios.post("http://localhost:3001/login", {
                 username,
                 password
+            }, {
+                withCredentials: true
             });
             
             if (response.status === 200) {
+                // REQUIREMENT: Backend returns user data
+
                 const userData: User = response.data;
                 setCurrentUser(userData);
 
-                navigate("/another");
+                // console.log("Updated User Context: ", context); 
+                // console.log("Details: ", context?.currentUser?.username)
+                // --> These will show null REGARDLESS of success or not, should check by currentUser?.username
+
+                navigate("/question-bank");
             }
             
         } catch (error: unknown) {
-            console.error(error);
+            if (axios.isAxiosError(error)) {
+                console.error("Login failed: ", error);
+                if (error.response && error.response.status === 401) {
+                    setLoginFailed(true);
+                }
+            } else {
+                console.error("An unknown error occured: ", error);
+            }
         }
-    }
+    };
 
     return (
         <div className='login-container'>
             <h1 className='login-header'>Login Page</h1>
-                <div className='input-field'>
-                    <label htmlFor='username'>Username</label>
-                    <input
-                    id = "username"
-                    type = "text"
-                    value = {username}
-                    onChange={(e) => setUsername(e.target.value)} />
-                </div>
+            <div className='input-field'>
+                <label htmlFor='username'>Username</label>
+                <input
+                id = "username"
+                type = "text"
+                value = {username}
+                onChange={(e) => setUsername(e.target.value)} />
+            </div>
 
-                <div className='input-field'>
-                    <label htmlFor='password'>Password</label>
-                    <input
-                    id = "password"
-                    type = "password"
-                    value = {password}
-                    onChange={(e) => setPassword(e.target.value)} />
-                </div>
+            <div className='input-field'>
+                <label htmlFor='password'>Password</label>
+                <input
+                id = "password"
+                type = "password"
+                value = {password}
+                onChange={(e) => setPassword(e.target.value)} />
+            </div>
 
 
-                <button className='action-button' onClick={handleLogin}>Login</button>
-                <span>User Name: {currentUser?.username} </span>
+            <button className='action-button' onClick={handleLogin}>Login</button>
+            <button className='action-button' onClick={() => navigate('/signup')}>Sign Up</button>
+            {/* <span>User Name: {currentUser?.username} </span> */}
+        {loginFailed && <h2 className='failed'>Login failed!</h2>}
+        
         </div>      
     );
 };

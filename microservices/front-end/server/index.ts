@@ -2,6 +2,7 @@ import express from "express";
 import fs from "fs";
 import path from "path"; // for reading file
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 
 const app = express();
 const port = 3001;
@@ -17,21 +18,22 @@ interface Question {
 interface User {
     username: string;
     displayName: string;
-    password: string;
+    password?: string;
     role: "basic" | "admin";
 }
 
 // Enable CORS for all routes (Not recommended for production)
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-  next();
-});
+// app.use((req, res, next) => {
+//   res.header('Access-Control-Allow-Origin', '*');
+//   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+//   next();
+// });
 
 // enable DELETE HTTP methods
 const corsOptions = {
   origin: 'http://localhost:5173',
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  credentials: true
 };
 
 app.use(cors(corsOptions));
@@ -39,6 +41,32 @@ app.use(cors(corsOptions));
 app.use('/images', express.static(path.join(__dirname, 'data/images')));
 
 app.use(express.json())
+
+app.use(cookieParser());
+
+// Check password and login
+app.post('/login', (req, res) => {
+  const { username, password } = req.body;
+
+  const users = JSON.parse(fs.readFileSync('data/users.json', 'utf-8'));
+
+  // Search for a match
+  const foundUser = users.find((user: { username: string, password: string }) => 
+  user.username === username && user.password === password);
+
+  if (foundUser) {
+    const { password, ...userWithoutPassword } = foundUser;
+
+    res.cookie('currentUser', JSON.stringify(userWithoutPassword), {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production'
+    });
+
+    return res.status(200).json(userWithoutPassword);
+  }
+
+  return res.status(401).json({ message: 'Invalid username or password' });
+});
 
 app.get('/questions', (req, res) => {
   fs.readFile(path.join(__dirname, 'data/sampleQuestions.json'), 'utf8', (err, data) => {
@@ -63,25 +91,6 @@ app.post('/addQuestion', (req, res) => {
   // Save back to the JSON file
   fs.writeFileSync('data/sampleQuestions.json', JSON.stringify(questions, null, 2));
   res.status(201).send('New question added');
-});
-
-// Check password and login
-app.post('/login', (req, res) => {
-  const { username, password } = req.body;
-
-  const users = JSON.parse(fs.readFileSync('data/users.json', 'utf-8'));
-
-  // Search for a match
-  const foundUser = users.find((user: { username: string, password: string }) => 
-  user.username === username && user.password === password);
-
-  if (foundUser) {
-    const { password, ...userWithoutPassword } = foundUser;
-
-    return res.status(200).json(userWithoutPassword);
-  }
-
-  return res.status(401).json({ message: 'Invalid username or password' });
 });
 
 // allow update of password
