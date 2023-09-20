@@ -7,16 +7,18 @@ const app = express();
 const port = 3001;
 
 interface Question {
-  id: number;
-  title: string;
-  description: string;
-  category: string[];  // Updated to array of strings
-  complexity: 'Easy' | 'Medium' | 'Hard'; // Updated type
+    id: number;
+    title: string;
+    description: string;
+    category: string[];  // Updated to array of strings
+    complexity: 'Easy' | 'Medium' | 'Hard'; // Updated type
 }
 
 interface User {
-  username: string;
-  password: string;
+    username: string;
+    displayName: string;
+    password: string;
+    role: "basic" | "admin";
 }
 
 // Enable CORS for all routes (Not recommended for production)
@@ -70,10 +72,13 @@ app.post('/login', (req, res) => {
   const users = JSON.parse(fs.readFileSync('data/users.json', 'utf-8'));
 
   // Search for a match
-  const foundUser = users.find((user: { username: string, password: string }) => user.username === username && user.password === password);
+  const foundUser = users.find((user: { username: string, password: string }) => 
+  user.username === username && user.password === password);
 
   if (foundUser) {
-    return res.status(200).json({ message: 'Login successful' });
+    const { password, ...userWithoutPassword } = foundUser;
+
+    return res.status(200).json(userWithoutPassword);
   }
 
   return res.status(401).json({ message: 'Invalid username or password' });

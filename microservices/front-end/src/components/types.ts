@@ -5,3 +5,9 @@ export interface Question {
     category: string[];
     complexity: 'Easy' | 'Medium' | 'Hard';
 }
+
+export interface User {
+    username: string;
+    displayName: string;
+    role: "basic" | "admin";
+}
