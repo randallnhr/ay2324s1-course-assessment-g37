@@ -18,7 +18,7 @@ const LoginPage: React.FC = () => {
             });
 
             if (response.status === 200) {
-                // Redirect to QuestionBank
+                // Redirect to QuestionBank 
                 navigate('/question-bank');
             }
         } catch (error: unknown) {
@@ -33,21 +33,6 @@ const LoginPage: React.FC = () => {
             }
         }
     };
-
-    const handleChangePassword = () => {
-        setUsername('');
-        setPassword('');
-        setLoginFailed(false);
-        navigate('/change-password');
-    };
-
-    const handleChangeDisplayName = () => {
-        setUsername('');
-        setPassword('');
-        setLoginFailed(false);
-        navigate('/change-display-name');
-    }
-
 
     return (
         <div className='login-container'>
@@ -73,8 +58,6 @@ const LoginPage: React.FC = () => {
                     </div>
                     <button className='action-button' onClick={handleLogin}>Login</button>
                     <button className='action-button' onClick={() => navigate('/signup')}>Sign Up</button>
-                    <button className='action-button' onClick={handleChangePassword}>Change Password</button>
-                    <button className='action-button' onClick={handleChangeDisplayName}>Change Display Name</button>
 
             {loginFailed && <h2 className='failed'>Login failed</h2>}
         </div>

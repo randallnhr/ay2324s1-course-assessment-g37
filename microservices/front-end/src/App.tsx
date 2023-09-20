@@ -8,19 +8,25 @@ import LoginPage from './components/LoginPage'
 import SignupPage from './components/SignupPage';
 import ChangePasswordPage from './components/ChangePasswordPage';
 import ChangeDisplayName from './components/ChangeDisplayName';
+import UserContext, { User } from './UserContext';
+import React, { useState } from 'react';
 
 function App() {
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+
   return (
-    <Router>
-      <Routes>
-        <Route path = "/login" element = {<LoginPage/>} />
-        <Route path='/question-bank' element = {<QuestionBank/> } />
-        <Route path = "/signup" element = {<SignupPage /> } />
-        <Route path = "/change-password" element = {<ChangePasswordPage /> } />
-        <Route path = "/change-display-name" element = {<ChangeDisplayName /> } />
-        <Route path="*" element={<Navigate to="/login" />} /> {/* Catch-all route */}
-      </Routes>
-    </Router>
+    <UserContext.Provider value = {currentUser}>
+      <Router>
+        <Routes>
+          <Route path = "/login" element = {<LoginPage/>} />
+          <Route path='/question-bank' element = {<QuestionBank/> } />
+          <Route path = "/signup" element = {<SignupPage /> } />
+          <Route path = "/change-password" element = {<ChangePasswordPage /> } />
+          <Route path = "/change-display-name" element = {<ChangeDisplayName /> } />
+          <Route path="*" element={<Navigate to="/login" />} /> {/* Catch-all route */}
+        </Routes>
+      </Router>
+    </UserContext.Provider>     
   )
 }
 

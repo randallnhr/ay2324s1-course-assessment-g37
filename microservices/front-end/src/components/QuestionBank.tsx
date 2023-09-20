@@ -181,6 +181,9 @@ const QuestionBank: React.FC = () => {
               HOME
             </Typography>
             <Button color="inherit" onClick={handleSignout}>
+              Profile
+            </Button>
+            <Button color="inherit" onClick={handleSignout}>
               Sign Out
             </Button>
           </Toolbar>
