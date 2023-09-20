@@ -1,10 +1,36 @@
-.login-container {
-    /* display: flex;
-    flex-direction: column; */
-    align-items: center;
-    padding: 2rem;
+.AppBar-root {
+    /* position: sticky; */
+    margin-top: 0px;
+    z-index: 1000;
+    width: 100%;
 }
 
-.login-header {
-    margin-top: -100px;
+.profile-container {
+    text-align: center;
+    margin-top: 0px;
+}
+
+.profile-header {
+    font-weight: 2.4em;
+}
+
+.profile-detail {
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    margin-bottom: 20px;
+}
+  
+.profile-detail label,
+.profile-detail span {
+    font-size: 1.5em;
+}
+  
+.profile-detail label {
+    font-weight: bold;
+    margin-right: 10px; 
+}
+
+.profile-detail span {
+    margin-top: -7px;
 }

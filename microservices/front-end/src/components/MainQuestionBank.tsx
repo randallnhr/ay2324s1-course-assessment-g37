@@ -4,6 +4,10 @@ import "./QuestionBank.css";
 import { Question } from './types';
 import { getQuestions, addQuestion, deleteQuestion, updateQuestion } from './fetchData'
 import AddQuestionForm from './AddQuestionForm';
+import { AppBar } from '@mui/material';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
 
 const allCategories = [
     'Arrays', 'Strings', 'Hash Table', 'Math', 'Dynamic Programming',
@@ -102,10 +106,23 @@ const QuestionBank: React.FC = () => {
 
     return (
         <div>
+            <div>
+            <AppBar position="static">
+            <Toolbar>
+                <Typography variant="h6" style={{ flexGrow: 1 }}>
+                HOME
+                </Typography>
+                <Button color="inherit" onClick={handleProfile}>
+                Profile
+                </Button>
+                <Button color="inherit" onClick={handleSignout}>
+                Sign Out
+                </Button>
+            </Toolbar>
+            </AppBar>
+            </div>
         <div className='header-container'>
             <h1>Question Bank</h1>
-            <button onClick={handleProfile}>Profile</button>
-            <button onClick={handleSignout}>Sign Out</button>
         </div>
         <table>
                 <thead>
