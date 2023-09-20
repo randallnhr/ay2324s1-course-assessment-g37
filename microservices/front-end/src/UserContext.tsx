@@ -1,14 +1,39 @@
 // should be able to carry both attribute & function
-import React from 'react';
-import { User } from './components/types';
+import React, {useState, useContext, ReactNode} from 'react';
 
-// store value and function together using a prop
-export interface UserContextProps {
+interface User {
+    username: string;
+    displayName: string;
+    role: "basic" | "admin";
+}
+
+interface UserContextType {
     currentUser: User | null;
     setCurrentUser: React.Dispatch<React.SetStateAction<User | null>>;
 }
 
-const UserContext = React.createContext<UserContextProps | null>(null);
+const UserContext = React.createContext<UserContextType | null>(null);
 
-export default UserContext;
+export function useUser() {
+    return useContext(UserContext);
+}
+
+interface UserProviderProps {
+    children: ReactNode;
+}
+
+export function UserProvider({ children }: UserProviderProps) {
+    const [currentUser, setCurrentUser] = useState<User | null>(null);
+    
+    const value: UserContextType = {
+        currentUser,
+        setCurrentUser
+    };
+
+    return (
+        <UserContext.Provider value = {value}>
+            {children}
+        </UserContext.Provider>
+    );
+}
 

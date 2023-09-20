@@ -3,8 +3,8 @@
 // import viteLogo from '/vite.svg'
 
 
-// import './App.css'
-// import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import './App.css'
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 // import QuestionBank from './components/MainQuestionBank'
 // import LoginPage from './components/LoginPage'
 // import SignupPage from './components/SignupPage';
@@ -34,14 +34,14 @@
 // }
 
 import './App.css'
-import { AuthProvider } from './components/AuthContext'
-import Dashboard from './components/Dashboard'
+import { UserProvider } from './UserContext'
+import LoginPage from './components/LoginPage'
 
 function App() {
   return (
-    <AuthProvider>
-      <Dashboard></Dashboard>
-    </AuthProvider>
+    <UserProvider>
+      <LoginPage></LoginPage>
+    </UserProvider>
   )
 }
 
