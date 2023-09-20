@@ -41,7 +41,7 @@ const ChangePasswordPage: React.FC = () => {
                 setNewPassword('');
                 setConfirmPassword('');
 
-                navigate('/login');
+                navigate('/profile');
             }
         } catch (error: unknown) {
             if (axios.isAxiosError(error)) {
@@ -59,7 +59,7 @@ const ChangePasswordPage: React.FC = () => {
         setUserkey('');
         setNewPassword('');
         setConfirmPassword('');
-        navigate('/login');
+        navigate('/profile');
     };
 
     return (

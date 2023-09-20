@@ -35,7 +35,7 @@ const ChangeDisplayName: React.FC = () => {
                 setPassword('');
                 setDisplayName('');
 
-                navigate('/login');
+                navigate('/profile');
             }
         } catch (error: unknown) {
             if (axios.isAxiosError(error)) {
@@ -53,7 +53,7 @@ const ChangeDisplayName: React.FC = () => {
         setUserkey('');
         setPassword('');
         setDisplayName('');
-        navigate('/login');
+        navigate('/profile');
     }
 
     return (

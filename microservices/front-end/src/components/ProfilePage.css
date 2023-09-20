@@ -1,36 +1,75 @@
-.AppBar-root {
-    /* position: sticky; */
-    margin-top: 0px;
-    z-index: 1000;
-    width: 100%;
-}
-
-.profile-container {
+.center-align-cell {
     text-align: center;
-    margin-top: 0px;
 }
 
-.profile-header {
-    font-weight: 2.4em;
+.table-header {
+    font-size: 1.25em; 
+    background-color: #C4C5C5;
+    text-align: center;
+    padding: 10px;
+}
+
+.add-header {
+    text-align: center;
+}
+
+label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    text-align: left;
+}
+
+.update-form {
+    display: flex;
+    flex-direction: column;
+}
+  
+.update-form > div {
+    margin-bottom: 1rem;
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .profile-detail {
     display: flex;
     align-items: center;
-    justify-content: left;
     margin-bottom: 20px;
 }
   
 .profile-detail label,
 .profile-detail span {
-    font-size: 1.5em;
+    font-size: 1.5em; 
 }
   
 .profile-detail label {
     font-weight: bold;
-    margin-right: 10px; 
+    margin-right: 10px;
 }
 
-.profile-detail span {
-    margin-top: -7px;
+button:focus,
+button:focus-visible {
+    outline: 4px auto -webkit-focus-ring-color;
+}
+
+.action-button {
+    border-radius: 8px;
+    border: 2px solid #A09797;
+    padding: 0.6em 1.2em;
+    font-size: 1em;
+    font-weight: 500;
+    font-family: inherit;
+    background-color: #f9f9f9;
+    cursor: pointer;
+    transition: border-color 0.25s;
+    margin: 3px;
+    
+}
+.action-button:hover {
+    border-color: #A09797;
+    background-color: #E6E1E1;
 }

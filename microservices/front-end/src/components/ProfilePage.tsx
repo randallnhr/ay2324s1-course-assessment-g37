@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../UserContext';
-import './ProfilePage.css';
 import { AppBar } from '@mui/material';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
+import './ProfilePage.css'
 
 const ProfilePage: React.FC = () => {
     const context = useUser();
@@ -20,14 +20,14 @@ const ProfilePage: React.FC = () => {
     const {
         currentUser,
         setCurrentUser
-    } = context;
-
-    const handleQuestion = () => {
-        navigate('/question-bank');
-    }
+    } = context;    
 
     const handleSignout = () => {
         navigate('/login');
+    }
+
+    const handleQuestion = () => {
+        navigate('/question-bank');
     }
 
     return (
@@ -39,7 +39,7 @@ const ProfilePage: React.FC = () => {
                 HOME
                 </Typography>
                 <Button color="inherit" onClick={handleQuestion}>
-                Profile
+                Question
                 </Button>
                 <Button color="inherit" onClick={handleSignout}>
                 Sign Out
@@ -48,10 +48,10 @@ const ProfilePage: React.FC = () => {
             </AppBar>
             </div>
         <div className='header-container'>
-            <h1>Question Bank</h1>
+            <h1>Personal Profile</h1>
         </div>
-        <div className='profile-container'>
-            <h1 className='profile-header'>Personal Profile</h1>
+
+        <div className='login-container'>
 
             <div className="profile-detail">
                 <label>Username: </label>
@@ -65,10 +65,13 @@ const ProfilePage: React.FC = () => {
                 <label>Role: </label>
                 <span>{currentUser?.role}</span>
             </div>
-        </div>
-        </div>
-    )
 
+            <button className='action-button' onClick={() => navigate('/change-password')}>Change Password</button>
+            <button className='action-button' onClick={() => navigate('/change-display-name')}>Change Display Name</button>
+        </div>
+        
+        </div>
+    );
 };
 
 export default ProfilePage;
