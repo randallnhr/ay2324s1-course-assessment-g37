@@ -2,9 +2,7 @@ import { Request, Response, RequestHandler, NextFunction } from "express";
 import * as userService from "../services/user";
 import { User } from "../models/user";
 import isRequestValid from "../utility/validation-result-processor";
-
-// express validator schema
-const userSchema = {};
+import convertUserFields from "../utility/db-result-processor";
 
 export const getUser: RequestHandler = async (
   req: Request,
@@ -28,7 +26,8 @@ export const getUser: RequestHandler = async (
     return res.sendStatus(204);
   }
 
-  res.status(200).json(result);
+  const user = convertUserFields(result);
+  res.status(200).json(user);
 };
 
 export const createUser: RequestHandler = async (
