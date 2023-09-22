@@ -11,3 +11,10 @@ export interface User {
     displayName: string;
     role: "basic" | "admin";
 }
+
+export interface NewQuestion {
+    title: string;
+    description: string;
+    categories: string[];
+    complexity: 'Easy' | 'Medium' | 'Hard';
+}
