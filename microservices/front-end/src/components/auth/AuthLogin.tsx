@@ -6,7 +6,8 @@ import {
     FormControlLabel,
     Button,
     Stack,
-    Checkbox
+    Checkbox,
+    TextField
 } from '@mui/material';
 
 import CustomTextField from '../forms/theme-elements/CustomTextField';
@@ -43,7 +44,7 @@ const AuthLogin: FC<AuthLoginProps> = ({
                     fontWeight={600} component="label" 
                     htmlFor='username' mb="5px">Username</Typography>
                 <CustomTextField 
-                id="username" variant="outlined" fullWidth 
+                id="username" type="text" fullWidth 
                 value = {username}
                 onChange={(e) => onUsernameChange(e.target.value)}
                 />
