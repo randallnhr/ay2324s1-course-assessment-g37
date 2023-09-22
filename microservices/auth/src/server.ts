@@ -7,7 +7,6 @@ import session from "express-session";
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import { Question, User } from "./types";
-import { formatErrorAsJson } from "./utilities";
 
 dotenv.config();
 
@@ -71,6 +70,12 @@ passport.serializeUser((expressUser, done) => {
 passport.deserializeUser(async (username: string, done) => {
   try {
     const response = await fetch(`${USER_SERVICE_URL}/api/users/${username}`);
+
+    if (response.status === 204) {
+      // username does not exist
+      return done(null, false);
+    }
+
     const json = await response.json();
     const user = json as User;
 
@@ -123,7 +128,7 @@ app.post("/api/auth/sign-up", async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    await fetch(`${USER_SERVICE_URL}/api/users`, {
+    const response = await fetch(`${USER_SERVICE_URL}/api/users`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -136,11 +141,11 @@ app.post("/api/auth/sign-up", async (req, res) => {
       }),
     });
 
-    res.status(200).send();
+    // pass along the status code
+    res.status(response.status).send();
   } catch (error) {
     console.error(error);
-    const errorJson = formatErrorAsJson(error);
-    res.json(errorJson);
+    res.status(500).send();
   }
 });
 
@@ -148,8 +153,7 @@ app.delete("/api/auth/log-out", (req, res) => {
   req.session.destroy((error) => {
     if (error) {
       console.error(error);
-      const errorJson = formatErrorAsJson(error);
-      res.json(errorJson);
+      res.status(500).send();
     } else {
       // the default name of the session cookie is "connect.sid"
       // source: https://expressjs.com/en/resources/middleware/session.html
@@ -201,14 +205,20 @@ app.get("/api/users/:username", async (req, res) => {
     const username = req.params.username;
 
     const response = await fetch(`${USER_SERVICE_URL}/api/users/${username}`);
+
+    if (response.status !== 200) {
+      // pass along the status code
+      res.status(response.status).send();
+      return;
+    }
+
     const json = await response.json();
     const user = json as User;
 
     res.status(200).send(user);
   } catch (error) {
     console.error(error);
-    const errorJson = formatErrorAsJson(error);
-    res.json(errorJson);
+    res.status(500).send();
   }
 });
 
@@ -223,7 +233,7 @@ app.post("/api/users", async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    await fetch(`${USER_SERVICE_URL}/api/users`, {
+    const response = await fetch(`${USER_SERVICE_URL}/api/users`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -235,63 +245,115 @@ app.post("/api/users", async (req, res) => {
       }),
     });
 
-    res.status(200).send();
+    // pass along the status code
+    res.status(response.status).send();
   } catch (error) {
     console.error(error);
-    const errorJson = formatErrorAsJson(error);
-    res.json(errorJson);
+    res.status(500).send();
   }
 });
 
-app.put("/api/users", async (req, res) => {
+app.put("/api/users/:username", async (req, res) => {
+  if (!req.isAuthenticated()) {
+    res.status(401).send();
+    return;
+  }
+
+  const user = req.user as User;
+
+  const oldUsername = user.username;
+  const oldHashedPassword = user.password;
+  const oldDisplayName = user.displayName;
+  const oldRole = user.role;
+
+  try {
+    // check whether user is changing password
+    if ("oldPassword" in req.body && "newPassword" in req.body) {
+      const { oldPassword, newPassword } = req.body;
+
+      // check whether the old password provided by the user is correct
+      const isOldPasswordMatch = await bcrypt.compare(
+        oldPassword,
+        oldHashedPassword
+      );
+
+      if (!isOldPasswordMatch) {
+        // wrong old password
+        res.status(401).send();
+      }
+
+      const newHashedPassword = await bcrypt.hash(newPassword, 10);
+
+      const response = await fetch(
+        `${USER_SERVICE_URL}/api/users/${oldUsername}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            username: oldUsername,
+            password: newHashedPassword,
+            displayName: oldDisplayName,
+            role: oldRole,
+          }),
+        }
+      );
+
+      // pass along the status code
+      res.status(response.status).send();
+    } else {
+      // user is changing details other than password
+      const { username, displayName, role } = req.body;
+
+      if (username !== oldUsername) {
+        // the user should not be able to change the details of another person
+        res.status(401).send();
+      }
+
+      const response = await fetch(
+        `${USER_SERVICE_URL}/api/users/${oldUsername}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            username: oldUsername,
+            password: oldHashedPassword,
+            displayName: displayName,
+            role: role,
+          }),
+        }
+      );
+
+      // pass along the status code
+      res.status(response.status).send();
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).send();
+  }
+});
+
+app.delete("/api/users/:username", async (req, res) => {
   if (!req.isAuthenticated()) {
     res.status(401).send();
     return;
   }
 
   try {
-    const { username, password, displayName } = req.body;
+    const username = req.params.username;
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    await fetch(`${USER_SERVICE_URL}/api/users`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        username: username,
-        password: hashedPassword,
-        displayName: displayName,
-      }),
-    });
-
-    res.status(200).send();
-  } catch (error) {
-    console.error(error);
-    const errorJson = formatErrorAsJson(error);
-    res.json(errorJson);
-  }
-});
-
-app.delete("/api/users/:id", async (req, res) => {
-  if (!req.isAuthenticated()) {
-    res.status(401).send();
-    return;
-  }
-
-  try {
-    const id = req.params.id;
-
-    await fetch(`${USER_SERVICE_URL}/api/users/${id}`, {
+    const response = await fetch(`${USER_SERVICE_URL}/api/users/${username}`, {
       method: "DELETE",
     });
 
-    res.status(200).send();
+    // pass along the status code
+    res.status(response.status).send();
   } catch (error) {
     console.error(error);
-    const errorJson = formatErrorAsJson(error);
-    res.json(errorJson);
+    res.status(500).send();
   }
 });
 
@@ -307,14 +369,20 @@ app.get("/api/questions", async (req, res) => {
 
   try {
     const response = await fetch(`${QUESTION_SERVICE_URL}/api/questions`);
+
+    if (response.status !== 200) {
+      // pass along the status code
+      res.status(response.status).send();
+      return;
+    }
+
     const json = await response.json();
     const questions = json as Question[];
 
     res.status(200).send(questions);
   } catch (error) {
     console.error(error);
-    const errorJson = formatErrorAsJson(error);
-    res.json(errorJson);
+    res.status(500).send();
   }
 });
 
@@ -328,14 +396,20 @@ app.get("/api/questions/:id", async (req, res) => {
     const id = req.params.id;
 
     const response = await fetch(`${QUESTION_SERVICE_URL}/api/questions/${id}`);
+
+    if (response.status !== 200) {
+      // pass along the status code
+      res.status(response.status).send();
+      return;
+    }
+
     const json = await response.json();
     const question = json as Question;
 
     res.status(200).send(question);
   } catch (error) {
     console.error(error);
-    const errorJson = formatErrorAsJson(error);
-    res.json(errorJson);
+    res.status(500).send();
   }
 });
 
@@ -349,7 +423,7 @@ app.post("/api/questions", async (req, res) => {
     const json = req.body;
     const question = json as Question;
 
-    await fetch(`${QUESTION_SERVICE_URL}/api/questions`, {
+    const response = await fetch(`${QUESTION_SERVICE_URL}/api/questions`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -357,11 +431,11 @@ app.post("/api/questions", async (req, res) => {
       body: JSON.stringify(question),
     });
 
-    res.status(200).send();
+    // pass along the status code
+    res.status(response.status).send();
   } catch (error) {
     console.error(error);
-    const errorJson = formatErrorAsJson(error);
-    res.json(errorJson);
+    res.status(500).send();
   }
 });
 
@@ -375,7 +449,7 @@ app.put("/api/questions", async (req, res) => {
     const json = req.body;
     const question = json as Question;
 
-    await fetch(`${QUESTION_SERVICE_URL}/api/questions`, {
+    const response = await fetch(`${QUESTION_SERVICE_URL}/api/questions`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -383,11 +457,11 @@ app.put("/api/questions", async (req, res) => {
       body: JSON.stringify(question),
     });
 
-    res.status(200).send();
+    // pass along the status code
+    res.status(response.status).send();
   } catch (error) {
     console.error(error);
-    const errorJson = formatErrorAsJson(error);
-    res.json(errorJson);
+    res.status(500).send();
   }
 });
 
@@ -400,15 +474,16 @@ app.delete("/api/questions/:id", async (req, res) => {
   try {
     const id = req.params.id;
 
-    await fetch(`${QUESTION_SERVICE_URL}/api/questions/${id}`, {
-      method: "DELETE",
-    });
+    const response = await fetch(
+      `${QUESTION_SERVICE_URL}/api/questions/${id}`,
+      { method: "DELETE" }
+    );
 
-    res.status(200).send();
+    // pass along the status code
+    res.status(response.status).send();
   } catch (error) {
     console.error(error);
-    const errorJson = formatErrorAsJson(error);
-    res.json(errorJson);
+    res.status(500).send();
   }
 });
 
