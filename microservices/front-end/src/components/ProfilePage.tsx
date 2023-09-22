@@ -41,7 +41,7 @@ const ProfilePage: React.FC = () => {
         const isConfirmed = window.confirm("Are you sure you want to delete your account This cannot be undone. ");
         if (!isConfirmed) return;
 
-        axios.delete("/api/users/${user.username}")
+        axios.delete(`/api/users/${user.username}`)
         .then((response) => {
             if (response.status === 200) {
                 alert("Account deleted successfully");
