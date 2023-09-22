@@ -25,8 +25,19 @@ const ProfilePage: React.FC = () => {
       });
   }, []);
 
+  //   Need to send request to backend to really sign out
   const handleSignout = () => {
-    navigate("/login2");
+    axios
+      .delete("/api/auth/log-out")
+      .then((response) => {
+        if (response.status === 200) {
+          navigate("/login");
+        }
+      })
+      .catch((error) => {
+        console.error("Error during sign out:", error);
+        alert("Failed to sign out, please try again!");
+      });
   };
 
   const handleQuestion = () => {
@@ -45,6 +56,7 @@ const ProfilePage: React.FC = () => {
     if (!isConfirmed) return;
 
     axios
+      // Should use `` instead of ""! "" will take ${user.username} literally, while `` will parse it
       .delete(`/api/users/${user.username}`)
       .then((response) => {
         if (response.status === 200) {
@@ -85,16 +97,16 @@ const ProfilePage: React.FC = () => {
 
       <div className="login-container">
         <div className="profile-detail">
-          <label>Username: </label>
-          <span>{user?.username}</span>
+          <span className="label-name">Username: </span>
+          <span className="user-info"> {user?.username} </span>
         </div>
         <div className="profile-detail">
-          <label>Display Name: </label>
-          <span>{user?.displayName}</span>
+          <span className="label-name">Display Name: </span>
+          <span className="user-info">{user?.displayName}</span>
         </div>
         <div className="profile-detail">
-          <label>Role: </label>
-          <span>{user?.role}</span>
+          <span className="label-name">Role: </span>
+          <span className="user-info">{user?.role}</span>
         </div>
 
         <button

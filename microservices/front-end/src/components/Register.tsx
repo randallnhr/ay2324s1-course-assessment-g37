@@ -8,7 +8,7 @@ import PageContainer from "./container/PageContainer";
 // import Logo from '../layouts/full/shared/logo/Logo';
 import AuthRegister from "./auth/AuthRegister";
 
-const Register2: React.FC = () => {
+const Register: React.FC = () => {
   const [username, setUsername] = useState<string>("");
   const [displayName, setDisplayName] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -151,4 +151,4 @@ const Register2: React.FC = () => {
   );
 };
 
-export default Register2;
+export default Register;

@@ -103,7 +103,17 @@ const QuestionBank: React.FC = () => {
   }, []);
 
   const handleSignout = () => {
-    navigate("/login2");
+    axios
+      .delete("/api/auth/log-out")
+      .then((response) => {
+        if (response.status === 200) {
+          navigate("/login");
+        }
+      })
+      .catch((error) => {
+        console.error("Error during sign out:", error);
+        alert("Failed to sign out, please try again!");
+      });
   };
 
   const handleProfile = () => {

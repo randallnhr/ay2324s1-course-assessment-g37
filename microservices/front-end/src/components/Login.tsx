@@ -10,7 +10,7 @@ import { User } from "./types";
 import PageContainer from "./container/PageContainer";
 import AuthLogin from "./auth/AuthLogin";
 
-const Login2: React.FC = () => {
+const Login: React.FC = () => {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [loginFailed, setLoginFailed] = useState<boolean>(false);
@@ -138,7 +138,7 @@ const Login2: React.FC = () => {
                     </Typography>
                     <Typography
                       component={Link}
-                      to="/signup2"
+                      to="/signup"
                       fontWeight="500"
                       sx={{
                         textDecoration: "none",
@@ -163,4 +163,4 @@ const Login2: React.FC = () => {
   );
 };
 
-export default Login2;
+export default Login;
