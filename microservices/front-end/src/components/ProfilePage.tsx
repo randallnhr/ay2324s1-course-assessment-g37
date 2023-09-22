@@ -32,6 +32,33 @@ const ProfilePage: React.FC = () => {
         navigate('/question-bank');
     }
 
+    const handleDelete = () => {
+        if (!user || !user.username) {
+            console.error("User data not available");
+            return;
+        }
+
+        const isConfirmed = window.confirm("Are you sure you want to delete your account This cannot be undone. ");
+        if (!isConfirmed) return;
+
+        axios.delete("/api/users/${user.username}")
+        .then((response) => {
+            if (response.status === 200) {
+                alert("Account deleted successfully");
+                navigate('/login');
+            }
+        })
+        .catch((error) => {
+            console.error("Error deleting account", error);
+            if (axios.isAxiosError(error) && error.response) {
+                alert(`Failed to delete account: ${error.response.data}`);
+            } else {
+                alert("Failed to delete account due to an unknown error");
+            }
+        });
+
+    }
+
     return (
         <div>
             <div>
@@ -70,6 +97,8 @@ const ProfilePage: React.FC = () => {
 
             <button className='action-button' onClick={() => navigate('/change-password')}>Change Password</button>
             <button className='action-button' onClick={() => navigate('/change-display-name')}>Change Display Name</button>
+            <button className='action-button' onClick={handleDelete}>Delete Account</button>
+        
         </div>
         
         </div>

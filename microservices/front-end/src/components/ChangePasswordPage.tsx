@@ -30,7 +30,7 @@ const ChangePasswordPage: React.FC = () => {
         }
 
         try {
-            const response = await axios.put(`/api/auth/log-in/${user?.username}`, {
+            const response = await axios.put(`/api/users/${user?.username}`, {
                 oldPassword,
                 newPassword
             });

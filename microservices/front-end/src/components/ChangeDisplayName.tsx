@@ -34,7 +34,7 @@ const ChangeDisplayName: React.FC = () => {
             };
 
             const response = await axios.put(
-                `/api/auth/log-in/${updatedUser.username}`, updatedUser);
+                `/api/users/${updatedUser.username}`, updatedUser);
             if (response.status === 200) {
                 alert("Display name changed successfully");
 

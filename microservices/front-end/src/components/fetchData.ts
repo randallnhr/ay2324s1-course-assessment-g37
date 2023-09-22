@@ -6,7 +6,7 @@ import { Question } from "./types";
 // Now return a promise, let it de-couples from UI update
 // Remove both re-fetching (let the getQuestions handle) and set
 export const getQuestions = async (): Promise<Question[]> => {
-    return fetch('http://localhost:3001/questions')
+    return fetch('/api/questions')
         .then(res => res.json());
 }
 
@@ -22,7 +22,7 @@ export const addQuestion = async (newQuestion: Partial<Question>) => {
     }
 
     // First fetch all questions to check for duplicates
-    return fetch('http://localhost:3001/questions')
+    return fetch('/api/questions')
     .then((res) => res.json())
     .then((existingQuestions: Question[]) => {
         const duplicate = existingQuestions.find(q => q.title === newQuestion.title);
@@ -32,7 +32,7 @@ export const addQuestion = async (newQuestion: Partial<Question>) => {
         }
 
         // If no duplicates, proceed to add question
-        fetch('http://localhost:3001/addQuestion', {
+        fetch('/api/questions', {
             method: 'POST',
             headers: {
             'Content-Type': 'application/json',
@@ -45,7 +45,7 @@ export const addQuestion = async (newQuestion: Partial<Question>) => {
 
 export const deleteQuestion = async (id: number): Promise<void> => {
     return new Promise<void>((resolve, reject) => {
-        fetch(`http://localhost:3001/questions/${id}`, {
+        fetch(`/api/questions/${id}`, {
             method: 'DELETE',
         })
         .then(() => {
@@ -74,7 +74,7 @@ export const updateQuestion = async (updatedQuestion: Question, id: string | num
 
             try {
                 // Do the duplicate check
-                const res = await fetch('http://localhost:3001/questions');
+                const res = await fetch('/api/questions');
                 const existingQuestions: Question[] = await res.json();
                 
                 const duplicate = existingQuestions.find(
@@ -87,7 +87,7 @@ export const updateQuestion = async (updatedQuestion: Question, id: string | num
                     return;
                 }
                 
-                await fetch(`http://localhost:3001/questions/${id}`, {
+                await fetch(`/api/questions/${id}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
