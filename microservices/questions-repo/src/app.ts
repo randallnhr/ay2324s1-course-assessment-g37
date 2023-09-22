@@ -8,6 +8,7 @@ import logger from "morgan";
 import mongoose from "mongoose";
 import { ROUTE_QUESTIONS, router as questionsRouter } from "./routes/questions";
 import { CODE_BAD_REQUEST, CODE_INTERNAL_SERVER_ERROR } from "./utility";
+import { hostname } from "os";
 
 /**
  * Read environment variables
@@ -71,8 +72,7 @@ function initialiseExpressApp(port: string | number | false) {
 /**
  * Set up HTTP server.
  */
-function initialiseServer(app: Express, port: number) {
-
+function initialiseServer(app: Express, port: number, hostname?: string) {
   /**
    * Event listener for HTTP server "error" event.
    */
@@ -115,8 +115,7 @@ function initialiseServer(app: Express, port: number) {
 
   const server = http.createServer(app);
   // Listen on provided port, on all network interfaces.
-  server.listen(port);
-  server.listen(port, '0.0.0.0');
+  server.listen(port, hostname);
   server.on('error', onError);
   server.on('listening', onListening);
 }
@@ -129,6 +128,7 @@ function main() {
   initialiseDatabase();
   const port = getPort();
   const app = initialiseExpressApp(port);
+  initialiseServer(app, port, '0.0.0.0');
   initialiseServer(app, port);
 }
 
