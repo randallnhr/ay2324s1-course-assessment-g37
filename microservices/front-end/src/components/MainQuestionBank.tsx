@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import "./QuestionBank.css";
-import { Question } from './types';
+import { Question, User } from './types';
 import { getQuestions, addQuestion, deleteQuestion, updateQuestion } from './fetchData'
 import AddQuestionForm from './AddQuestionForm';
 import { AppBar } from '@mui/material';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
+import axios from 'axios';
 
 const allCategories = [
     'Arrays', 'Strings', 'Hash Table', 'Math', 'Dynamic Programming',
@@ -22,8 +23,8 @@ const allCategories = [
 const QuestionBank: React.FC = () => {
     // State to store the list of questions
     const [questions, setQuestions] = useState<Question[]>([]); 
-    const [expandedQuestionId, setExpandedQuestionId] = useState<number | null>(null);
-    const [updatingQuestionId, setUpdatingQuestionId] = useState<number | null>(null);
+    const [expandedQuestionId, setExpandedQuestionId] = useState<string | null>(null);
+    const [updatingQuestionId, setUpdatingQuestionId] = useState<string | null>(null);
 
     const [newQuestion, setNewQuestion] = useState({
         title: '',
@@ -44,6 +45,9 @@ const QuestionBank: React.FC = () => {
     const complexityRef = React.createRef<HTMLSelectElement>();
     const descriptionRef = React.createRef<HTMLTextAreaElement>();
 
+    // Need to fetch current user as well
+    const [user, setUser] = useState<User | null>(null);
+
     // functions to fetch all questions and update UI
     const fetchQuestions = async () => {
         const fetchedQuestions = await getQuestions();
@@ -53,7 +57,17 @@ const QuestionBank: React.FC = () => {
     // fetch when component mounts
     useEffect(() => {
         fetchQuestions();
-    }, [])
+    }, []);
+
+    useEffect(() => {
+        axios.get("/api/auth/current-user")
+        .then((response) => {
+            setUser(response.data);
+        })
+        .catch((error) => {
+            console.error("Error fetching current user", error);
+        });
+    }, []);
 
     const handleSignout = () => {
         navigate('/login');
@@ -63,7 +77,7 @@ const QuestionBank: React.FC = () => {
         navigate('/profile');
     }
 
-    const toggleQuestionDetails = (id: number) => {
+    const toggleQuestionDetails = (id: string) => {
         setExpandedQuestionId(expandedQuestionId === id ? null : id);
     };
 
@@ -73,7 +87,7 @@ const QuestionBank: React.FC = () => {
         fetchQuestions();
     };
 
-    const handleDeleteQuestion = async (id: number) => {
+    const handleDeleteQuestion = async (id: string) => {
         await deleteQuestion(id);
         fetchQuestions();
     }
@@ -83,8 +97,8 @@ const QuestionBank: React.FC = () => {
         fetchQuestions();
     }
 
-    const updateExistingCategoryArray = (qustionId: number, category: string, action: 'add' | 'remove') => {
-        const index = questions.findIndex(q => q.id === qustionId);
+    const updateExistingCategoryArray = (qustionId: string, category: string, action: 'add' | 'remove') => {
+        const index = questions.findIndex(q => q._id === qustionId);
 
         if (index != -1) {
         const updatedQuestions = [...questions];
@@ -124,104 +138,118 @@ const QuestionBank: React.FC = () => {
         <div className='header-container'>
             <h1>Question Bank</h1>
         </div>
-        <table>
+        {/* If user is null, no access to questions */}
+        {user === null ? (
+            <div><h2>Please sign in to access the questions.</h2></div>
+        ) : (
+            <table>
                 <thead>
                     <tr>
                     <th className='table-header'>Title</th>
                     <th className='table-header'>Category</th>
                     <th className='table-header'>Complexity</th>
-                    <th className='table-header'>Actions</th>
+                    {user && user.role === 'admin' && <th className='table-header'>Actions</th>}
                     </tr>
                 </thead>
                 <tbody>
                 {questions.map((question) => (
-                    <React.Fragment key={question.id}>
-                    {updatingQuestionId === question.id ? (
+                    <React.Fragment key={question._id}>
+                    {updatingQuestionId === question._id ? (
                         <tr>
-                            <td colSpan={3}>
-                                <div className='update-form'>
-                                    <div>
-                                        <label>Title</label>
-                                        <input ref={titleRef} type="text" defaultValue={question.title} />
-                                    </div>
-                                    <div>
-                                        <label>Description</label>
-                                        <textarea ref={descriptionRef} defaultValue={question.description}></textarea>
-                                    </div>
-                                    <div>
-                                        <label>Category</label>
+                        <td colSpan={3}>
+                            <div className='update-form'>
+                            <div>
+                                <label>Title</label>
+                                <input ref={titleRef} type="text" defaultValue={question.title} />
+                            </div>
+                            <div>
+                                <label>Description</label>
+                                <textarea ref={descriptionRef} defaultValue={question.description}></textarea>
+                            </div>
+                            <div>
+                                <label>Category</label>
 
-                                        <div>
-                                        {question.category.map((cat, index) => (
-                                        <span key={index}>
-                                            {cat}
-                                            <button onClick={() => updateExistingCategoryArray(question.id, cat, 'remove')}>X</button>
-                                        </span>
-                                        ))}
-                                        </div>
-                                        <select 
-                                        value={updateSelectedOption} // explicitly set the value
-                                        onChange={(e) => {
-                                            const newValue = e.target.value;
-                                            updateExistingCategoryArray(question.id, newValue, 'add');
-                                            setUpdateSelectedOption("");  // reset the selected option
-                                        }}
-                                        >
-                                        <option value="" disabled>Select your option</option>
-                                        {allCategories.filter(cat => !question.category.includes(cat)).map((cat, index) => (
-                                            <option key={index} value={cat}>{cat}</option>
-                                        ))}
-                                        </select>
-
-                                        {/* <input ref={categoryRef} type="text" defaultValue={question.category} /> */}
-                                    </div>
-                                    <div>
-                                        <label>Complexity</label>
-                                        <select ref={complexityRef} defaultValue={question.complexity}>
-                                        <option value="Easy">Easy</option>
-                                        <option value="Medium">Medium</option>
-                                        <option value="Hard">Hard</option>
-                                        </select>
-                                    </div>
+                                <div>
+                                {question.category.map((cat, index) => (
+                                <span key={index}>
+                                    {cat}
+                                    <button onClick={() => updateExistingCategoryArray(question._id, cat, 'remove')}>X</button>
+                                </span>
+                                ))}
                                 </div>
-                            </td>
-                            <td>
-                                <button className='action-button' onClick={() => setUpdatingQuestionId(null)}>Cancel</button>
-                                <button className='action-button' onClick={() => {
-                                const updatedTitle = titleRef.current?.value || "";
-                                // const updatedCategory = categoryRef.current?.value || "";
-                                const updatedComplexity = complexityRef.current?.value as 'Easy' | 'Medium' | 'Hard'; // type assertion
-                                const updatedDescription = descriptionRef.current?.value || ""; // New line
+                                <select 
+                                value={updateSelectedOption} // explicitly set the value
+                                onChange={(e) => {
+                                    const newValue = e.target.value;
+                                    updateExistingCategoryArray(question._id, newValue, 'add');
+                                    setUpdateSelectedOption("");  // reset the selected option
+                                }}
+                                >
+                                <option value="" disabled>Select your option</option>
+                                {allCategories.filter(cat => !question.category.includes(cat)).map((cat, index) => (
+                                    <option key={index} value={cat}>{cat}</option>
+                                ))}
+                                </select>
+
+                                {/* <input ref={categoryRef} type="text" defaultValue={question.category} /> */}
+                            </div>
+                            <div>
+                                <label>Complexity</label>
+                                <select ref={complexityRef} defaultValue={question.complexity}>
+                                <option value="Easy">Easy</option>
+                                <option value="Medium">Medium</option>
+                                <option value="Hard">Hard</option>
+                                </select>
+                            </div>
+                            </div>
+                        </td>
+                        <td>
+                            <button className='action-button' onClick={() => setUpdatingQuestionId(null)}>Cancel</button>
+                            <button className='action-button' onClick={() => {
+                            const updatedTitle = titleRef.current?.value || "";
+                            // const updatedCategory = categoryRef.current?.value || "";
+                            const updatedComplexity = complexityRef.current?.value as 'Easy' | 'Medium' | 'Hard'; // type assertion
+                            const updatedDescription = descriptionRef.current?.value || ""; // New line
                                 
-                                const updatedQuestion = {
-                                    id: question.id,
-                                    title: updatedTitle,
-                                    category: question.category, // already updated in-place
-                                    complexity: updatedComplexity,
-                                    description: updatedDescription // New field
-                                };
+                            const updatedQuestion = {
+                                _id: question._id,
+                                title: updatedTitle,
+                                category: question.category, // already updated in-place
+                                complexity: updatedComplexity,
+                                description: updatedDescription // New field
+                            };
                                 
-                                handleUpdateQuestion(updatedQuestion, question.id);
-                                setUpdatingQuestionId(null);
-                                }}>Save</button>
-                            </td>
+                            handleUpdateQuestion(updatedQuestion, question._id);
+                            setUpdatingQuestionId(null);
+                            }}>Save</button>
+                            
+                        </td>
                         </tr>
                     ) : (
                         <tr>
                         <td>
-                            <button onClick={() => toggleQuestionDetails(question.id)}>
+                            <button onClick={() => toggleQuestionDetails(question._id)}>
                             {question.title}
                             </button>
                         </td>
                         <td className='center-align-cell'>{question.category.join(', ')}</td>
                         <td className='center-align-cell'>{question.complexity}</td>
                         <td>
-                            <button className='action-button' onClick={() => handleDeleteQuestion(question.id)}>Delete</button>
-                            <button className='action-button' onClick={() => setUpdatingQuestionId(question.id)}>Update</button> {/* Fixed */}
+                            {/* Render Actions conditionally for non-basic users */}
+                            {user && user.role === "admin" && (
+                                <>
+                                <button className='action-button' onClick={() => handleDeleteQuestion(question._id)}>
+                                    Delete
+                                </button>
+                                <button className='action-button' onClick={() => setUpdatingQuestionId(question._id)}>
+                                    Update
+                                </button>
+                                </>
+                            )}
                         </td>
                         </tr>
                     )}
-                    {expandedQuestionId === question.id && (
+                    {expandedQuestionId === question._id && (
                         <tr>
                         <td colSpan={4}>
                             <div dangerouslySetInnerHTML={{ __html: question.description }}></div>
@@ -231,19 +259,24 @@ const QuestionBank: React.FC = () => {
                     </React.Fragment>
                 ))}
                 </tbody>
-        </table>
+            </table>
+        )
+        }
 
-        {/* Create new Questions */}
-        <h2 className='add-header'>Add a New Question</h2>
-        
-        <AddQuestionForm
-            newQuestion={newQuestion}
-            allCategories={allCategories}
-            selectedCategory={selectedCategory}
-            setNewQuestion={setNewQuestion}
-            handleAddQuestions={handleAddQuestion}
-            setSelectedCategory={setSelectedCategory}
-        />
+        {/* Render AddQuestionForm conditionally */}
+        {user && user.role === "admin" && (
+            <>
+            <h2 className='add-header'>Add a New Question</h2>       
+            <AddQuestionForm
+                newQuestion={newQuestion}
+                allCategories={allCategories}
+                selectedCategory={selectedCategory}
+                setNewQuestion={setNewQuestion}
+                handleAddQuestions={handleAddQuestion}
+                setSelectedCategory={setSelectedCategory}
+            />           
+            </>
+        )}       
         </div>
     );
 };

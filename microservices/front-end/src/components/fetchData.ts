@@ -43,7 +43,7 @@ export const addQuestion = async (newQuestion: Partial<Question>) => {
     });
 };
 
-export const deleteQuestion = async (id: number): Promise<void> => {
+export const deleteQuestion = async (id: string): Promise<void> => {
     return new Promise<void>((resolve, reject) => {
         fetch(`/api/questions/${id}`, {
             method: 'DELETE',
@@ -78,7 +78,7 @@ export const updateQuestion = async (updatedQuestion: Question, id: string | num
                 const existingQuestions: Question[] = await res.json();
                 
                 const duplicate = existingQuestions.find(
-                    q => q.title == updatedQuestion.title && q.id !== updatedQuestion.id
+                    q => q.title == updatedQuestion.title && q._id !== updatedQuestion._id
                 );
                 
                 if (duplicate) {
