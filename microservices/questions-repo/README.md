@@ -25,12 +25,23 @@ npm run serverstart
 ### API Reference
 
 #### Types
+
+```
 type Question = {
   title: string
   categories: string[]
   complexity: 'Easy' | 'Medium' | 'Hard'
   description: string
 };
+
+type QuestionWithId = {
+  _id: string
+  title: string
+  categories: string[]
+  complexity: 'Easy' | 'Medium' | 'Hard'
+  description: string
+}
+```
 
 #### Add question
 
@@ -42,12 +53,12 @@ Returns: `Question` URI in response's header.Location.
 #### List questions
 
 Request: GET /api/questions
-Returns: List of `Question`s in JSON format.
+Returns: List of questions with their id (`QuestionWithId[]`) in JSON format.
 
 #### Get question by id
 
 GET /api/questions/:id
-Returns: `Question` in JSON format.
+Returns: `QuestionWithId` in JSON format.
 
 ### Update question by id
 PUT /api/questions/:id
