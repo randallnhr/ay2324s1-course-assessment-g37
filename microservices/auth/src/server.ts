@@ -149,6 +149,25 @@ app.delete("/api/auth/log-out", (req, res) => {
   });
 });
 
+app.get("/api/auth/current-user", (req, res) => {
+  const expressUser = req.user;
+
+  if (expressUser === undefined) {
+    res.status(200).json({ username: null });
+    return;
+  }
+
+  const user = expressUser as User;
+
+  const userProfileInfo = {
+    username: user.username,
+    displayName: user.displayName,
+    role: user.role,
+  };
+
+  res.status(200).json(userProfileInfo);
+});
+
 app.get("/api/auth/secret", (req, res) => {
   if (!req.isAuthenticated()) {
     res.status(401).send();
