@@ -7,7 +7,7 @@ const router = Router();
 
 router.post("/", userValidator, userController.createUser);
 router.get("/:username", usernameValidator, userController.getUser);
-router.put("/", userValidator, userController.updateUser);
+router.put("/:username", userValidator, userController.updateUser);
 router.delete("/:username", usernameValidator, userController.deleteUser);
 
 export default router;
