@@ -7,6 +7,7 @@ import session from "express-session";
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import { Question, User } from "./types";
+import { formatErrorAsJson } from "./utilities";
 
 dotenv.config();
 
@@ -113,7 +114,7 @@ app.post("/api/auth/log-in", passport.authenticate("local"), (req, res) => {
   const expressUser = req.user;
   const user = expressUser as User;
 
-  return res.status(200).send({ username: user.username });
+  return res.status(200).json({ username: user.username });
 });
 
 app.post("/api/auth/sign-up", async (req, res) => {
@@ -131,13 +132,15 @@ app.post("/api/auth/sign-up", async (req, res) => {
         username: username,
         password: hashedPassword,
         displayName: displayName,
+        role: "basic",
       }),
     });
 
     res.status(200).send();
   } catch (error) {
     console.error(error);
-    res.send(error);
+    const errorJson = formatErrorAsJson(error);
+    res.json(errorJson);
   }
 });
 
@@ -145,7 +148,8 @@ app.delete("/api/auth/log-out", (req, res) => {
   req.session.destroy((error) => {
     if (error) {
       console.error(error);
-      res.send(error);
+      const errorJson = formatErrorAsJson(error);
+      res.json(errorJson);
     } else {
       // the default name of the session cookie is "connect.sid"
       // source: https://expressjs.com/en/resources/middleware/session.html
@@ -180,7 +184,7 @@ app.get("/api/auth/secret", (req, res) => {
     return;
   }
 
-  res.status(200).send({ secret: 42 });
+  res.status(200).json({ secret: 42 });
 });
 
 // ============================================================================
@@ -203,7 +207,8 @@ app.get("/api/users/:username", async (req, res) => {
     res.status(200).send(user);
   } catch (error) {
     console.error(error);
-    res.send(error);
+    const errorJson = formatErrorAsJson(error);
+    res.json(errorJson);
   }
 });
 
@@ -233,7 +238,8 @@ app.post("/api/users", async (req, res) => {
     res.status(200).send();
   } catch (error) {
     console.error(error);
-    res.send(error);
+    const errorJson = formatErrorAsJson(error);
+    res.json(errorJson);
   }
 });
 
@@ -263,7 +269,8 @@ app.put("/api/users", async (req, res) => {
     res.status(200).send();
   } catch (error) {
     console.error(error);
-    res.send(error);
+    const errorJson = formatErrorAsJson(error);
+    res.json(errorJson);
   }
 });
 
@@ -283,7 +290,8 @@ app.delete("/api/users/:id", async (req, res) => {
     res.status(200).send();
   } catch (error) {
     console.error(error);
-    res.send(error);
+    const errorJson = formatErrorAsJson(error);
+    res.json(errorJson);
   }
 });
 
@@ -305,7 +313,8 @@ app.get("/api/questions", async (req, res) => {
     res.status(200).send(questions);
   } catch (error) {
     console.error(error);
-    res.send(error);
+    const errorJson = formatErrorAsJson(error);
+    res.json(errorJson);
   }
 });
 
@@ -325,7 +334,8 @@ app.get("/api/questions/:id", async (req, res) => {
     res.status(200).send(question);
   } catch (error) {
     console.error(error);
-    res.send(error);
+    const errorJson = formatErrorAsJson(error);
+    res.json(errorJson);
   }
 });
 
@@ -350,7 +360,8 @@ app.post("/api/questions", async (req, res) => {
     res.status(200).send();
   } catch (error) {
     console.error(error);
-    res.send(error);
+    const errorJson = formatErrorAsJson(error);
+    res.json(errorJson);
   }
 });
 
@@ -375,7 +386,8 @@ app.put("/api/questions", async (req, res) => {
     res.status(200).send();
   } catch (error) {
     console.error(error);
-    res.send(error);
+    const errorJson = formatErrorAsJson(error);
+    res.json(errorJson);
   }
 });
 
@@ -395,7 +407,8 @@ app.delete("/api/questions/:id", async (req, res) => {
     res.status(200).send();
   } catch (error) {
     console.error(error);
-    res.send(error);
+    const errorJson = formatErrorAsJson(error);
+    res.json(errorJson);
   }
 });
 
