@@ -7,20 +7,22 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import './ProfilePage.css'
+import { User } from './types';
 
 const ProfilePage: React.FC = () => {
-    const context = useUser();
     const navigate = useNavigate();
+    // local state to hold user data
+    const [user, setUser] = useState<User | null>(null);
 
-    if (!context) {
-        console.log("Context not available");
-        return <div>Error: Context not available</div>;
-    } 
-
-    const {
-        currentUser,
-        setCurrentUser
-    } = context;    
+    useEffect(() => {
+        axios.get("/api/auth/current-user")
+        .then((response) => {
+            setUser(response.data);
+        })
+        .catch((error) => {
+            console.error("Error fetching current user", error);
+        });
+    }, []);
 
     const handleSignout = () => {
         navigate('/login');
@@ -55,15 +57,15 @@ const ProfilePage: React.FC = () => {
 
             <div className="profile-detail">
                 <label>Username: </label>
-                <span>{currentUser?.username}</span>
+                <span>{user?.username}</span>
             </div>
             <div className="profile-detail">
                 <label>Display Name: </label>
-                <span>{currentUser?.displayName}</span>
+                <span>{user?.displayName}</span>
             </div>
             <div className="profile-detail">
                 <label>Role: </label>
-                <span>{currentUser?.role}</span>
+                <span>{user?.role}</span>
             </div>
 
             <button className='action-button' onClick={() => navigate('/change-password')}>Change Password</button>

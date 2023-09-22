@@ -1,42 +1,42 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import './ChangePasswordPage.css';
+import { User } from './types';
 
 // Should only allow change of password if old password matches!
 const ChangePasswordPage: React.FC = () => {
-    const [userkey, setUserkey] = useState<string>("");
+    const [user, setUser] = useState<User | null>(null);
     const [oldPassword, setOldPassword] = useState<string>('');
     const [newPassword, setNewPassword] = useState<string>('');
     const [confirmPassword, setConfirmPassword] = useState<string>('');
 
     const navigate = useNavigate();
 
+    useEffect(() => {
+        axios.get("/api/auth/current-user")
+        .then((response) => {
+            setUser(response.data);
+        })
+        .catch((error) => {
+            console.error("Error fetching current user", error);
+        });
+    }, []);
+
     const handleChangePassword = async () => {
-        if (!userkey || !oldPassword) {
-            alert("User credentials required to change password");
+        if (!oldPassword || !newPassword || newPassword !== confirmPassword) {
+            alert("Please fill in credentials, and ensure new passwords match.");
             return;
         }
 
-        if (!newPassword) {
-            alert("New password cannot be empty");
-            return;
-        }
-
-        if (newPassword !== confirmPassword) {
-            alert("Passwords do not match");
-            return;
-        }
         try {
-            const response = await axios.put(`/api/auth/log-in/${userkey}`, {
-                userkey,
+            const response = await axios.put(`/api/auth/log-in/${user?.username}`, {
                 oldPassword,
                 newPassword
             });
             if (response.status === 200) {
                 alert("Password changed successfully");
 
-                setUserkey('');
                 setOldPassword('');
                 setNewPassword('');
                 setConfirmPassword('');
@@ -56,7 +56,6 @@ const ChangePasswordPage: React.FC = () => {
     };
 
     const handleCancel = () => {
-        setUserkey('');
         setNewPassword('');
         setConfirmPassword('');
         navigate('/profile');
@@ -66,12 +65,6 @@ const ChangePasswordPage: React.FC = () => {
         <div className='login-container'>
             <h1 className='login-header'>Change Password</h1>
 
-            <div className='input-field'>
-                <label htmlFor="userkey">Username</label>
-                <input id="userkey" type="text" 
-                value={userkey} 
-                onChange={(e) => setUserkey(e.target.value)} />
-            </div>
             <div className='input-field'>
                 <label htmlFor="oldPassword">Old Password</label>
                 <input id="oldPassword" type="password" 

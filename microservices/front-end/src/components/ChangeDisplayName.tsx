@@ -1,80 +1,61 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import './ChangeDisplayName.css'
+import { User } from './types';
 
 // Similarly, should only allow change of display name if passes authentication
 const ChangeDisplayName: React.FC = () => {
-    const [userkey, setUserkey] = useState<string>("");
-    const [password, setPassword] = useState<string>('');
+    const [user, setUser] = useState<User | null>(null);
     const [displayName, setDisplayName] = useState<string>('');
 
     const navigate = useNavigate();
 
-    const handleChangeDisplayName = async () => {
-        if (!userkey || !password) {
-            alert("User credentials required to change display name");
-            return;
-        }
+    useEffect(() => {
+        axios.get("/api/auth/current-user")
+        .then((response) => {
+            setUser(response.data);
+        })
+        .catch((error) => {
+            console.error("Error fetching current user", error);
+        });
+    }, []);
 
+    const handleChangeDisplayName = async () => {
         if (!displayName) {
             alert("New display name cannot be empty");
             return;
         }
 
         try {
-            const response = await axios.put(`/api/auth/log-in/${userkey}`, {
-                userkey,
-                password,
+            const updatedUser = {
+                ...user,
                 displayName
-            });
-            if (response.status === 200) {
-                alert("Password changed successfully");
+            };
 
-                setUserkey('');
-                setPassword('');
+            const response = await axios.put(
+                `/api/auth/log-in/${updatedUser.username}`, updatedUser);
+            if (response.status === 200) {
+                alert("Display name changed successfully");
+
                 setDisplayName('');
 
                 navigate('/profile');
             }
         } catch (error: unknown) {
-            if (axios.isAxiosError(error)) {
-                console.error('Change password failed:', error);
-                if (error.response && error.response.status === 401) {
-                    alert("User credential is incorrect");
-                }
-            } else {
-                console.error('An unknown error occurred:', error);
-            }
+            // display name can just allow update
+            console.error('An unknown error occurred:', error);
         }
     };
 
     const handleCancel = () => {
-        setUserkey('');
-        setPassword('');
         setDisplayName('');
         navigate('/profile');
     }
 
     return (
         <div className='login-container'>
-            <h1 className='login-header'>Change Display Name</h1>
-
-            <div className='input-field'>
-                <label htmlFor="userkey">Username</label>
-                <input id="userkey" type="text" 
-                value={userkey} 
-                onChange={(e) => setUserkey(e.target.value)} />
-            </div>
-            <div className='input-field'>
-                <label htmlFor="password">Password</label>
-                <input 
-                id="password" 
-                type="password" 
-                value={password} 
-                onChange={(e) => setPassword(e.target.value)} 
-                />
-            </div>               
+            <h1 className='login-header'>Change Display Name</h1>            
                     
             <div className='input-field'>
                 <label htmlFor="displayName">New Display Name</label>
