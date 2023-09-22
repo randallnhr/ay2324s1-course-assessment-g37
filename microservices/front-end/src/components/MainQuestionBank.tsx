@@ -70,7 +70,7 @@ const QuestionBank: React.FC = () => {
     }, []);
 
     const handleSignout = () => {
-        navigate('/login');
+        navigate('/login2');
     }
 
     const handleProfile = () => {

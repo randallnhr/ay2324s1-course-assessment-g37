@@ -5,7 +5,7 @@ import { TextField, TextFieldProps } from '@mui/material';
 const CustomTextField = styled(TextField)(({ theme }) => ({
     '& .MuiOutlinedInput-input::-webkit-input-placeholder': {
       color: theme.palette.text.secondary,
-      opacity: '1',
+      opacity: '0.8',
     },
     '& .MuiOutlinedInput-input.Mui-disabled::-webkit-input-placeholder': {
       color: theme.palette.text.secondary,

@@ -14,7 +14,6 @@ button {
 
 button:hover {
     border-color: #646cff;
-    
 }
 button:focus,
 button:focus-visible {
@@ -22,11 +21,11 @@ button:focus-visible {
 }
 
 .action-button {
-    border: 2px solid #A09797;
+    border: 2px solid #a09797;
 }
 .action-button:hover {
-    border-color: #A09797;
-    background-color: #E6E1E1;
+    border-color: #a09797;
+    background-color: #e6e1e1;
 }
 
 /* Align text center for category, and complexity */
@@ -36,7 +35,7 @@ button:focus-visible {
 
 .table-header {
     font-size: 1.25em; /* Equivalent to h4 size */
-    background-color: #C4C5C5;
+    background-color: #c4c5c5;
     text-align: center;
     padding: 10px;
 }
@@ -52,25 +51,15 @@ label {
     font-weight: 600;
     text-align: left;
 }
-  
+
 /* Style for input fields */
-input[type="text"],
-textarea,
-select {
-    width: 100%;
-    padding: 0.5rem;
-    /* margin-bottom: 1rem; */
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    text-align: left;
-}
-  
+
 /* Setting minimum width and height for textarea */
 textarea {
     min-width: 100%;
     min-height: 100px;
 }
-  
+
 /* Prettier select field */
 select {
     appearance: none;
@@ -80,7 +69,7 @@ select {
     background-size: 1.5em;
     padding-right: 1.5em;
 }
-  
+
 /* Light scheme styling for input fields */
 input[type="text"]:focus,
 textarea:focus,
@@ -93,7 +82,7 @@ select:focus {
     display: flex;
     flex-direction: column;
 }
-  
+
 .update-form > div {
     margin-bottom: 1rem;
 }
@@ -102,4 +91,4 @@ select:focus {
     display: flex;
     justify-content: space-between;
     align-items: center;
-  }
+}
