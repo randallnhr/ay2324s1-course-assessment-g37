@@ -51,15 +51,6 @@ const Register2: React.FC = () => {
     }
   };
 
-  const handleCancel = () => {
-    setUsername('');
-    setDisplayName('');
-    setPassword('');
-    setConfirmPassword('');
-    setRole('basic');
-    navigate('/login');
-  };
-
   return (
   <PageContainer title="Register" description="this is Register page">
     <Box

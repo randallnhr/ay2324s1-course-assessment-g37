@@ -29,7 +29,7 @@ const QuestionBank: React.FC = () => {
     const [newQuestion, setNewQuestion] = useState({
         title: '',
         description: '',
-        category: [] as string[],
+        categories: [] as string[],
         complexity: 'Easy' as 'Easy' | 'Medium' | 'Hard' // default value
     });
 
@@ -105,9 +105,9 @@ const QuestionBank: React.FC = () => {
         const question = { ... updatedQuestions[index]};
 
         if (action == 'add') {
-            question.category.push(category);
+            question.categories.push(category);
         } else {
-            question.category = question.category.filter(cat => cat != category);
+            question.categories = question.categories.filter(cat => cat != category);
         }
 
         // trigger a re-render to show the current question tags
@@ -170,7 +170,7 @@ const QuestionBank: React.FC = () => {
                                 <label>Category</label>
 
                                 <div>
-                                {question.category.map((cat, index) => (
+                                {question.categories.map((cat, index) => (
                                 <span key={index}>
                                     {cat}
                                     <button onClick={() => updateExistingCategoryArray(question._id, cat, 'remove')}>X</button>
@@ -186,7 +186,7 @@ const QuestionBank: React.FC = () => {
                                 }}
                                 >
                                 <option value="" disabled>Select your option</option>
-                                {allCategories.filter(cat => !question.category.includes(cat)).map((cat, index) => (
+                                {allCategories.filter(cat => !question.categories.includes(cat)).map((cat, index) => (
                                     <option key={index} value={cat}>{cat}</option>
                                 ))}
                                 </select>
@@ -214,7 +214,7 @@ const QuestionBank: React.FC = () => {
                             const updatedQuestion = {
                                 _id: question._id,
                                 title: updatedTitle,
-                                category: question.category, // already updated in-place
+                                categories: question.categories, // already updated in-place
                                 complexity: updatedComplexity,
                                 description: updatedDescription // New field
                             };
@@ -232,7 +232,7 @@ const QuestionBank: React.FC = () => {
                             {question.title}
                             </button>
                         </td>
-                        <td className='center-align-cell'>{question.category.join(', ')}</td>
+                        <td className='center-align-cell'>{question.categories.join(', ')}</td>
                         <td className='center-align-cell'>{question.complexity}</td>
                         <td>
                             {/* Render Actions conditionally for non-basic users */}

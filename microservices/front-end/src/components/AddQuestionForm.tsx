@@ -8,7 +8,7 @@ interface QuestionFormProps {
     newQuestion: {
         title: string;
         description: string;
-        category: string[];
+        categories: string[];
         complexity: 'Easy' | 'Medium' | 'Hard';
     };
     allCategories: string[];
@@ -16,7 +16,7 @@ interface QuestionFormProps {
     setNewQuestion: React.Dispatch<React.SetStateAction<{
         title: string;
         description: string;
-        category: string[];
+        categories: string[];
         complexity: 'Easy' | 'Medium' | 'Hard';
     }>>;
     handleAddQuestions: (question: Partial<Question>) => void;
@@ -39,7 +39,7 @@ const AddQuestionForm: React.FC<QuestionFormProps> = ({
             setNewQuestion({
                 title: '',
                 description: '',
-                category: [],
+                categories: [],
                 complexity: 'Easy'
             });
         }}>
@@ -58,12 +58,12 @@ const AddQuestionForm: React.FC<QuestionFormProps> = ({
                 <div>
                     {/* take all the current categories, and display them one by one (start from an empty array) */}
                     {/* Here map and filter will only be called if category exists */}
-                    {newQuestion.category?.map((cat, index) => (
+                    {newQuestion.categories?.map((cat, index) => (
                     // display each category followed by 'X'. Click X will remove the category
                     <span key = {index}>
                         {cat} <button type = "button" onClick={() => setNewQuestion(
                         // in a form, button can be by default "submit". Here need to specify type, in case it just submit the form
-                        prev => ({...prev, category: prev.category?.filter(
+                        prev => ({...prev, categories: prev.categories?.filter(
                             c => c != cat
                         )})
                         )}>X</button>
@@ -75,7 +75,7 @@ const AddQuestionForm: React.FC<QuestionFormProps> = ({
                     onChange={(e) => {
                         setNewQuestion(prev => ({
                         ...prev, 
-                        category: [...(prev.category || []), e.target.value]
+                        categories: [...(prev.categories || []), e.target.value]
                         }));
 
                         // Reset the selected value
@@ -83,7 +83,7 @@ const AddQuestionForm: React.FC<QuestionFormProps> = ({
                     }}
                     >
                     <option value="" disabled selected>Select your option</option>
-                    {allCategories.filter(cat => !(newQuestion.category || []).includes(cat)).map((cat, index) => (
+                    {allCategories.filter(cat => !(newQuestion.categories || []).includes(cat)).map((cat, index) => (
                         <option key={index} value={cat}>{cat}</option>
                     ))}
                     </select>

@@ -17,8 +17,8 @@ export const addQuestion = async (newQuestion: Partial<Question>) => {
         return;
     }
     // set to others if no category
-    if (!newQuestion.category || newQuestion.category.length == 0) {
-        newQuestion.category = ["Others"];
+    if (!newQuestion.categories || newQuestion.categories.length == 0) {
+        newQuestion.categories = ["Others"];
     }
 
     // First fetch all questions to check for duplicates
@@ -68,8 +68,8 @@ export const updateQuestion = async (updatedQuestion: Question, id: string | num
                 return;
             }
 
-            if (!updatedQuestion.category || updatedQuestion.category.length === 0) {
-                updatedQuestion.category = ["Others"];
+            if (!updatedQuestion.categories || updatedQuestion.categories.length === 0) {
+                updatedQuestion.categories = ["Others"];
             }
 
             try {
