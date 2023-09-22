@@ -35,6 +35,12 @@ passport.use(
   new LocalStrategy(async (username, password, done) => {
     try {
       const response = await fetch(`${USER_SERVICE_URL}/api/users/${username}`);
+
+      if (response.status === 204) {
+        // username does not exist
+        return done(null, false);
+      }
+
       const json = await response.json();
       const user = json as User;
 
