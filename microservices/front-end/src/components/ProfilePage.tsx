@@ -86,7 +86,7 @@ const ProfilePage: React.FC = () => {
               Question
             </Button>
             <Button color="inherit" onClick={handleSignout}>
-              Sign Out
+              Log Out
             </Button>
           </Toolbar>
         </AppBar>

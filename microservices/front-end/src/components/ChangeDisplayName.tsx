@@ -3,6 +3,10 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import styles from "./ChangeDisplayName.module.css";
 import { User } from "./types";
+import { AppBar } from "@mui/material";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
 
 // Similarly, should only allow change of display name if passes authentication
 const ChangeDisplayName: React.FC = () => {
@@ -52,37 +56,73 @@ const ChangeDisplayName: React.FC = () => {
     }
   };
 
+  const handleQuestion = () => {
+    setDisplayName("");
+    navigate("/question-bank");
+  };
+
+  const handleSignout = () => {
+    axios
+      .delete("/api/auth/log-out")
+      .then((response) => {
+        if (response.status === 200) {
+          navigate("/login");
+        }
+      })
+      .catch((error) => {
+        console.error("Error during sign out:", error);
+        alert("Failed to sign out, please try again!");
+      });
+  };
+
   const handleCancel = () => {
     setDisplayName("");
     navigate("/profile");
   };
 
   return (
-    <div className={styles.change_display_name_container}>
-      <h1>Change Display Name</h1>
-
-      <div className={styles.input_field}>
-        <label className={styles.the_label} htmlFor="displayName">
-          New Display Name
-        </label>
-        <input
-          className={styles.input_text}
-          id="displayName"
-          type="text"
-          value={displayName}
-          onChange={(e) => setDisplayName(e.target.value)}
-        />
+    <div>
+      <div>
+        <AppBar position="static">
+          <Toolbar>
+            <Typography variant="h6" style={{ flexGrow: 1 }}>
+              HOME
+            </Typography>
+            <Button color="inherit" onClick={handleQuestion}>
+              Question
+            </Button>
+            <Button color="inherit" onClick={handleSignout}>
+              Log Out
+            </Button>
+          </Toolbar>
+        </AppBar>
       </div>
+      <div className={styles.change_display_name_container}>
+        <h1>Change Display Name</h1>
 
-      <button
-        className={styles.action_button}
-        onClick={handleChangeDisplayName}
-      >
-        Save
-      </button>
-      <button className={styles.action_button} onClick={handleCancel}>
-        Cancel
-      </button>
+        <div className={styles.input_field}>
+          <label className={styles.the_label} htmlFor="displayName">
+            New Display Name
+          </label>
+          <input
+            className={styles.input_text}
+            id="displayName"
+            type="text"
+            value={displayName}
+            onChange={(e) => setDisplayName(e.target.value)}
+          />
+        </div>
+
+        <button
+          className={styles.action_button}
+          onClick={handleChangeDisplayName}
+        >
+          Save
+        </button>
+        <button className={styles.action_button} onClick={handleCancel}>
+          Cancel
+        </button>
+      </div>
     </div>
   );
 };

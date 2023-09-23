@@ -43,6 +43,11 @@ button:focus-visible {
   text-align: center;
 }
 
+.table_container {
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .table_header {
   font-size: 1.25em; /* Equivalent to h4 size */
   background-color: #c4c5c5;

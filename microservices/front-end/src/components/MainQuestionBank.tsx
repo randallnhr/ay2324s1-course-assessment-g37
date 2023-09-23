@@ -181,7 +181,7 @@ const QuestionBank: React.FC = () => {
               Profile
             </Button>
             <Button color="inherit" onClick={handleSignout}>
-              Sign Out
+              Log Out
             </Button>
           </Toolbar>
         </AppBar>
@@ -197,7 +197,7 @@ const QuestionBank: React.FC = () => {
           </h2>
         </div>
       ) : (
-        <table>
+        <table className={styles.table_container}>
           <thead>
             <tr>
               <th className={styles.table_header}>Title</th>
