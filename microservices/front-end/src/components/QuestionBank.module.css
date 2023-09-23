@@ -5,7 +5,7 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
-.action-button {
+.action_button {
   border-radius: 8px;
   border: 2px solid #a09797;
   padding: 0.6em 1.2em;
@@ -17,12 +17,12 @@ button:focus-visible {
   transition: border-color 0.25s;
   margin: 3px;
 }
-.action-button:hover {
+.action_button:hover {
   border-color: #a09797;
   background-color: #e6e1e1;
 }
 
-.category-button {
+.category_button {
   border-radius: 8px;
   border: 1px solid transparent;
   padding: 0.6em 1.2em;
@@ -34,28 +34,28 @@ button:focus-visible {
   transition: border-color 0.25s;
   margin: 3px;
 }
-.category-button:hover {
+.category_button:hover {
   border-color: #646cff;
 }
 
 /* Align text center for category, and complexity */
-.center-align-cell {
+.center_align_cell {
   text-align: center;
 }
 
-.table-header {
+.table_header {
   font-size: 1.25em; /* Equivalent to h4 size */
   background-color: #c4c5c5;
   text-align: center;
   padding: 10px;
 }
 
-.add-header {
+.add_header {
   text-align: center;
 }
 
 /* Style for form labels */
-.the-label {
+.the_label {
   display: block;
   margin-bottom: 0.5rem;
   font-weight: 600;
@@ -65,13 +65,13 @@ button:focus-visible {
 /* Style for input fields */
 
 /* Setting minimum width and height for textarea */
-.text-area {
+.text_area {
   min-width: 100%;
   min-height: 100px;
 }
 
 /* Prettier select field */
-.the-select {
+.the_select {
   appearance: none;
   /* background: url('data:image/png;base64,iVBORw0KGg...') no-repeat; Optional: Add a small arrow image */
   background-color: #e5e9e9;
@@ -80,24 +80,35 @@ button:focus-visible {
   padding-right: 1.5em;
 }
 
+.input_text,
+.text_area,
+.the_select {
+  width: 100%;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  text-align: left;
+}
+
 /* Light scheme styling for input fields */
-.input-text:focus,
-.text-area:focus,
-.the-select:focus {
+.input_text:focus,
+.text_area:focus,
+.the_select:focus {
   border-color: #a8a8a8;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
 }
 
-.update-form {
+.update_form {
   display: flex;
   flex-direction: column;
 }
 
-.update-form > div {
+.update_form > div {
   margin-bottom: 1rem;
 }
 
-.header-container {
+.header_container {
   display: flex;
   justify-content: space-between;
   align-items: center;

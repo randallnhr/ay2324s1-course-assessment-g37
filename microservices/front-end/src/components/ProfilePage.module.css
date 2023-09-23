@@ -1,57 +1,62 @@
-.center-align-cell {
+.header_container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.profile_container {
+  align-items: center;
+  padding: 2rem;
+}
+
+.profile_detail {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.profile_detail label,
+.profile_detail span {
+  font-size: 1.5em;
+}
+
+.profile_detail label {
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.center_align_cell {
   text-align: center;
 }
 
-.table-header {
+.table_header {
   font-size: 1.25em;
   background-color: #c4c5c5;
   text-align: center;
   padding: 10px;
 }
 
-.add-header {
+.add_header {
   text-align: center;
 }
 
-.label-name {
+.label_name {
   display: block;
   font-weight: 600;
   text-align: left;
 }
 
-.user-info {
+.user_info {
   margin-left: 15px;
 }
 
-.update-form {
+.update_form {
   display: flex;
   flex-direction: column;
 }
 
-.update-form > div {
+.update_form > div {
   margin-bottom: 1rem;
-}
-
-.header-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.profile-detail {
-  display: flex;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-.profile-detail label,
-.profile-detail span {
-  font-size: 1.5em;
-}
-
-.profile-detail label {
-  font-weight: bold;
-  margin-right: 10px;
 }
 
 button:focus,
@@ -59,7 +64,7 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
-.action-button {
+.action_button {
   border-radius: 8px;
   border: 2px solid #a09797;
   padding: 0.6em 1.2em;
@@ -71,7 +76,7 @@ button:focus-visible {
   transition: border-color 0.25s;
   margin: 3px;
 }
-.action-button:hover {
+.action_button:hover {
   border-color: #a09797;
   background-color: #e6e1e1;
 }

@@ -42,10 +42,9 @@ const Register: React.FC = () => {
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
         console.error("Signup failed:", error);
-        if (error.response && error.response.status === 401) {
-          alert("Failed to create account");
-        }
+        alert("Failed to create account");
       } else {
+        alert("An unknown error occurred. Try again later.");
         console.error("An unknown error occurred:", error);
       }
     }

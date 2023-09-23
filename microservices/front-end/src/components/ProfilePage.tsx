@@ -5,8 +5,8 @@ import { AppBar } from "@mui/material";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-import "./ProfilePage.module.css";
 import { User } from "./types";
+import styles from "./ProfilePage.module.css";
 
 const ProfilePage: React.FC = () => {
   const navigate = useNavigate();
@@ -20,6 +20,7 @@ const ProfilePage: React.FC = () => {
         setUser(response.data);
       })
       .catch((error) => {
+        alert("Failed to fetch user profile");
         console.error("Error fetching current user", error);
       });
   }, []);
@@ -90,37 +91,37 @@ const ProfilePage: React.FC = () => {
           </Toolbar>
         </AppBar>
       </div>
-      <div className="header-container">
+      <div className={styles.header_container}>
         <h1>Personal Profile</h1>
       </div>
 
-      <div className="login-container">
-        <div className="profile-detail">
-          <span className="label-name">Username: </span>
-          <span className="user-info"> {user?.username} </span>
+      <div className={styles.profile_container}>
+        <div className={styles.profile_detail}>
+          <span className={styles.label_name}>Username: </span>
+          <span className={styles.user_info}> {user?.username} </span>
         </div>
-        <div className="profile-detail">
-          <span className="label-name">Display Name: </span>
-          <span className="user-info">{user?.displayName}</span>
+        <div className={styles.profile_detail}>
+          <span className={styles.label_name}>Display Name: </span>
+          <span className={styles.user_info}>{user?.displayName}</span>
         </div>
-        <div className="profile-detail">
-          <span className="label-name">Role: </span>
-          <span className="user-info">{user?.role}</span>
+        <div className={styles.profile_detail}>
+          <span className={styles.label_name}>Role: </span>
+          <span className={styles.user_info}>{user?.role}</span>
         </div>
 
         <button
-          className="action-button"
+          className={styles.action_button}
           onClick={() => navigate("/change-password")}
         >
           Change Password
         </button>
         <button
-          className="action-button"
+          className={styles.action_button}
           onClick={() => navigate("/change-display-name")}
         >
           Change Display Name
         </button>
-        <button className="action-button" onClick={handleDelete}>
+        <button className={styles.action_button} onClick={handleDelete}>
           Delete Account
         </button>
       </div>

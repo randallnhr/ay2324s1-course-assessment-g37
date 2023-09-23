@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "./QuestionBank.module.css";
+import styles from "./QuestionBank.module.css";
 import { Question, User } from "./types";
 import {
   getQuestions,
@@ -186,23 +186,25 @@ const QuestionBank: React.FC = () => {
           </Toolbar>
         </AppBar>
       </div>
-      <div className="header-container">
+      <div className={styles.header_container}>
         <h1>Question Bank</h1>
       </div>
       {/* If user is null, no access to questions */}
       {user === null ? (
         <div>
-          <h2>Please sign in to access the questions.</h2>
+          <h2 style={{ textAlign: "center" }}>
+            Please sign in to access the questions.
+          </h2>
         </div>
       ) : (
         <table>
           <thead>
             <tr>
-              <th className="table-header">Title</th>
-              <th className="table-header">Category</th>
-              <th className="table-header">Complexity</th>
+              <th className={styles.table_header}>Title</th>
+              <th className={styles.table_header}>Category</th>
+              <th className={styles.table_header}>Complexity</th>
               {user && user.role === "admin" && (
-                <th className="table-header">Actions</th>
+                <th className={styles.table_header}>Actions</th>
               )}
             </tr>
           </thead>
@@ -212,26 +214,28 @@ const QuestionBank: React.FC = () => {
                 {updatingQuestionId === question._id ? (
                   <tr>
                     <td colSpan={3}>
-                      <div className="update-form">
+                      <div className={styles.update_form}>
                         <div>
-                          <label className="the-label">Title</label>
+                          <label className={styles.the_label}>Title</label>
                           <input
-                            className="input-text"
+                            className={styles.input_text}
                             ref={titleRef}
                             type="text"
                             defaultValue={question.title}
                           />
                         </div>
                         <div>
-                          <label className="the-label">Description</label>
+                          <label className={styles.the_label}>
+                            Description
+                          </label>
                           <textarea
-                            className="text-area"
+                            className={styles.text_area}
                             ref={descriptionRef}
                             defaultValue={question.description}
                           ></textarea>
                         </div>
                         <div>
-                          <label className="the-label">Category</label>
+                          <label className={styles.the_label}>Category</label>
 
                           <div>
                             {question.categories.map((cat, index) => (
@@ -252,7 +256,7 @@ const QuestionBank: React.FC = () => {
                             ))}
                           </div>
                           <select
-                            className="the-select"
+                            className={styles.the_select}
                             value={updateSelectedOption} // explicitly set the value
                             onChange={(e) => {
                               const newValue = e.target.value;
@@ -281,9 +285,9 @@ const QuestionBank: React.FC = () => {
                           {/* <input ref={categoryRef} type="text" defaultValue={question.category} /> */}
                         </div>
                         <div>
-                          <label className="the-label">Complexity</label>
+                          <label className={styles.the_label}>Complexity</label>
                           <select
-                            className="the-select"
+                            className={styles.the_select}
                             ref={complexityRef}
                             defaultValue={question.complexity}
                           >
@@ -296,13 +300,13 @@ const QuestionBank: React.FC = () => {
                     </td>
                     <td>
                       <button
-                        className="action-button"
+                        className={styles.action_button}
                         onClick={() => setUpdatingQuestionId(null)}
                       >
                         Cancel
                       </button>
                       <button
-                        className="action-button"
+                        className={styles.action_button}
                         onClick={() => {
                           const updatedTitle = titleRef.current?.value || "";
                           // const updatedCategory = categoryRef.current?.value || "";
@@ -336,22 +340,24 @@ const QuestionBank: React.FC = () => {
                         {question.title}
                       </button>
                     </td>
-                    <td className="center-align-cell">
+                    <td className={styles.center_align_cell}>
                       {question.categories.join(", ")}
                     </td>
-                    <td className="center-align-cell">{question.complexity}</td>
+                    <td className={styles.center_align_cell}>
+                      {question.complexity}
+                    </td>
                     <td>
                       {/* Render Actions conditionally for non-basic users */}
                       {user && user.role === "admin" && (
                         <>
                           <button
-                            className="action-button"
+                            className={styles.action_button}
                             onClick={() => handleDeleteQuestion(question._id)}
                           >
                             Delete
                           </button>
                           <button
-                            className="action-button"
+                            className={styles.action_button}
                             onClick={() => setUpdatingQuestionId(question._id)}
                           >
                             Update
@@ -381,7 +387,7 @@ const QuestionBank: React.FC = () => {
       {/* Render AddQuestionForm conditionally */}
       {user && user.role === "admin" && (
         <>
-          <h2 className="add-header">Add a New Question</h2>
+          <h2 className={styles.add_header}>Add a New Question</h2>
           <AddQuestionForm
             newQuestion={newQuestion}
             allCategories={allCategories}

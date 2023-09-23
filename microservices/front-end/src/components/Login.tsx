@@ -55,12 +55,10 @@ const Login: React.FC = () => {
       }
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
-        console.error("Login failed: ", error);
-        if (error.response && error.response.status === 401) {
-          alert("Incorrect user credentials!");
-          setLoginFailed(true);
-        }
+        alert("Incorrect user credentials!");
+        setLoginFailed(true);
       } else {
+        alert("An unknown error occured. Try again later.");
         console.error("An unknown error occured: ", error);
       }
     }

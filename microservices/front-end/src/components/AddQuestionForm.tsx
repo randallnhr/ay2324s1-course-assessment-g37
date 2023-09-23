@@ -1,6 +1,6 @@
 import React from "react";
 import { Question, NewQuestion } from "./types";
-import "./QuestionBank.module.css";
+import styles from "./QuestionBank.module.css";
 
 // React.dispatch = a funciton to dispatch actions
 // SetStateAction = set or update current state
@@ -37,9 +37,9 @@ const AddQuestionForm: React.FC<QuestionFormProps> = ({
       }}
     >
       <div>
-        <label className="the-label">Title</label>
+        <label className={styles.the_label}>Title</label>
         <input
-          className="input-text"
+          className={styles.input_text}
           type="text"
           value={newQuestion.title}
           onChange={(e) =>
@@ -48,9 +48,9 @@ const AddQuestionForm: React.FC<QuestionFormProps> = ({
         />
       </div>
       <div>
-        <label className="the-label">Description</label>
+        <label className={styles.the_label}>Description</label>
         <textarea
-          className="text-area"
+          className={styles.text_area}
           value={newQuestion.description}
           onChange={(e) =>
             setNewQuestion({ ...newQuestion, description: e.target.value })
@@ -58,7 +58,7 @@ const AddQuestionForm: React.FC<QuestionFormProps> = ({
         ></textarea>
       </div>
       <div>
-        <label className="the-label">Category</label>
+        <label className={styles.the_label}>Category</label>
         <div>
           {/* take all the current categories, and display them one by one (start from an empty array) */}
           {/* Here map and filter will only be called if category exists */}
@@ -67,7 +67,7 @@ const AddQuestionForm: React.FC<QuestionFormProps> = ({
             <span key={index}>
               {cat}{" "}
               <button
-                className="category-button"
+                className={styles.category_button}
                 type="button"
                 onClick={() =>
                   setNewQuestion(
@@ -85,7 +85,7 @@ const AddQuestionForm: React.FC<QuestionFormProps> = ({
           ))}
           {/* drop-down list to add new categories. Only those not already added will be displayed */}
           <select
-            className="the-select"
+            className={styles.the_select}
             value={selectedCategory}
             onChange={(e) => {
               setNewQuestion((prev) => ({
@@ -112,9 +112,9 @@ const AddQuestionForm: React.FC<QuestionFormProps> = ({
         {/* <input type="text" value={newQuestion.category} onChange={e => setNewQuestion({ ...newQuestion, category: e.target.value })} /> */}
       </div>
       <div>
-        <label className="the-label">Complexity</label>
+        <label className={styles.the_label}>Complexity</label>
         <select
-          className="the-select"
+          className={styles.the_select}
           value={newQuestion.complexity as "Easy" | "Medium" | "Hard"}
           onChange={(e) =>
             setNewQuestion({
@@ -128,7 +128,7 @@ const AddQuestionForm: React.FC<QuestionFormProps> = ({
           <option value="Hard">Hard</option>
         </select>
       </div>
-      <button className="action-button" type="submit">
+      <button className={styles.action_button} type="submit">
         Add Question
       </button>
     </form>

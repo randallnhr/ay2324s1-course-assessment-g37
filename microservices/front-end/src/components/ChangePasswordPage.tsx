@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import "./ChangePasswordPage.module.css";
+import styles from "./ChangePasswordPage.module.css";
 import { User } from "./types";
 
 // Should only allow change of password if old password matches!
@@ -47,10 +47,9 @@ const ChangePasswordPage: React.FC = () => {
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
         console.error("Change password failed:", error);
-        if (error.response && error.response.status === 401) {
-          alert("User credential is incorrect");
-        }
+        alert("User credential is incorrect");
       } else {
+        alert("Changing password failed. Try again later.");
         console.error("An unknown error occurred:", error);
       }
     }
@@ -63,15 +62,15 @@ const ChangePasswordPage: React.FC = () => {
   };
 
   return (
-    <div className="login-container">
-      <h1 className="login-header">Change Password</h1>
+    <div className={styles.login_container}>
+      <h1>Change Password</h1>
 
-      <div className="input-field">
-        <label className="the-label" htmlFor="oldPassword">
+      <div className={styles.input_field}>
+        <label className={styles.the_label} htmlFor="oldPassword">
           Old Password
         </label>
         <input
-          className="input-text"
+          className={styles.input_text}
           id="oldPassword"
           type="password"
           value={oldPassword}
@@ -79,34 +78,34 @@ const ChangePasswordPage: React.FC = () => {
         />
       </div>
 
-      <div className="input-field">
-        <label className="the-label" htmlFor="newPassword">
+      <div className={styles.input_field}>
+        <label className={styles.the_label} htmlFor="newPassword">
           New Password
         </label>
         <input
-          className="input-text"
+          className={styles.input_text}
           id="newPassword"
           type="password"
           value={newPassword}
           onChange={(e) => setNewPassword(e.target.value)}
         />
       </div>
-      <div className="input-field">
-        <label className="the-label" htmlFor="confirmPassword">
+      <div className={styles.input_field}>
+        <label className={styles.the_label} htmlFor="confirmPassword">
           Confirm Password
         </label>
         <input
-          className="input-text"
+          className={styles.input_text}
           id="confirmPassword"
           type="password"
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
         />
       </div>
-      <button className="action-button" onClick={handleChangePassword}>
+      <button className={styles.action_button} onClick={handleChangePassword}>
         Save
       </button>
-      <button className="action-button" onClick={handleCancel}>
+      <button className={styles.action_button} onClick={handleCancel}>
         Cancel
       </button>
     </div>
