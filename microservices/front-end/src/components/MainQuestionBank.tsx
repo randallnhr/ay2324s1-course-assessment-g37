@@ -242,6 +242,7 @@ const QuestionBank: React.FC = () => {
                               <span key={index}>
                                 {cat}
                                 <button
+                                  className={styles.category_button}
                                   onClick={() =>
                                     updateExistingCategoryArray(
                                       question._id,
@@ -335,6 +336,7 @@ const QuestionBank: React.FC = () => {
                   <tr>
                     <td>
                       <button
+                        className={styles.category_button}
                         onClick={() => toggleQuestionDetails(question._id)}
                       >
                         {question.title}
