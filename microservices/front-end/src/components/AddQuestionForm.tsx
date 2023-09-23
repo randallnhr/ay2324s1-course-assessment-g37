@@ -37,8 +37,9 @@ const AddQuestionForm: React.FC<QuestionFormProps> = ({
       }}
     >
       <div>
-        <label>Title</label>
+        <label className="the-label">Title</label>
         <input
+          className="input-text"
           type="text"
           value={newQuestion.title}
           onChange={(e) =>
@@ -47,8 +48,9 @@ const AddQuestionForm: React.FC<QuestionFormProps> = ({
         />
       </div>
       <div>
-        <label>Description</label>
+        <label className="the-label">Description</label>
         <textarea
+          className="text-area"
           value={newQuestion.description}
           onChange={(e) =>
             setNewQuestion({ ...newQuestion, description: e.target.value })
@@ -56,7 +58,7 @@ const AddQuestionForm: React.FC<QuestionFormProps> = ({
         ></textarea>
       </div>
       <div>
-        <label>Category</label>
+        <label className="the-label">Category</label>
         <div>
           {/* take all the current categories, and display them one by one (start from an empty array) */}
           {/* Here map and filter will only be called if category exists */}
@@ -65,6 +67,7 @@ const AddQuestionForm: React.FC<QuestionFormProps> = ({
             <span key={index}>
               {cat}{" "}
               <button
+                className="category-button"
                 type="button"
                 onClick={() =>
                   setNewQuestion(
@@ -82,6 +85,7 @@ const AddQuestionForm: React.FC<QuestionFormProps> = ({
           ))}
           {/* drop-down list to add new categories. Only those not already added will be displayed */}
           <select
+            className="the-select"
             value={selectedCategory}
             onChange={(e) => {
               setNewQuestion((prev) => ({
@@ -108,8 +112,9 @@ const AddQuestionForm: React.FC<QuestionFormProps> = ({
         {/* <input type="text" value={newQuestion.category} onChange={e => setNewQuestion({ ...newQuestion, category: e.target.value })} /> */}
       </div>
       <div>
-        <label>Complexity</label>
+        <label className="the-label">Complexity</label>
         <select
+          className="the-select"
           value={newQuestion.complexity as "Easy" | "Medium" | "Hard"}
           onChange={(e) =>
             setNewQuestion({

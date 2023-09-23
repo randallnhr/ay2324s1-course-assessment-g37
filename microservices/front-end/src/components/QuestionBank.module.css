@@ -1,4 +1,5 @@
-/* set button component */
+/* In Module CSS, if you define stuff using tag, like 
+button, label, it will still be GLOBAL by default! */
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
@@ -19,6 +20,22 @@ button:focus-visible {
 .action-button:hover {
   border-color: #a09797;
   background-color: #e6e1e1;
+}
+
+.category-button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #f9f9f9;
+  cursor: pointer;
+  transition: border-color 0.25s;
+  margin: 3px;
+}
+.category-button:hover {
+  border-color: #646cff;
 }
 
 /* Align text center for category, and complexity */
