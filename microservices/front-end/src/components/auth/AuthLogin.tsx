@@ -1,14 +1,5 @@
 import React, { FC, ReactNode } from "react";
-import {
-  Box,
-  Typography,
-  FormGroup,
-  FormControlLabel,
-  Button,
-  Stack,
-  Checkbox,
-  TextField,
-} from "@mui/material";
+import { Box, Typography, Button, Stack } from "@mui/material";
 
 import CustomTextField from "../forms/theme-elements/CustomTextField";
 
@@ -86,23 +77,7 @@ const AuthLogin: FC<AuthLoginProps> = ({
         alignItems="center"
         my={2}
       >
-        <FormGroup>
-          <FormControlLabel
-            control={<Checkbox defaultChecked />}
-            label="Remeber this Device"
-          />
-        </FormGroup>
-        {/* <Typography
-                    component={Link}
-                    to="/"
-                    fontWeight="500"
-                    sx={{
-                        textDecoration: 'none',
-                        color: 'primary.main',
-                    }}
-                >
-                    Forgot Password ?
-                </Typography> */}
+        {/* Removed the part of Remember this device FormGroup */}
       </Stack>
     </Stack>
     <Box>
