@@ -3,7 +3,7 @@
 // import viteLogo from '/vite.svg'
 
 import "./App.css";
-import { UserProvider, useUser } from "./UserContext";
+import { UserProvider, useUserContext } from "./UserContext";
 import {
   BrowserRouter as Router,
   Route,
@@ -32,6 +32,7 @@ function App() {
   });
 
   const [isFetching, setIsFetching] = useState<boolean>(true);
+  const { currentUser, setCurrentUser } = useUserContext();
 
   // setCurrentUser does not work if context may be null, but useEffect must be called unconditionally
   useEffect(() => {
@@ -42,6 +43,8 @@ function App() {
           console.log(response.data);
           const userData: User = response.data;
           setUser(userData);
+          setCurrentUser(userData);
+          console.log(currentUser.displayName);
           localStorage.setItem("user", JSON.stringify(userData)); // set to localStorage
         })
         .catch((error) => {
@@ -53,21 +56,7 @@ function App() {
     } else {
       setIsFetching(false);
     }
-  }, [user]);
-
-  const context = useUser();
-  if (!context) {
-    console.log("Context not available");
-    return <div>Internal Server Error</div>;
-  }
-
-  const { currentUser, setCurrentUser } = context;
-
-  // should put this inside useEffect
-  if (user) {
-    setCurrentUser(user);
-    // console.log(currentUser?.displayName);
-  }
+  }, [user, setCurrentUser]);
 
   return (
     <UserProvider>
