@@ -14,6 +14,8 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import axios from "axios";
+import Backdrop from "@mui/material/Backdrop";
+import CircularProgress from "@mui/material/CircularProgress";
 
 const allCategories = [
   "Arrays",
@@ -78,7 +80,11 @@ const QuestionBank: React.FC = () => {
   const descriptionRef = React.createRef<HTMLTextAreaElement>();
 
   // Need to fetch current user as well
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User | null>(() => {
+    const storedUser = localStorage.getItem("user");
+    return storedUser ? JSON.parse(storedUser) : null;
+  });
+  const [isFetching, setIsFetching] = useState<boolean>(true);
 
   // functions to fetch all questions and update UI
   const fetchQuestions = async () => {
@@ -91,23 +97,33 @@ const QuestionBank: React.FC = () => {
     fetchQuestions();
   }, []);
 
+  // if not user, try to fetch the user data
   useEffect(() => {
-    axios
-      .get("/api/auth/current-user")
-      .then((response) => {
-        console.log(response.data);
-        setUser(response.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching current user", error);
-      });
-  }, []);
+    if (!user) {
+      axios
+        .get("/api/auth/current-user")
+        .then((response) => {
+          console.log(response.data);
+          const userData: User = response.data;
+          setUser(userData);
+        })
+        .catch((error) => {
+          console.error("Error fetching current user", error);
+        })
+        .finally(() => {
+          setIsFetching(false);
+        });
+    } else {
+      setIsFetching(false);
+    }
+  }, [user]);
 
   const handleSignout = () => {
     axios
       .delete("/api/auth/log-out")
       .then((response) => {
         if (response.status === 200) {
+          localStorage.removeItem("user");
           navigate("/login");
         }
       })
@@ -172,6 +188,12 @@ const QuestionBank: React.FC = () => {
 
   return (
     <div>
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={isFetching}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
       <div>
         <AppBar position="static">
           <Toolbar>

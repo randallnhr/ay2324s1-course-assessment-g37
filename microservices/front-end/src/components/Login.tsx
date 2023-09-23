@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Grid, Box, Card, Stack, Typography } from "@mui/material";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { useUser } from "../UserContext";
+import { UserProvider, useUserContext } from "../UserContext";
 import { User } from "./types";
 
 // components
@@ -14,22 +14,22 @@ const Login: React.FC = () => {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [loginFailed, setLoginFailed] = useState<boolean>(false);
+  const [user, setUser] = useState<User | null>(() => {
+    const storedUser = localStorage.getItem("user");
+    return storedUser ? JSON.parse(storedUser) : null;
+  });
+  const { currentUser, setCurrentUser } = useUserContext();
 
-  const context = useUser();
   const navigate = useNavigate();
 
-  if (!context) {
-    console.log("Context not available");
-    return <div>Error: Context not available</div>;
-  }
-
-  const { currentUser, setCurrentUser } = context;
+  useEffect(() => {
+    if (user) {
+      navigate("/question-bank");
+    }
+  }, [user, navigate]);
 
   const handleLogin = async () => {
     try {
-      console.log(username);
-      console.log(password);
-
       const response = await axios.post(
         "/api/auth/log-in",
         {
@@ -45,11 +45,9 @@ const Login: React.FC = () => {
         // REQUIREMENT: Backend returns user data
 
         const userData: User = response.data;
+        setUser(userData);
         setCurrentUser(userData);
-
-        // console.log("Updated User Context: ", context);
-        // console.log("Details: ", context?.currentUser?.username)
-        // --> These will show null REGARDLESS of success or not, should check by currentUser?.username
+        localStorage.setItem("user", JSON.stringify(userData));
 
         navigate("/question-bank");
       }

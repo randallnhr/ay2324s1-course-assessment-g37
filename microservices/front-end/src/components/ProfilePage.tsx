@@ -7,23 +7,37 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import { User } from "./types";
 import styles from "./ProfilePage.module.css";
+import Backdrop from "@mui/material/Backdrop";
+import CircularProgress from "@mui/material/CircularProgress";
 
 const ProfilePage: React.FC = () => {
   const navigate = useNavigate();
-  // local state to hold user data
-  const [user, setUser] = useState<User | null>(null);
+
+  const [user, setUser] = useState<User | null>(() => {
+    const storedUser = localStorage.getItem("user");
+    return storedUser ? JSON.parse(storedUser) : null;
+  });
+  const [isFetching, setIsFetching] = useState<boolean>(true);
 
   useEffect(() => {
-    axios
-      .get("/api/auth/current-user")
-      .then((response) => {
-        setUser(response.data);
-      })
-      .catch((error) => {
-        alert("Failed to fetch user profile");
-        console.error("Error fetching current user", error);
-      });
-  }, []);
+    if (!user) {
+      axios
+        .get("/api/auth/current-user")
+        .then((response) => {
+          console.log(response.data);
+          const userData: User = response.data;
+          setUser(userData);
+        })
+        .catch((error) => {
+          console.error("Error fetching current user", error);
+        })
+        .finally(() => {
+          setIsFetching(false);
+        });
+    } else {
+      setIsFetching(false);
+    }
+  }, [user]);
 
   //   Need to send request to backend to really sign out
   const handleSignout = () => {
@@ -31,6 +45,7 @@ const ProfilePage: React.FC = () => {
       .delete("/api/auth/log-out")
       .then((response) => {
         if (response.status === 200) {
+          localStorage.removeItem("user");
           navigate("/login");
         }
       })
@@ -61,6 +76,7 @@ const ProfilePage: React.FC = () => {
       .then((response) => {
         if (response.status === 200) {
           alert("Account deleted successfully");
+          localStorage.removeItem("user");
           navigate("/login");
         }
       })
@@ -76,6 +92,12 @@ const ProfilePage: React.FC = () => {
 
   return (
     <div>
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={isFetching}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
       <div>
         <AppBar position="static">
           <Toolbar>

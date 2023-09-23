@@ -34,7 +34,7 @@ function App() {
   const [isFetching, setIsFetching] = useState<boolean>(true);
   const { currentUser, setCurrentUser } = useUserContext();
 
-  // setCurrentUser does not work if context may be null, but useEffect must be called unconditionally
+  // Only set localStorage at Login
   useEffect(() => {
     if (!user) {
       axios
@@ -45,7 +45,7 @@ function App() {
           setUser(userData);
           setCurrentUser(userData);
           console.log(currentUser.displayName);
-          localStorage.setItem("user", JSON.stringify(userData)); // set to localStorage
+          // localStorage.setItem("user", JSON.stringify(userData));
         })
         .catch((error) => {
           console.error("Error fetching current user", error);
