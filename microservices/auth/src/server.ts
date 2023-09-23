@@ -142,10 +142,10 @@ app.post("/api/auth/sign-up", async (req, res) => {
     });
 
     // pass along the status code
-    res.status(response.status).send();
+    res.sendStatus(response.status);
   } catch (error) {
     console.error(error);
-    res.status(500).send();
+    res.sendStatus(500);
   }
 });
 
@@ -153,12 +153,12 @@ app.delete("/api/auth/log-out", (req, res) => {
   req.session.destroy((error) => {
     if (error) {
       console.error(error);
-      res.status(500).send();
+      res.sendStatus(500);
     } else {
       // the default name of the session cookie is "connect.sid"
       // source: https://expressjs.com/en/resources/middleware/session.html
       res.clearCookie("connect.sid");
-      res.status(200).send();
+      res.sendStatus(200);
     }
   });
 });
@@ -184,7 +184,7 @@ app.get("/api/auth/current-user", (req, res) => {
 
 app.get("/api/auth/secret", (req, res) => {
   if (!req.isAuthenticated()) {
-    res.status(401).send();
+    res.sendStatus(401);
     return;
   }
 
@@ -197,7 +197,7 @@ app.get("/api/auth/secret", (req, res) => {
 
 app.get("/api/users/:username", async (req, res) => {
   if (!req.isAuthenticated()) {
-    res.status(401).send();
+    res.sendStatus(401);
     return;
   }
 
@@ -208,23 +208,23 @@ app.get("/api/users/:username", async (req, res) => {
 
     if (response.status !== 200) {
       // pass along the status code
-      res.status(response.status).send();
+      res.sendStatus(response.status);
       return;
     }
 
     const json = await response.json();
     const user = json as User;
 
-    res.status(200).send(user);
+    res.status(200).json(user);
   } catch (error) {
     console.error(error);
-    res.status(500).send();
+    res.sendStatus(500);
   }
 });
 
 app.post("/api/users", async (req, res) => {
   if (!req.isAuthenticated()) {
-    res.status(401).send();
+    res.sendStatus(401);
     return;
   }
 
@@ -246,16 +246,16 @@ app.post("/api/users", async (req, res) => {
     });
 
     // pass along the status code
-    res.status(response.status).send();
+    res.sendStatus(response.status);
   } catch (error) {
     console.error(error);
-    res.status(500).send();
+    res.sendStatus(500);
   }
 });
 
 app.put("/api/users/:username", async (req, res) => {
   if (!req.isAuthenticated()) {
-    res.status(401).send();
+    res.sendStatus(401);
     return;
   }
 
@@ -279,7 +279,7 @@ app.put("/api/users/:username", async (req, res) => {
 
       if (!isOldPasswordMatch) {
         // wrong old password
-        res.status(401).send();
+        res.sendStatus(401);
       }
 
       const newHashedPassword = await bcrypt.hash(newPassword, 10);
@@ -301,14 +301,14 @@ app.put("/api/users/:username", async (req, res) => {
       );
 
       // pass along the status code
-      res.status(response.status).send();
+      res.sendStatus(response.status);
     } else {
       // user is changing details other than password
       const { username, displayName, role } = req.body;
 
       if (username !== oldUsername) {
         // the user should not be able to change the details of another person
-        res.status(401).send();
+        res.sendStatus(401);
       }
 
       const response = await fetch(
@@ -328,17 +328,17 @@ app.put("/api/users/:username", async (req, res) => {
       );
 
       // pass along the status code
-      res.status(response.status).send();
+      res.sendStatus(response.status);
     }
   } catch (error) {
     console.error(error);
-    res.status(500).send();
+    res.sendStatus(500);
   }
 });
 
 app.delete("/api/users/:username", async (req, res) => {
   if (!req.isAuthenticated()) {
-    res.status(401).send();
+    res.sendStatus(401);
     return;
   }
 
@@ -350,10 +350,10 @@ app.delete("/api/users/:username", async (req, res) => {
     });
 
     // pass along the status code
-    res.status(response.status).send();
+    res.sendStatus(response.status);
   } catch (error) {
     console.error(error);
-    res.status(500).send();
+    res.sendStatus(500);
   }
 });
 
@@ -363,7 +363,7 @@ app.delete("/api/users/:username", async (req, res) => {
 
 app.get("/api/questions", async (req, res) => {
   if (!req.isAuthenticated()) {
-    res.status(401).send();
+    res.sendStatus(401);
     return;
   }
 
@@ -372,7 +372,7 @@ app.get("/api/questions", async (req, res) => {
 
     if (response.status !== 200) {
       // pass along the status code
-      res.status(response.status).send();
+      res.sendStatus(response.status);
       return;
     }
 
@@ -382,13 +382,13 @@ app.get("/api/questions", async (req, res) => {
     res.status(200).send(questions);
   } catch (error) {
     console.error(error);
-    res.status(500).send();
+    res.sendStatus(500);
   }
 });
 
 app.get("/api/questions/:id", async (req, res) => {
   if (!req.isAuthenticated()) {
-    res.status(401).send();
+    res.sendStatus(401);
     return;
   }
 
@@ -399,7 +399,7 @@ app.get("/api/questions/:id", async (req, res) => {
 
     if (response.status !== 200) {
       // pass along the status code
-      res.status(response.status).send();
+      res.sendStatus(response.status);
       return;
     }
 
@@ -409,13 +409,13 @@ app.get("/api/questions/:id", async (req, res) => {
     res.status(200).send(question);
   } catch (error) {
     console.error(error);
-    res.status(500).send();
+    res.sendStatus(500);
   }
 });
 
 app.post("/api/questions", async (req, res) => {
   if (!req.isAuthenticated()) {
-    res.status(401).send();
+    res.sendStatus(401);
     return;
   }
 
@@ -432,16 +432,16 @@ app.post("/api/questions", async (req, res) => {
     });
 
     // pass along the status code
-    res.status(response.status).send();
+    res.sendStatus(response.status);
   } catch (error) {
     console.error(error);
-    res.status(500).send();
+    res.sendStatus(500);
   }
 });
 
 app.put("/api/questions", async (req, res) => {
   if (!req.isAuthenticated()) {
-    res.status(401).send();
+    res.sendStatus(401);
     return;
   }
 
@@ -458,16 +458,16 @@ app.put("/api/questions", async (req, res) => {
     });
 
     // pass along the status code
-    res.status(response.status).send();
+    res.sendStatus(response.status);
   } catch (error) {
     console.error(error);
-    res.status(500).send();
+    res.sendStatus(500);
   }
 });
 
 app.delete("/api/questions/:id", async (req, res) => {
   if (!req.isAuthenticated()) {
-    res.status(401).send();
+    res.sendStatus(401);
     return;
   }
 
@@ -480,10 +480,10 @@ app.delete("/api/questions/:id", async (req, res) => {
     );
 
     // pass along the status code
-    res.status(response.status).send();
+    res.sendStatus(response.status);
   } catch (error) {
     console.error(error);
-    res.status(500).send();
+    res.sendStatus(500);
   }
 });
 
