@@ -5,9 +5,16 @@ export interface User {
   role: "basic" | "admin";
 }
 
-export type Question = {
+export interface UserWithoutPassword {
+  username: string;
+  displayName: string;
+  role: "basic" | "admin";
+}
+
+export interface Question {
+  _id: string;
   title: string;
   categories: string[];
   complexity: "Easy" | "Medium" | "Hard";
   description: string;
-};
+}

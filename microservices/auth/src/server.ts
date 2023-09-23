@@ -6,7 +6,7 @@ import express from "express";
 import session from "express-session";
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
-import { Question, User } from "./types";
+import { Question, User, UserWithoutPassword } from "./types";
 
 dotenv.config();
 
@@ -119,7 +119,13 @@ app.post("/api/auth/log-in", passport.authenticate("local"), (req, res) => {
   const expressUser = req.user;
   const user = expressUser as User;
 
-  return res.status(200).json({ username: user.username });
+  const userWithoutPassword: UserWithoutPassword = {
+    username: user.username,
+    displayName: user.displayName,
+    role: user.role,
+  };
+
+  return res.status(200).json(userWithoutPassword);
 });
 
 app.post("/api/auth/sign-up", async (req, res) => {
