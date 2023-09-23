@@ -95,6 +95,7 @@ const QuestionBank: React.FC = () => {
     axios
       .get("/api/auth/current-user")
       .then((response) => {
+        console.log(response.data);
         setUser(response.data);
       })
       .catch((error) => {
