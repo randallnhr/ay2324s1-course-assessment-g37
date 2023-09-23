@@ -1,7 +1,12 @@
 /* set button component */
-button {
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+.action-button {
   border-radius: 8px;
-  border: 1px solid transparent;
+  border: 2px solid #a09797;
   padding: 0.6em 1.2em;
   font-size: 1em;
   font-weight: 500;
@@ -10,18 +15,6 @@ button {
   cursor: pointer;
   transition: border-color 0.25s;
   margin: 3px;
-}
-
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
-.action-button {
-  border: 2px solid #a09797;
 }
 .action-button:hover {
   border-color: #a09797;
@@ -45,7 +38,7 @@ button:focus-visible {
 }
 
 /* Style for form labels */
-label {
+.the-label {
   display: block;
   margin-bottom: 0.5rem;
   font-weight: 600;
@@ -55,13 +48,13 @@ label {
 /* Style for input fields */
 
 /* Setting minimum width and height for textarea */
-textarea {
+.text-area {
   min-width: 100%;
   min-height: 100px;
 }
 
 /* Prettier select field */
-select {
+.the-select {
   appearance: none;
   /* background: url('data:image/png;base64,iVBORw0KGg...') no-repeat; Optional: Add a small arrow image */
   background-color: #e5e9e9;
@@ -71,9 +64,9 @@ select {
 }
 
 /* Light scheme styling for input fields */
-input[type="text"]:focus,
-textarea:focus,
-select:focus {
+.input-text:focus,
+.text-area:focus,
+.the-select:focus {
   border-color: #a8a8a8;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
 }

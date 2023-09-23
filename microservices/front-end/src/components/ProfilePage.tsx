@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { useUser } from "../UserContext";
 import { AppBar } from "@mui/material";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-import "./ProfilePage.css";
+import "./ProfilePage.module.css";
 import { User } from "./types";
 
 const ProfilePage: React.FC = () => {

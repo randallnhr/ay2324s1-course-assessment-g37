@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import "./ChangePasswordPage.css";
+import "./ChangePasswordPage.module.css";
 import { User } from "./types";
 
 // Should only allow change of password if old password matches!
@@ -67,8 +67,11 @@ const ChangePasswordPage: React.FC = () => {
       <h1 className="login-header">Change Password</h1>
 
       <div className="input-field">
-        <label htmlFor="oldPassword">Old Password</label>
+        <label className="the-label" htmlFor="oldPassword">
+          Old Password
+        </label>
         <input
+          className="input-text"
           id="oldPassword"
           type="password"
           value={oldPassword}
@@ -77,8 +80,11 @@ const ChangePasswordPage: React.FC = () => {
       </div>
 
       <div className="input-field">
-        <label htmlFor="newPassword">New Password</label>
+        <label className="the-label" htmlFor="newPassword">
+          New Password
+        </label>
         <input
+          className="input-text"
           id="newPassword"
           type="password"
           value={newPassword}
@@ -86,8 +92,11 @@ const ChangePasswordPage: React.FC = () => {
         />
       </div>
       <div className="input-field">
-        <label htmlFor="confirmPassword">Confirm Password</label>
+        <label className="the-label" htmlFor="confirmPassword">
+          Confirm Password
+        </label>
         <input
+          className="input-text"
           id="confirmPassword"
           type="password"
           value={confirmPassword}

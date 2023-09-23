@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "./QuestionBank.css";
+import "./QuestionBank.module.css";
 import { Question, User } from "./types";
 import {
   getQuestions,
@@ -214,22 +214,24 @@ const QuestionBank: React.FC = () => {
                     <td colSpan={3}>
                       <div className="update-form">
                         <div>
-                          <label>Title</label>
+                          <label className="the-label">Title</label>
                           <input
+                            className="input-text"
                             ref={titleRef}
                             type="text"
                             defaultValue={question.title}
                           />
                         </div>
                         <div>
-                          <label>Description</label>
+                          <label className="the-label">Description</label>
                           <textarea
+                            className="text-area"
                             ref={descriptionRef}
                             defaultValue={question.description}
                           ></textarea>
                         </div>
                         <div>
-                          <label>Category</label>
+                          <label className="the-label">Category</label>
 
                           <div>
                             {question.categories.map((cat, index) => (
@@ -250,6 +252,7 @@ const QuestionBank: React.FC = () => {
                             ))}
                           </div>
                           <select
+                            className="the-select"
                             value={updateSelectedOption} // explicitly set the value
                             onChange={(e) => {
                               const newValue = e.target.value;
@@ -278,8 +281,9 @@ const QuestionBank: React.FC = () => {
                           {/* <input ref={categoryRef} type="text" defaultValue={question.category} /> */}
                         </div>
                         <div>
-                          <label>Complexity</label>
+                          <label className="the-label">Complexity</label>
                           <select
+                            className="the-select"
                             ref={complexityRef}
                             defaultValue={question.complexity}
                           >

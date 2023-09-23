@@ -1,5 +1,6 @@
 import React from "react";
 import { Question, NewQuestion } from "./types";
+import "./QuestionBank.module.css";
 
 // React.dispatch = a funciton to dispatch actions
 // SetStateAction = set or update current state

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import "./ChangeDisplayName.css";
+import "./ChangeDisplayName.module.css";
 import { User } from "./types";
 
 // Similarly, should only allow change of display name if passes authentication
@@ -57,12 +57,15 @@ const ChangeDisplayName: React.FC = () => {
   };
 
   return (
-    <div className="login-container">
-      <h1 className="login-header">Change Display Name</h1>
+    <div className="change-display-name-container">
+      <h1 className="change-display-name-header">Change Display Name</h1>
 
       <div className="input-field">
-        <label htmlFor="displayName">New Display Name</label>
+        <label className="the-label" htmlFor="displayName">
+          New Display Name
+        </label>
         <input
+          className="input-text"
           id="displayName"
           type="text"
           value={displayName}
