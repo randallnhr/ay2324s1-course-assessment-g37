@@ -160,12 +160,13 @@ app.delete("/api/auth/log-out", (req, res) => {
     if (error) {
       console.error(error);
       res.sendStatus(500);
-    } else {
-      // the default name of the session cookie is "connect.sid"
-      // source: https://expressjs.com/en/resources/middleware/session.html
-      res.clearCookie("connect.sid");
-      res.sendStatus(200);
+      return;
     }
+
+    // the default name of the session cookie is "connect.sid"
+    // source: https://expressjs.com/en/resources/middleware/session.html
+    res.clearCookie("connect.sid");
+    res.sendStatus(200);
   });
 });
 
@@ -286,6 +287,7 @@ app.put("/api/users/:username", async (req, res) => {
       if (!isOldPasswordMatch) {
         // wrong old password
         res.sendStatus(401);
+        return;
       }
 
       const newHashedPassword = await bcrypt.hash(newPassword, 10);
@@ -315,6 +317,7 @@ app.put("/api/users/:username", async (req, res) => {
       if (username !== oldUsername) {
         // the user should not be able to change the details of another person
         res.sendStatus(401);
+        return;
       }
 
       const response = await fetch(
