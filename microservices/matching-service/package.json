@@ -5,18 +5,18 @@
   "main": "index.js",
   "scripts": {
     "build": "npx tsc",
-    "rabbitMQ": "docker run -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq",
-    "publish": "tsc-watch --onSuccess \"node ./dist/publisher.js\"",
-    "subscribe": "tsc-watch --onSuccess \"node ./dist/consumer.js\"",
+    "rabbitMQ": "docker run --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq",
+    "serve": "tsc-watch --onSuccess \"node ./dist/server.js\"",
+    "match": "node ./dist/utility/runClient.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@types/amqplib": "^0.10.2",
     "amqplib": "^0.10.3"
   },
   "devDependencies": {
+    "@types/amqplib": "^0.10.2",
     "@types/node": "^20.6.4",
     "tsc-watch": "^6.0.4",
     "typescript": "^5.2.2"
