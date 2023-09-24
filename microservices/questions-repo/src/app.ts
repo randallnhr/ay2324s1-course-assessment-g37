@@ -128,8 +128,7 @@ function main() {
   initialiseDatabase();
   const port = getPort();
   const app = initialiseExpressApp(port);
-  initialiseServer(app, port, '0.0.0.0');
-  initialiseServer(app, port);
+  initialiseServer(app, port, '::');
 }
 
 main();
