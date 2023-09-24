@@ -71,14 +71,12 @@ button:focus-visible {
 
 /* Setting minimum width and height for textarea */
 .text_area {
-  min-width: 100%;
+  min-width: calc(100% - 1rem);
   min-height: 100px;
 }
 
-/* Prettier select field */
 .the_select {
   appearance: none;
-  /* background: url('data:image/png;base64,iVBORw0KGg...') no-repeat; Optional: Add a small arrow image */
   background-color: #e5e9e9;
   background-position: right 0.5rem center;
   background-size: 1.5em;
@@ -88,7 +86,8 @@ button:focus-visible {
 .input_text,
 .text_area,
 .the_select {
-  width: 100%;
+  width: calc(100% - 1rem);
+  /* Use calc, otherwise if first apply width then padding, will overshoot */
   padding: 0.5rem;
   margin-bottom: 1rem;
   border: 1px solid #ccc;

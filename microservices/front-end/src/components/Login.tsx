@@ -114,6 +114,7 @@ const Login: React.FC = () => {
                     textAlign="center"
                     color="textSecondary"
                     mb={1}
+                    fontSize="1.25rem"
                   >
                     Your Technical Interview Prep Platform
                   </Typography>
@@ -124,11 +125,12 @@ const Login: React.FC = () => {
                     spacing={1}
                     justifyContent="center"
                     mt={3}
+                    alignItems="center"
                   >
                     <Typography
                       color="textSecondary"
-                      variant="h6"
                       fontWeight="500"
+                      fontSize="1.25rem"
                     >
                       New to PeerPrep?
                     </Typography>

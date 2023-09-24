@@ -22,6 +22,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
+import { HelmetProvider } from "react-helmet-async";
 
 // useContext: create a global state, that can be accessed by any component
 // localStorage: persist this global state
@@ -59,38 +60,40 @@ function App() {
   }, [user, setCurrentUser]);
 
   return (
-    <UserProvider>
-      <Router>
-        <Backdrop
-          sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-          open={isFetching}
-        >
-          <CircularProgress color="inherit" />
-        </Backdrop>
+    <HelmetProvider>
+      <UserProvider>
+        <Router>
+          <Backdrop
+            sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+            open={isFetching}
+          >
+            <CircularProgress color="inherit" />
+          </Backdrop>
 
-        {user ? (
-          <Routes>
-            <Route path="/question-bank" element={<QuestionBank />} />
-            <Route path="/change-password" element={<ChangePasswordPage />} />
-            <Route
-              path="/change-display-name"
-              element={<ChangeDisplayName />}
-            />
-            <Route path="/profile" element={<ProfilePage />} />
-            <Route path="*" element={<Navigate to="/login" />} />{" "}
-            {/* Catch-all route */}
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Register />} />
-          </Routes>
-        ) : (
-          <Routes>
-            <Route path="*" element={<Navigate to="/login" />} />{" "}
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Register />} />
-          </Routes>
-        )}
-      </Router>
-    </UserProvider>
+          {user ? (
+            <Routes>
+              <Route path="/question-bank" element={<QuestionBank />} />
+              <Route path="/change-password" element={<ChangePasswordPage />} />
+              <Route
+                path="/change-display-name"
+                element={<ChangeDisplayName />}
+              />
+              <Route path="/profile" element={<ProfilePage />} />
+              <Route path="*" element={<Navigate to="/login" />} />{" "}
+              {/* Catch-all route */}
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Register />} />
+            </Routes>
+          ) : (
+            <Routes>
+              <Route path="*" element={<Navigate to="/login" />} />{" "}
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Register />} />
+            </Routes>
+          )}
+        </Router>
+      </UserProvider>
+    </HelmetProvider>
   );
 }
 

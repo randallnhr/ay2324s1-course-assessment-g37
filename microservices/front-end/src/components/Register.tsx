@@ -109,6 +109,7 @@ const Register: React.FC = () => {
                     textAlign="center"
                     color="textSecondary"
                     mb={1}
+                    fontSize="1.25rem"
                   >
                     Your Technical Interview Prep Platform
                   </Typography>
@@ -119,11 +120,13 @@ const Register: React.FC = () => {
                     justifyContent="center"
                     spacing={1}
                     mt={3}
+                    alignItems="center" // align them vertically
                   >
                     <Typography
                       color="textSecondary"
-                      variant="h6"
-                      fontWeight="400"
+                      // variant="h6"
+                      fontWeight="500" // for how bold the text is
+                      fontSize="1.25rem" // for how large the text is
                     >
                       Already have an Account?
                     </Typography>

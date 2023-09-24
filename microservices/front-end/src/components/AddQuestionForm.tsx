@@ -98,7 +98,8 @@ const AddQuestionForm: React.FC<QuestionFormProps> = ({
               setSelectedCategory("");
             }}
           >
-            <option value="" disabled selected>
+            <option value="" disabled>
+              {/* Here should not have disabled selected, cause confusion */}
               Select your option
             </option>
             {allCategories
