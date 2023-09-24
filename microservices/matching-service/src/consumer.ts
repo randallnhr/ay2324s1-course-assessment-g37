@@ -1,6 +1,5 @@
 #!/usr/bin/eddnv node
-
-var amqp = require('amqplib/callback_api');
+import amqp from 'amqplib/callback_api';
 
 amqp.connect('amqp://localhost', function(error0, connection) {
     if (error0) {
@@ -11,7 +10,7 @@ amqp.connect('amqp://localhost', function(error0, connection) {
             throw error1;
         }
 
-        var queue = 'hello';
+        const queue = 'hello';
 
         channel.assertQueue(queue, {
             durable: false
@@ -20,6 +19,9 @@ amqp.connect('amqp://localhost', function(error0, connection) {
         console.log(" [*] Waiting for messages in %s. To exit press CTRL+C", queue);
 
         channel.consume(queue, function(msg) {
+            if (!msg) {
+              return;
+            }
             console.log(" [x] Received %s", msg.content.toString());
         }, {
             noAck: true
