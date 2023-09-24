@@ -448,23 +448,27 @@ app.post("/api/questions", async (req, res) => {
   }
 });
 
-app.put("/api/questions", async (req, res) => {
+app.put("/api/questions/:id", async (req, res) => {
   if (!req.isAuthenticated()) {
     res.sendStatus(401);
     return;
   }
 
   try {
+    const id = req.params.id;
     const json = req.body;
     const question = json as Question;
 
-    const response = await fetch(`${QUESTION_SERVICE_URL}/api/questions`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(question),
-    });
+    const response = await fetch(
+      `${QUESTION_SERVICE_URL}/api/questions/${id}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(question),
+      }
+    );
 
     // pass along the status code
     res.sendStatus(response.status);
@@ -504,10 +508,6 @@ app.get("/", (req, res) => {
   res.send("rainbow");
 });
 
-app.listen(PORT, "0.0.0.0", () => {
-  console.log(`Listening on http://localhost:${PORT}`);
-});
-
-app.listen(PORT, () => {
+app.listen(PORT, "::", () => {
   console.log(`Listening on http://localhost:${PORT}`);
 });
