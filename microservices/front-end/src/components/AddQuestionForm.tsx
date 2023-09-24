@@ -25,6 +25,7 @@ const AddQuestionForm: React.FC<QuestionFormProps> = ({
 }) => {
   return (
     <form
+      className={styles.form_container}
       onSubmit={(e) => {
         e.preventDefault();
         handleAddQuestions(newQuestion);

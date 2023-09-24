@@ -226,9 +226,7 @@ const QuestionBank: React.FC = () => {
               <th className={styles.table_header}>Title</th>
               <th className={styles.table_header}>Category</th>
               <th className={styles.table_header}>Complexity</th>
-              {user && user.role === "admin" && (
-                <th className={styles.table_header}>Actions</th>
-              )}
+              {user && <th className={styles.table_header}>Actions</th>}
             </tr>
           </thead>
           <tbody>
@@ -373,7 +371,7 @@ const QuestionBank: React.FC = () => {
                     </td>
                     <td>
                       {/* Render Actions conditionally for non-basic users */}
-                      {user && user.role === "admin" && (
+                      {user && (
                         <>
                           <button
                             className={styles.action_button}
@@ -410,7 +408,7 @@ const QuestionBank: React.FC = () => {
       )}
 
       {/* Render AddQuestionForm conditionally */}
-      {user && user.role === "admin" && (
+      {user && (
         <>
           <h2 className={styles.add_header}>Add a New Question</h2>
           <AddQuestionForm
