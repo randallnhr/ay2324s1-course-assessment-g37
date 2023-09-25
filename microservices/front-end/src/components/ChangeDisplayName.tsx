@@ -10,21 +10,50 @@ import Button from "@mui/material/Button";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
 import { UserProvider, useUserContext } from "../UserContext";
+
 // Similarly, should only allow change of display name if passes authentication
 const ChangeDisplayName: React.FC = () => {
   const { currentUser, setCurrentUser } = useUserContext();
   const [displayName, setDisplayName] = useState<string>("");
   const navigate = useNavigate();
+
+  // check if currentUser is authenticated, if not, direct back to login
+  useEffect(() => {
+    if (Object.keys(currentUser).length != 0 && !currentUser.username) {
+      navigate("/login");
+    }
+  });
+
+  // on windows reload, need to re-fetch user credential
+  useEffect(() => {
+    if (Object.keys(currentUser).length === 0) {
+      // initially currentUser = {}
+      axios
+        .get("/api/auth/current-user")
+        .then((response) => {
+          console.log(response.data);
+          const userData: User = response.data;
+          setCurrentUser(userData);
+          console.log(currentUser.username);
+        })
+        .catch((error) => {
+          console.error("Error fetching current user", error);
+        });
+    }
+  }, [currentUser, setCurrentUser]);
+
   const handleChangeDisplayName = async () => {
     const alphanumeric = /^[a-z0-9]+$/i;
     if (!displayName) {
       alert("New display name cannot be empty");
       return;
     }
+
     if (!alphanumeric.test(displayName)) {
       alert("Display Name must be alphanumeric.");
       return;
     }
+
     try {
       const updatedUser = {
         ...currentUser,
@@ -46,10 +75,12 @@ const ChangeDisplayName: React.FC = () => {
       console.error("An unknown error occurred:", error);
     }
   };
+
   const handleQuestion = () => {
     setDisplayName("");
     navigate("/question-bank");
   };
+
   const handleSignout = () => {
     axios
       .delete("/api/auth/log-out")
@@ -65,10 +96,12 @@ const ChangeDisplayName: React.FC = () => {
         alert("Failed to sign out, please try again!");
       });
   };
+
   const handleCancel = () => {
     setDisplayName("");
     navigate("/profile");
   };
+
   return (
     <div>
       <div>

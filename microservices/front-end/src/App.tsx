@@ -21,11 +21,13 @@ import axios from "axios";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
 import { HelmetProvider } from "react-helmet-async";
+
 // useContext: create a global state, that can be accessed by any component
 function App() {
   const [isFetching, setIsFetching] = useState<boolean>(true);
   const { currentUser, setCurrentUser } = useUserContext();
   // Do this once at App launch. When app launches, all the previous data will be emptied, and useEffect will re-run
+
   useEffect(() => {
     if (Object.keys(currentUser).length === 0) {
       // initially currentUser = {}
@@ -35,6 +37,7 @@ function App() {
           console.log(response.data);
           const userData: User = response.data;
           setCurrentUser(userData);
+          console.log(currentUser.username);
         })
         .catch((error) => {
           console.error("Error fetching current user", error);
@@ -45,43 +48,51 @@ function App() {
     } else {
       setIsFetching(false);
     }
-  }, [setCurrentUser]);
+  }, [currentUser, setCurrentUser]);
+
   return (
     <HelmetProvider>
       <UserProvider>
         <Router>
-          <Backdrop
-            sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-            open={isFetching}
-          >
-            <CircularProgress color="inherit" />
-          </Backdrop>
-          {currentUser &&
-          Object.keys(currentUser).length != 0 &&
-          currentUser.username ? (
-            <Routes>
-              <Route path="/question-bank" element={<QuestionBank />} />
-              <Route path="/change-password" element={<ChangePasswordPage />} />
-              <Route
-                path="/change-display-name"
-                element={<ChangeDisplayName />}
-              />
-              <Route path="/profile" element={<ProfilePage />} />
-              <Route path="*" element={<Navigate to="/login" />} />{" "}
-              {/* Catch-all route */}
-              <Route path="/login" element={<Login />} />
-              <Route path="/signup" element={<Register />} />
-            </Routes>
+          {Object.keys(currentUser).length === 0 ? (
+            <Backdrop
+              sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+              open={isFetching}
+            >
+              <CircularProgress color="inherit" />
+            </Backdrop>
           ) : (
-            <Routes>
-              <Route path="*" element={<Navigate to="/login" />} />{" "}
-              <Route path="/login" element={<Login />} />
-              <Route path="/signup" element={<Register />} />
-            </Routes>
+            <>
+              {currentUser && currentUser.username ? (
+                <Routes>
+                  <Route path="/question-bank" element={<QuestionBank />} />
+                  <Route
+                    path="/change-password"
+                    element={<ChangePasswordPage />}
+                  />
+                  <Route
+                    path="/change-display-name"
+                    element={<ChangeDisplayName />}
+                  />
+                  <Route path="/profile" element={<ProfilePage />} />
+                  <Route path="*" element={<Navigate to="/login" />} />{" "}
+                  {/* Catch-all route */}
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/signup" element={<Register />} />
+                </Routes>
+              ) : (
+                <Routes>
+                  <Route path="*" element={<Navigate to="/login" />} />{" "}
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/signup" element={<Register />} />
+                </Routes>
+              )}
+            </>
           )}
         </Router>
       </UserProvider>
     </HelmetProvider>
   );
 }
+
 export default App;

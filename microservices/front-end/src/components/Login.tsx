@@ -8,11 +8,31 @@ import { User } from "./types";
 // components
 import PageContainer from "./container/PageContainer";
 import AuthLogin from "./auth/AuthLogin";
+
 const Login: React.FC = () => {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const { currentUser, setCurrentUser } = useUserContext();
   const navigate = useNavigate();
+
+  // try to fetch user credential as well?
+  useEffect(() => {
+    if (Object.keys(currentUser).length === 0) {
+      // initially currentUser = {}
+      axios
+        .get("/api/auth/current-user")
+        .then((response) => {
+          console.log(response.data);
+          const userData: User = response.data;
+          setCurrentUser(userData);
+          console.log(currentUser.username);
+        })
+        .catch((error) => {
+          console.error("Error fetching current user", error);
+        });
+    }
+  }, [currentUser, setCurrentUser]);
+
   useEffect(() => {
     if (
       currentUser &&
@@ -22,6 +42,7 @@ const Login: React.FC = () => {
       navigate("/question-bank");
     }
   }, [currentUser, navigate]);
+
   const handleLogin = async () => {
     try {
       const response = await axios.post(
@@ -34,6 +55,7 @@ const Login: React.FC = () => {
           withCredentials: true,
         }
       );
+
       if (response.status === 200) {
         // REQUIREMENT: Backend returns user data
         const userData: User = response.data;
@@ -49,6 +71,7 @@ const Login: React.FC = () => {
       }
     }
   };
+
   return (
     <PageContainer title="Login" description="this is Login page">
       <Box

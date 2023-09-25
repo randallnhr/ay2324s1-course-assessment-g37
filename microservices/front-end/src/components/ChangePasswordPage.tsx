@@ -10,6 +10,7 @@ import Button from "@mui/material/Button";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
 import { UserProvider, useUserContext } from "../UserContext";
+
 // Should only allow change of password if old password matches!
 const ChangePasswordPage: React.FC = () => {
   const { currentUser, setCurrentUser } = useUserContext();
@@ -17,16 +18,44 @@ const ChangePasswordPage: React.FC = () => {
   const [newPassword, setNewPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const navigate = useNavigate();
+
+  // check if currentUser is authenticated, if not, direct back to login
+  useEffect(() => {
+    if (Object.keys(currentUser).length != 0 && !currentUser.username) {
+      navigate("/login");
+    }
+  });
+
+  // on windows reload, need to re-fetch user credential
+  useEffect(() => {
+    if (Object.keys(currentUser).length === 0) {
+      // initially currentUser = {}
+      axios
+        .get("/api/auth/current-user")
+        .then((response) => {
+          console.log(response.data);
+          const userData: User = response.data;
+          setCurrentUser(userData);
+          console.log(currentUser.username);
+        })
+        .catch((error) => {
+          console.error("Error fetching current user", error);
+        });
+    }
+  }, [currentUser, setCurrentUser]);
+
   const handleChangePassword = async () => {
     if (!oldPassword || !newPassword || newPassword !== confirmPassword) {
       alert("Please fill in credentials, and ensure new passwords match.");
       return;
     }
+
     try {
       const response = await axios.put(`/api/users/${currentUser?.username}`, {
         oldPassword,
         newPassword,
       });
+
       if (response.status === 200) {
         alert("Password changed successfully");
         setOldPassword("");
@@ -45,11 +74,13 @@ const ChangePasswordPage: React.FC = () => {
       }
     }
   };
+
   const handleQuestion = () => {
     setNewPassword("");
     setConfirmPassword("");
     navigate("/question-bank");
   };
+
   const handleSignout = () => {
     axios
       .delete("/api/auth/log-out")
@@ -64,11 +95,13 @@ const ChangePasswordPage: React.FC = () => {
         alert("Failed to sign out, please try again!");
       });
   };
+
   const handleCancel = () => {
     setNewPassword("");
     setConfirmPassword("");
     navigate("/profile");
   };
+
   return (
     <div>
       <div>
@@ -134,4 +167,5 @@ const ChangePasswordPage: React.FC = () => {
     </div>
   );
 };
+
 export default ChangePasswordPage;

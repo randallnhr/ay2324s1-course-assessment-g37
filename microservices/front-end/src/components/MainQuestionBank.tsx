@@ -17,6 +17,7 @@ import axios from "axios";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
 import { UserProvider, useUserContext } from "../UserContext";
+
 const allCategories = [
   "Arrays",
   "Strings",
@@ -49,6 +50,7 @@ const allCategories = [
   "Brainteaser",
   "Others",
 ];
+
 const QuestionBank: React.FC = () => {
   // State to store the list of questions
   const [questions, setQuestions] = useState<Question[]>([]);
@@ -65,22 +67,27 @@ const QuestionBank: React.FC = () => {
     complexity: "Easy" as "Easy" | "Medium" | "Hard", // default value
   });
   const navigate = useNavigate();
+
   // These are to reset selection field, otherwise it will display strange stuff
   const [selectedCategory, setSelectedCategory] = useState("");
   const [updateSelectedOption, setUpdateSelectedOption] = useState("");
+
   // Create refs outside the map
   const titleRef = React.createRef<HTMLInputElement>();
   // const categoryRef = React.createRef<HTMLInputElement>();
   const complexityRef = React.createRef<HTMLSelectElement>();
   const descriptionRef = React.createRef<HTMLTextAreaElement>();
+
   // Need to fetch current user as well
   const [isFetching, setIsFetching] = useState<boolean>(true);
   const { currentUser, setCurrentUser } = useUserContext();
+
   // functions to fetch all questions and update UI
   const fetchQuestions = async () => {
     const fetchedQuestions = await getQuestions();
     setQuestions(fetchedQuestions);
   };
+
   // fetch when component mounts
   // Use isFetching on question fetching
   useEffect(() => {
@@ -93,6 +100,32 @@ const QuestionBank: React.FC = () => {
       setIsFetching(false);
     }
   }, []);
+
+  // on windows reload, need to re-fetch user credential
+  useEffect(() => {
+    if (Object.keys(currentUser).length === 0) {
+      // initially currentUser = {}
+      axios
+        .get("/api/auth/current-user")
+        .then((response) => {
+          console.log(response.data);
+          const userData: User = response.data;
+          setCurrentUser(userData);
+          console.log(currentUser.username);
+        })
+        .catch((error) => {
+          console.error("Error fetching current user", error);
+        });
+    }
+  }, [currentUser, setCurrentUser]);
+
+  // check if currentUser is authenticated, if not, direct back to login
+  useEffect(() => {
+    if (Object.keys(currentUser).length != 0 && !currentUser.username) {
+      navigate("/login");
+    }
+  });
+
   // if not user, try to fetch the user data
   // Can I remove the initial fetching of user data at all?
   const handleSignout = () => {
@@ -110,21 +143,26 @@ const QuestionBank: React.FC = () => {
         alert("Failed to sign out, please try again!");
       });
   };
+
   const handleProfile = () => {
     navigate("/profile");
   };
+
   const toggleQuestionDetails = (id: string) => {
     setExpandedQuestionId(expandedQuestionId === id ? null : id);
   };
+
   // adding a new question
   const handleAddQuestion = async (newQuestion: Partial<Question>) => {
     await addQuestion(newQuestion);
     fetchQuestions();
   };
+
   const handleDeleteQuestion = async (id: string) => {
     await deleteQuestion(id);
     fetchQuestions();
   };
+
   const handleUpdateQuestion = async (
     updatedQuestion: Question,
     id: string | number
@@ -132,6 +170,7 @@ const QuestionBank: React.FC = () => {
     await updateQuestion(updatedQuestion, id);
     fetchQuestions();
   };
+
   const updateExistingCategoryArray = (
     qustionId: string,
     category: string,

@@ -8,9 +8,36 @@ import Button from "@mui/material/Button";
 import { User } from "./types";
 import styles from "./ProfilePage.module.css";
 import { UserProvider, useUserContext } from "../UserContext";
+
 const ProfilePage: React.FC = () => {
   const navigate = useNavigate();
   const { currentUser, setCurrentUser } = useUserContext();
+
+  // check if currentUser is authenticated, if not, direct back to login
+  useEffect(() => {
+    if (Object.keys(currentUser).length != 0 && !currentUser.username) {
+      navigate("/login");
+    }
+  });
+
+  // on windows reload, need to re-fetch user credential
+  useEffect(() => {
+    if (Object.keys(currentUser).length === 0) {
+      // initially currentUser = {}
+      axios
+        .get("/api/auth/current-user")
+        .then((response) => {
+          console.log(response.data);
+          const userData: User = response.data;
+          setCurrentUser(userData);
+          console.log(currentUser.username);
+        })
+        .catch((error) => {
+          console.error("Error fetching current user", error);
+        });
+    }
+  }, [currentUser, setCurrentUser]);
+
   //   Need to send request to backend to really sign out
   const handleSignout = () => {
     axios
@@ -27,9 +54,11 @@ const ProfilePage: React.FC = () => {
         alert("Failed to sign out, please try again!");
       });
   };
+
   const handleQuestion = () => {
     navigate("/question-bank");
   };
+
   const handleDelete = () => {
     if (
       !currentUser ||
@@ -43,6 +72,7 @@ const ProfilePage: React.FC = () => {
       "Are you sure you want to delete your account This cannot be undone. "
     );
     if (!isConfirmed) return;
+
     axios
       // Should use `` instead of ""! "" will take ${user.username} literally, while `` will parse it
       .delete(`/api/users/${currentUser.username}`)
@@ -63,6 +93,7 @@ const ProfilePage: React.FC = () => {
         }
       });
   };
+
   return (
     <div>
       <div>
