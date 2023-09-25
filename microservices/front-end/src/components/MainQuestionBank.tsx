@@ -9,10 +9,6 @@ import {
   updateQuestion,
 } from "./fetchData";
 import AddQuestionForm from "./AddQuestionForm";
-import { AppBar } from "@mui/material";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
 import axios from "axios";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -127,28 +123,6 @@ const QuestionBank: React.FC = () => {
     }
   });
 
-  // if not user, try to fetch the user data
-  // Can I remove the initial fetching of user data at all?
-  const handleSignout = () => {
-    axios
-      .delete("/api/auth/log-out")
-      .then((response) => {
-        if (response.status === 200) {
-          // reset user content
-          setCurrentUser({} as User);
-          navigate("/login");
-        }
-      })
-      .catch((error) => {
-        console.error("Error during sign out:", error);
-        alert("Failed to sign out, please try again!");
-      });
-  };
-
-  const handleProfile = () => {
-    navigate("/profile");
-  };
-
   const toggleQuestionDetails = (id: string) => {
     setExpandedQuestionId(expandedQuestionId === id ? null : id);
   };
@@ -206,21 +180,6 @@ const QuestionBank: React.FC = () => {
         </Backdrop>
       ) : (
         <>
-          <div>
-            <AppBar position="static">
-              <Toolbar>
-                <Typography variant="h6" style={{ flexGrow: 1 }}>
-                  HOME
-                </Typography>
-                <Button color="inherit" onClick={handleProfile}>
-                  Profile
-                </Button>
-                <Button color="inherit" onClick={handleSignout}>
-                  Log Out
-                </Button>
-              </Toolbar>
-            </AppBar>
-          </div>
           <div className={styles.header_container}>
             <h1>Question Bank</h1>
           </div>

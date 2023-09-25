@@ -21,6 +21,7 @@ import axios from "axios";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
 import { HelmetProvider } from "react-helmet-async";
+import TopBar from "./components/TopBar";
 
 // useContext: create a global state, that can be accessed by any component
 function App() {
@@ -68,20 +69,23 @@ function App() {
               Object.keys(currentUser).length != 0 &&
               currentUser.username ? (
                 <Routes>
-                  <Route path="/question-bank" element={<QuestionBank />} />
-                  <Route
-                    path="/change-password"
-                    element={<ChangePasswordPage />}
-                  />
-                  <Route
-                    path="/change-display-name"
-                    element={<ChangeDisplayName />}
-                  />
-                  <Route path="/profile" element={<ProfilePage />} />
-                  <Route path="*" element={<Navigate to="/login" />} />{" "}
-                  {/* Catch-all route */}
                   <Route path="/login" element={<Login />} />
                   <Route path="/signup" element={<Register />} />
+                  <Route path="/" element={<TopBar />}>
+                    <Route path="/question-bank" element={<QuestionBank />} />
+                    <Route
+                      path="/change-password"
+                      element={<ChangePasswordPage />}
+                    />
+                    <Route
+                      path="/change-display-name"
+                      element={<ChangeDisplayName />}
+                    />
+                    <Route path="/profile" element={<ProfilePage />} />
+                    <Route path="*" element={<Navigate to="/login" />} />{" "}
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/signup" element={<Register />} />
+                  </Route>
                 </Routes>
               ) : (
                 <Routes>

@@ -1,10 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { AppBar } from "@mui/material";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
 import { User } from "./types";
 import styles from "./ProfilePage.module.css";
 import { UserProvider, useUserContext } from "../UserContext";
@@ -37,27 +33,6 @@ const ProfilePage: React.FC = () => {
         });
     }
   }, [currentUser, setCurrentUser]);
-
-  //   Need to send request to backend to really sign out
-  const handleSignout = () => {
-    axios
-      .delete("/api/auth/log-out")
-      .then((response) => {
-        if (response.status === 200) {
-          // reset user context
-          setCurrentUser({} as User);
-          navigate("/login");
-        }
-      })
-      .catch((error) => {
-        console.error("Error during sign out:", error);
-        alert("Failed to sign out, please try again!");
-      });
-  };
-
-  const handleQuestion = () => {
-    navigate("/question-bank");
-  };
 
   const handleDelete = () => {
     if (
@@ -96,21 +71,6 @@ const ProfilePage: React.FC = () => {
 
   return (
     <div>
-      <div>
-        <AppBar position="static">
-          <Toolbar>
-            <Typography variant="h6" style={{ flexGrow: 1 }}>
-              HOME
-            </Typography>
-            <Button color="inherit" onClick={handleQuestion}>
-              Question
-            </Button>
-            <Button color="inherit" onClick={handleSignout}>
-              Log Out
-            </Button>
-          </Toolbar>
-        </AppBar>
-      </div>
       <div className={styles.header_container}>
         <h1>Personal Profile</h1>
       </div>

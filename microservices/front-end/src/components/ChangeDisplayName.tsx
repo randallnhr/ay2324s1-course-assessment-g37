@@ -3,12 +3,6 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import styles from "./ChangeDisplayName.module.css";
 import { User } from "./types";
-import { AppBar } from "@mui/material";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
-import Backdrop from "@mui/material/Backdrop";
-import CircularProgress from "@mui/material/CircularProgress";
 import { UserProvider, useUserContext } from "../UserContext";
 
 // Similarly, should only allow change of display name if passes authentication
@@ -76,27 +70,6 @@ const ChangeDisplayName: React.FC = () => {
     }
   };
 
-  const handleQuestion = () => {
-    setDisplayName("");
-    navigate("/question-bank");
-  };
-
-  const handleSignout = () => {
-    axios
-      .delete("/api/auth/log-out")
-      .then((response) => {
-        if (response.status === 200) {
-          // reset user content
-          setCurrentUser({} as User);
-          navigate("/login");
-        }
-      })
-      .catch((error) => {
-        console.error("Error during sign out:", error);
-        alert("Failed to sign out, please try again!");
-      });
-  };
-
   const handleCancel = () => {
     setDisplayName("");
     navigate("/profile");
@@ -104,21 +77,6 @@ const ChangeDisplayName: React.FC = () => {
 
   return (
     <div>
-      <div>
-        <AppBar position="static">
-          <Toolbar>
-            <Typography variant="h6" style={{ flexGrow: 1 }}>
-              HOME
-            </Typography>
-            <Button color="inherit" onClick={handleQuestion}>
-              Question
-            </Button>
-            <Button color="inherit" onClick={handleSignout}>
-              Log Out
-            </Button>
-          </Toolbar>
-        </AppBar>
-      </div>
       <div className={styles.change_display_name_container}>
         <h1>Change Display Name</h1>
         <div className={styles.input_field}>

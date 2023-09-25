@@ -6,9 +6,62 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
+import { UserProvider, useUserContext } from "../UserContext";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { User } from "./types";
 
 import { Outlet } from "react-router-dom"; // allow render nested routes
 
-const TopBar: React.FC = () => {};
+const TopBar: React.FC = () => {
+  const { currentUser, setCurrentUser } = useUserContext();
+  const navigate = useNavigate();
+
+  const handleQuestion = () => {
+    navigate("/question-bank");
+  };
+
+  const handleProfile = () => {
+    navigate("/profile");
+  };
+
+  const handleSignout = () => {
+    axios
+      .delete("/api/auth/log-out")
+      .then((response) => {
+        if (response.status === 200) {
+          // reset user context
+          setCurrentUser({} as User);
+          navigate("/login");
+        }
+      })
+      .catch((error) => {
+        console.error("Error during sign out:", error);
+        alert("Failed to sign out, please try again!");
+      });
+  };
+
+  return (
+    <>
+      <AppBar position="static">
+        <Toolbar>
+          <Typography fontSize="1.5rem" style={{ flexGrow: 1 }}>
+            HOME
+          </Typography>
+          <Button color="inherit" onClick={handleProfile}>
+            Profile
+          </Button>
+          <Button color="inherit" onClick={handleQuestion}>
+            Question
+          </Button>
+          <Button color="inherit" onClick={handleSignout}>
+            Log Out
+          </Button>
+        </Toolbar>
+      </AppBar>
+      <Outlet /> {/* This will render the nested route */}
+    </>
+  );
+};
 
 export default TopBar;
