@@ -16,7 +16,7 @@ import Button from "@mui/material/Button";
 import axios from "axios";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
-
+import { UserProvider, useUserContext } from "../UserContext";
 const allCategories = [
   "Arrays",
   "Strings",
@@ -49,7 +49,6 @@ const allCategories = [
   "Brainteaser",
   "Others",
 ];
-
 const QuestionBank: React.FC = () => {
   // State to store the list of questions
   const [questions, setQuestions] = useState<Question[]>([]);
@@ -59,71 +58,50 @@ const QuestionBank: React.FC = () => {
   const [updatingQuestionId, setUpdatingQuestionId] = useState<string | null>(
     null
   );
-
   const [newQuestion, setNewQuestion] = useState({
     title: "",
     description: "",
     categories: [] as string[],
     complexity: "Easy" as "Easy" | "Medium" | "Hard", // default value
   });
-
   const navigate = useNavigate();
-
   // These are to reset selection field, otherwise it will display strange stuff
   const [selectedCategory, setSelectedCategory] = useState("");
   const [updateSelectedOption, setUpdateSelectedOption] = useState("");
-
   // Create refs outside the map
   const titleRef = React.createRef<HTMLInputElement>();
   // const categoryRef = React.createRef<HTMLInputElement>();
   const complexityRef = React.createRef<HTMLSelectElement>();
   const descriptionRef = React.createRef<HTMLTextAreaElement>();
-
   // Need to fetch current user as well
-  const [user, setUser] = useState<User | null>(() => {
-    const storedUser = localStorage.getItem("user");
-    return storedUser ? JSON.parse(storedUser) : null;
-  });
   const [isFetching, setIsFetching] = useState<boolean>(true);
-
+  const { currentUser, setCurrentUser } = useUserContext();
   // functions to fetch all questions and update UI
   const fetchQuestions = async () => {
     const fetchedQuestions = await getQuestions();
     setQuestions(fetchedQuestions);
   };
-
   // fetch when component mounts
+  // Use isFetching on question fetching
   useEffect(() => {
-    fetchQuestions();
-  }, []);
-
-  // if not user, try to fetch the user data
-  useEffect(() => {
-    if (!user) {
-      axios
-        .get("/api/auth/current-user")
-        .then((response) => {
-          console.log(response.data);
-          const userData: User = response.data;
-          setUser(userData);
-        })
-        .catch((error) => {
-          console.error("Error fetching current user", error);
-        })
-        .finally(() => {
-          setIsFetching(false);
-        });
-    } else {
+    try {
+      setIsFetching(true);
+      fetchQuestions();
+    } catch (error) {
+      console.error("Error fetching questions", error);
+    } finally {
       setIsFetching(false);
     }
-  }, [user]);
-
+  }, []);
+  // if not user, try to fetch the user data
+  // Can I remove the initial fetching of user data at all?
   const handleSignout = () => {
     axios
       .delete("/api/auth/log-out")
       .then((response) => {
         if (response.status === 200) {
-          localStorage.removeItem("user");
+          // reset user content
+          setCurrentUser({} as User);
           navigate("/login");
         }
       })
@@ -132,26 +110,21 @@ const QuestionBank: React.FC = () => {
         alert("Failed to sign out, please try again!");
       });
   };
-
   const handleProfile = () => {
     navigate("/profile");
   };
-
   const toggleQuestionDetails = (id: string) => {
     setExpandedQuestionId(expandedQuestionId === id ? null : id);
   };
-
   // adding a new question
   const handleAddQuestion = async (newQuestion: Partial<Question>) => {
     await addQuestion(newQuestion);
     fetchQuestions();
   };
-
   const handleDeleteQuestion = async (id: string) => {
     await deleteQuestion(id);
     fetchQuestions();
   };
-
   const handleUpdateQuestion = async (
     updatedQuestion: Question,
     id: string | number
@@ -159,18 +132,15 @@ const QuestionBank: React.FC = () => {
     await updateQuestion(updatedQuestion, id);
     fetchQuestions();
   };
-
   const updateExistingCategoryArray = (
     qustionId: string,
     category: string,
     action: "add" | "remove"
   ) => {
     const index = questions.findIndex((q) => q._id === qustionId);
-
     if (index != -1) {
       const updatedQuestions = [...questions];
       const question = { ...updatedQuestions[index] };
-
       if (action == "add") {
         question.categories.push(category);
       } else {
@@ -178,7 +148,6 @@ const QuestionBank: React.FC = () => {
           (cat) => cat != category
         );
       }
-
       // trigger a re-render to show the current question tags
       // limit this to ONLY the current question!
       updatedQuestions[index] = question;
@@ -213,7 +182,9 @@ const QuestionBank: React.FC = () => {
         <h1>Question Bank</h1>
       </div>
       {/* If user is null, no access to questions */}
-      {user === null ? (
+      {currentUser &&
+      Object.keys(currentUser).length != 0 &&
+      !currentUser.username ? (
         <div>
           <h2 style={{ textAlign: "center" }}>
             Please sign in to access the questions.
@@ -226,7 +197,11 @@ const QuestionBank: React.FC = () => {
               <th className={styles.table_header}>Title</th>
               <th className={styles.table_header}>Category</th>
               <th className={styles.table_header}>Complexity</th>
-              {user && <th className={styles.table_header}>Actions</th>}
+              {currentUser &&
+                Object.keys(currentUser).length != 0 &&
+                currentUser.username && (
+                  <th className={styles.table_header}>Actions</th>
+                )}
             </tr>
           </thead>
           <tbody>
@@ -257,7 +232,6 @@ const QuestionBank: React.FC = () => {
                         </div>
                         <div>
                           <label className={styles.the_label}>Category</label>
-
                           <div>
                             {question.categories.map((cat, index) => (
                               <span key={index}>
@@ -303,7 +277,6 @@ const QuestionBank: React.FC = () => {
                                 </option>
                               ))}
                           </select>
-
                           {/* <input ref={categoryRef} type="text" defaultValue={question.category} /> */}
                         </div>
                         <div>
@@ -336,7 +309,6 @@ const QuestionBank: React.FC = () => {
                             ?.value as "Easy" | "Medium" | "Hard"; // type assertion
                           const updatedDescription =
                             descriptionRef.current?.value || ""; // New line
-
                           const updatedQuestion = {
                             _id: question._id,
                             title: updatedTitle,
@@ -344,7 +316,6 @@ const QuestionBank: React.FC = () => {
                             complexity: updatedComplexity,
                             description: updatedDescription, // New field
                           };
-
                           handleUpdateQuestion(updatedQuestion, question._id);
                           setUpdatingQuestionId(null);
                         }}
@@ -371,22 +342,26 @@ const QuestionBank: React.FC = () => {
                     </td>
                     <td>
                       {/* Render Actions conditionally for non-basic users */}
-                      {user && (
-                        <>
-                          <button
-                            className={styles.action_button}
-                            onClick={() => handleDeleteQuestion(question._id)}
-                          >
-                            Delete
-                          </button>
-                          <button
-                            className={styles.action_button}
-                            onClick={() => setUpdatingQuestionId(question._id)}
-                          >
-                            Update
-                          </button>
-                        </>
-                      )}
+                      {currentUser &&
+                        Object.keys(currentUser).length != 0 &&
+                        currentUser.username && (
+                          <>
+                            <button
+                              className={styles.action_button}
+                              onClick={() => handleDeleteQuestion(question._id)}
+                            >
+                              Delete
+                            </button>
+                            <button
+                              className={styles.action_button}
+                              onClick={() =>
+                                setUpdatingQuestionId(question._id)
+                              }
+                            >
+                              Update
+                            </button>
+                          </>
+                        )}
                     </td>
                   </tr>
                 )}
@@ -406,23 +381,23 @@ const QuestionBank: React.FC = () => {
           </tbody>
         </table>
       )}
-
       {/* Render AddQuestionForm conditionally */}
-      {user && (
-        <>
-          <h2 className={styles.add_header}>Add a New Question</h2>
-          <AddQuestionForm
-            newQuestion={newQuestion}
-            allCategories={allCategories}
-            selectedCategory={selectedCategory}
-            setNewQuestion={setNewQuestion}
-            handleAddQuestions={handleAddQuestion}
-            setSelectedCategory={setSelectedCategory}
-          />
-        </>
-      )}
+      {currentUser &&
+        Object.keys(currentUser).length != 0 &&
+        currentUser.username && (
+          <>
+            <h2 className={styles.add_header}>Add a New Question</h2>
+            <AddQuestionForm
+              newQuestion={newQuestion}
+              allCategories={allCategories}
+              selectedCategory={selectedCategory}
+              setNewQuestion={setNewQuestion}
+              handleAddQuestions={handleAddQuestion}
+              setSelectedCategory={setSelectedCategory}
+            />
+          </>
+        )}
     </div>
   );
 };
-
 export default QuestionBank;

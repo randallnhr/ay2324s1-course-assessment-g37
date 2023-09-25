@@ -5,29 +5,23 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { UserProvider, useUserContext } from "../UserContext";
 import { User } from "./types";
-
 // components
 import PageContainer from "./container/PageContainer";
 import AuthLogin from "./auth/AuthLogin";
-
 const Login: React.FC = () => {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const [loginFailed, setLoginFailed] = useState<boolean>(false);
-  const [user, setUser] = useState<User | null>(() => {
-    const storedUser = localStorage.getItem("user");
-    return storedUser ? JSON.parse(storedUser) : null;
-  });
   const { currentUser, setCurrentUser } = useUserContext();
-
   const navigate = useNavigate();
-
   useEffect(() => {
-    if (user) {
+    if (
+      currentUser &&
+      Object.keys(currentUser).length != 0 &&
+      currentUser.username
+    ) {
       navigate("/question-bank");
     }
-  }, [user, navigate]);
-
+  }, [currentUser, navigate]);
   const handleLogin = async () => {
     try {
       const response = await axios.post(
@@ -40,28 +34,21 @@ const Login: React.FC = () => {
           withCredentials: true,
         }
       );
-
       if (response.status === 200) {
         // REQUIREMENT: Backend returns user data
-
         const userData: User = response.data;
-        setUser(userData);
         setCurrentUser(userData);
-        localStorage.setItem("user", JSON.stringify(userData));
-
         navigate("/question-bank");
       }
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
         alert("Incorrect user credentials!");
-        setLoginFailed(true);
       } else {
         alert("An unknown error occured. Try again later.");
         console.error("An unknown error occured: ", error);
       }
     }
   };
-
   return (
     <PageContainer title="Login" description="this is Login page">
       <Box
@@ -69,7 +56,7 @@ const Login: React.FC = () => {
           position: "relative",
           "&:before": {
             content: '""',
-            background: "radial-gradient(#d2f1df, #d3d7fa, #bad8f4)",
+            background: "radial-gradient(#D2F1DF, #D3D7FA, #BAD8F4)",
             backgroundSize: "400% 400%",
             animation: "gradient 15s ease infinite",
             position: "absolute",
@@ -160,5 +147,4 @@ const Login: React.FC = () => {
     </PageContainer>
   );
 };
-
 export default Login;

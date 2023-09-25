@@ -7,45 +7,18 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import { User } from "./types";
 import styles from "./ProfilePage.module.css";
-import Backdrop from "@mui/material/Backdrop";
-import CircularProgress from "@mui/material/CircularProgress";
-
+import { UserProvider, useUserContext } from "../UserContext";
 const ProfilePage: React.FC = () => {
   const navigate = useNavigate();
-
-  const [user, setUser] = useState<User | null>(() => {
-    const storedUser = localStorage.getItem("user");
-    return storedUser ? JSON.parse(storedUser) : null;
-  });
-  const [isFetching, setIsFetching] = useState<boolean>(true);
-
-  useEffect(() => {
-    if (!user) {
-      axios
-        .get("/api/auth/current-user")
-        .then((response) => {
-          console.log(response.data);
-          const userData: User = response.data;
-          setUser(userData);
-        })
-        .catch((error) => {
-          console.error("Error fetching current user", error);
-        })
-        .finally(() => {
-          setIsFetching(false);
-        });
-    } else {
-      setIsFetching(false);
-    }
-  }, [user]);
-
+  const { currentUser, setCurrentUser } = useUserContext();
   //   Need to send request to backend to really sign out
   const handleSignout = () => {
     axios
       .delete("/api/auth/log-out")
       .then((response) => {
         if (response.status === 200) {
-          localStorage.removeItem("user");
+          // reset user context
+          setCurrentUser({} as User);
           navigate("/login");
         }
       })
@@ -54,29 +27,30 @@ const ProfilePage: React.FC = () => {
         alert("Failed to sign out, please try again!");
       });
   };
-
   const handleQuestion = () => {
     navigate("/question-bank");
   };
-
   const handleDelete = () => {
-    if (!user || !user.username) {
+    if (
+      !currentUser ||
+      Object.keys(currentUser).length === 0 ||
+      !currentUser.username
+    ) {
       console.error("User data not available");
       return;
     }
-
     const isConfirmed = window.confirm(
       "Are you sure you want to delete your account This cannot be undone. "
     );
     if (!isConfirmed) return;
-
     axios
       // Should use `` instead of ""! "" will take ${user.username} literally, while `` will parse it
-      .delete(`/api/users/${user.username}`)
+      .delete(`/api/users/${currentUser.username}`)
       .then((response) => {
         if (response.status === 200) {
           alert("Account deleted successfully");
-          localStorage.removeItem("user");
+          // reset UserContext
+          setCurrentUser({} as User);
           navigate("/login");
         }
       })
@@ -89,15 +63,8 @@ const ProfilePage: React.FC = () => {
         }
       });
   };
-
   return (
     <div>
-      <Backdrop
-        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={isFetching}
-      >
-        <CircularProgress color="inherit" />
-      </Backdrop>
       <div>
         <AppBar position="static">
           <Toolbar>
@@ -116,21 +83,19 @@ const ProfilePage: React.FC = () => {
       <div className={styles.header_container}>
         <h1>Personal Profile</h1>
       </div>
-
       <div className={styles.profile_container}>
         <div className={styles.profile_detail}>
           <span className={styles.label_name}>Username: </span>
-          <span className={styles.user_info}> {user?.username} </span>
+          <span className={styles.user_info}> {currentUser?.username} </span>
         </div>
         <div className={styles.profile_detail}>
           <span className={styles.label_name}>Display Name: </span>
-          <span className={styles.user_info}>{user?.displayName}</span>
+          <span className={styles.user_info}>{currentUser?.displayName}</span>
         </div>
         <div className={styles.profile_detail}>
           <span className={styles.label_name}>Role: </span>
-          <span className={styles.user_info}>{user?.role}</span>
+          <span className={styles.user_info}>{currentUser?.role}</span>
         </div>
-
         <button
           className={styles.action_button}
           onClick={() => navigate("/change-password")}
@@ -150,5 +115,4 @@ const ProfilePage: React.FC = () => {
     </div>
   );
 };
-
 export default ProfilePage;
