@@ -29,6 +29,7 @@ function App() {
   // Do this once at App launch. When app launches, all the previous data will be emptied, and useEffect will re-run
 
   useEffect(() => {
+    console.log("Current user: ", currentUser);
     if (Object.keys(currentUser).length === 0) {
       // initially currentUser = {}
       axios
@@ -63,7 +64,9 @@ function App() {
             </Backdrop>
           ) : (
             <>
-              {currentUser && currentUser.username ? (
+              {currentUser &&
+              Object.keys(currentUser).length != 0 &&
+              currentUser.username ? (
                 <Routes>
                   <Route path="/question-bank" element={<QuestionBank />} />
                   <Route

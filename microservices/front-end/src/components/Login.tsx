@@ -16,22 +16,21 @@ const Login: React.FC = () => {
   const navigate = useNavigate();
 
   // try to fetch user credential as well?
-  useEffect(() => {
-    if (Object.keys(currentUser).length === 0) {
-      // initially currentUser = {}
-      axios
-        .get("/api/auth/current-user")
-        .then((response) => {
-          console.log(response.data);
-          const userData: User = response.data;
-          setCurrentUser(userData);
-          console.log(currentUser.username);
-        })
-        .catch((error) => {
-          console.error("Error fetching current user", error);
-        });
-    }
-  }, [currentUser, setCurrentUser]);
+  // useEffect(() => {
+  //   if (Object.keys(currentUser).length === 0) {
+  //     axios
+  //       .get("/api/auth/current-user")
+  //       .then((response) => {
+  //         console.log(response.data);
+  //         const userData: User = response.data;
+  //         setCurrentUser(userData);
+  //         console.log(currentUser.username);
+  //       })
+  //       .catch((error) => {
+  //         console.error("Error fetching current user", error);
+  //       });
+  //   }
+  // }, [currentUser, setCurrentUser]);
 
   useEffect(() => {
     if (
@@ -39,6 +38,8 @@ const Login: React.FC = () => {
       Object.keys(currentUser).length != 0 &&
       currentUser.username
     ) {
+      console.log("Shortcut to question bank");
+      console.log(currentUser.username);
       navigate("/question-bank");
     }
   }, [currentUser, navigate]);
@@ -59,8 +60,12 @@ const Login: React.FC = () => {
       if (response.status === 200) {
         // REQUIREMENT: Backend returns user data
         const userData: User = response.data;
+        console.log("Received user data");
+        console.log(userData.username);
         setCurrentUser(userData);
-        navigate("/question-bank");
+        console.log("Current user set");
+        console.log(currentUser.username);
+        // navigate("/question-bank");
       }
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
