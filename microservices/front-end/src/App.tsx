@@ -53,47 +53,45 @@ function App() {
 
   return (
     <HelmetProvider>
-      <UserProvider>
-        <Router>
-          {Object.keys(currentUser).length === 0 ? (
-            <Backdrop
-              sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-              open={isFetching}
-            >
-              <CircularProgress color="inherit" />
-            </Backdrop>
-          ) : (
-            <>
-              {currentUser &&
-              Object.keys(currentUser).length != 0 &&
-              currentUser.username ? (
-                <Routes>
-                  <Route path="/question-bank" element={<QuestionBank />} />
-                  <Route
-                    path="/change-password"
-                    element={<ChangePasswordPage />}
-                  />
-                  <Route
-                    path="/change-display-name"
-                    element={<ChangeDisplayName />}
-                  />
-                  <Route path="/profile" element={<ProfilePage />} />
-                  <Route path="*" element={<Navigate to="/login" />} />{" "}
-                  {/* Catch-all route */}
-                  <Route path="/login" element={<Login />} />
-                  <Route path="/signup" element={<Register />} />
-                </Routes>
-              ) : (
-                <Routes>
-                  <Route path="*" element={<Navigate to="/login" />} />{" "}
-                  <Route path="/login" element={<Login />} />
-                  <Route path="/signup" element={<Register />} />
-                </Routes>
-              )}
-            </>
-          )}
-        </Router>
-      </UserProvider>
+      <Router>
+        {Object.keys(currentUser).length === 0 ? (
+          <Backdrop
+            sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+            open={isFetching}
+          >
+            <CircularProgress color="inherit" />
+          </Backdrop>
+        ) : (
+          <>
+            {currentUser &&
+            Object.keys(currentUser).length != 0 &&
+            currentUser.username ? (
+              <Routes>
+                <Route path="/question-bank" element={<QuestionBank />} />
+                <Route
+                  path="/change-password"
+                  element={<ChangePasswordPage />}
+                />
+                <Route
+                  path="/change-display-name"
+                  element={<ChangeDisplayName />}
+                />
+                <Route path="/profile" element={<ProfilePage />} />
+                <Route path="*" element={<Navigate to="/login" />} />{" "}
+                {/* Catch-all route */}
+                <Route path="/login" element={<Login />} />
+                <Route path="/signup" element={<Register />} />
+              </Routes>
+            ) : (
+              <Routes>
+                <Route path="*" element={<Navigate to="/login" />} />{" "}
+                <Route path="/login" element={<Login />} />
+                <Route path="/signup" element={<Register />} />
+              </Routes>
+            )}
+          </>
+        )}
+      </Router>
     </HelmetProvider>
   );
 }
