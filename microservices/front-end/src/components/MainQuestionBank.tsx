@@ -101,24 +101,6 @@ const QuestionBank: React.FC = () => {
     }
   }, []);
 
-  // on windows reload, need to re-fetch user credential
-  useEffect(() => {
-    if (Object.keys(currentUser).length === 0) {
-      // initially currentUser = {}
-      axios
-        .get("/api/auth/current-user")
-        .then((response) => {
-          console.log(response.data);
-          const userData: User = response.data;
-          setCurrentUser(userData);
-          console.log(currentUser.username);
-        })
-        .catch((error) => {
-          console.error("Error fetching current user", error);
-        });
-    }
-  }, [currentUser, setCurrentUser]);
-
   // check if currentUser is authenticated, if not, direct back to login
   useEffect(() => {
     if (Object.keys(currentUser).length != 0 && !currentUser.username) {
