@@ -71,6 +71,7 @@ function App() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<Register />} />
                 <Route path="/" element={<TopBar />}>
+                  {/* TopBar should appear in all these 4 pages */}
                   <Route path="/question-bank" element={<QuestionBank />} />
                   <Route
                     path="/change-password"
