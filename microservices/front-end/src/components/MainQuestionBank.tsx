@@ -16,7 +16,7 @@ import Button from "@mui/material/Button";
 import axios from "axios";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
-import { UserProvider, useUserContext } from "../UserContext";
+import { useUserContext } from "../UserContext";
 
 const allCategories = [
   "Arrays",
@@ -102,12 +102,13 @@ const QuestionBank: React.FC = () => {
   }, []);
 
   // check if currentUser is authenticated, if not, direct back to login
+  // Including an dependency array is good practice! Otherwise will re-render whenever some state changes
   useEffect(() => {
     if (Object.keys(currentUser).length != 0 && !currentUser.username) {
       console.log("Question bank redirects");
       navigate("/login");
     }
-  });
+  }, [currentUser, navigate]);
 
   // if not user, try to fetch the user data
   // Can I remove the initial fetching of user data at all?

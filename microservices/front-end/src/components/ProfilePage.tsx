@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { AppBar } from "@mui/material";
@@ -7,7 +7,7 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import { User } from "./types";
 import styles from "./ProfilePage.module.css";
-import { UserProvider, useUserContext } from "../UserContext";
+import { useUserContext } from "../UserContext";
 
 const ProfilePage: React.FC = () => {
   const navigate = useNavigate();
@@ -18,7 +18,7 @@ const ProfilePage: React.FC = () => {
     if (Object.keys(currentUser).length != 0 && !currentUser.username) {
       navigate("/login");
     }
-  });
+  }, [currentUser, navigate]);
 
   //   Need to send request to backend to really sign out
   const handleSignout = () => {

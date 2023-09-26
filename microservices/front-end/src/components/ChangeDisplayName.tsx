@@ -7,9 +7,7 @@ import { AppBar } from "@mui/material";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-import Backdrop from "@mui/material/Backdrop";
-import CircularProgress from "@mui/material/CircularProgress";
-import { UserProvider, useUserContext } from "../UserContext";
+import { useUserContext } from "../UserContext";
 
 // Similarly, should only allow change of display name if passes authentication
 const ChangeDisplayName: React.FC = () => {
@@ -22,7 +20,7 @@ const ChangeDisplayName: React.FC = () => {
     if (Object.keys(currentUser).length != 0 && !currentUser.username) {
       navigate("/login");
     }
-  });
+  }, [currentUser, navigate]);
 
   const handleChangeDisplayName = async () => {
     const alphanumeric = /^[a-z0-9]+$/i;

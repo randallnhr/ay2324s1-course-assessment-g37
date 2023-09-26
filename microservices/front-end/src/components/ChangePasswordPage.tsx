@@ -7,9 +7,7 @@ import { AppBar } from "@mui/material";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-import Backdrop from "@mui/material/Backdrop";
-import CircularProgress from "@mui/material/CircularProgress";
-import { UserProvider, useUserContext } from "../UserContext";
+import { useUserContext } from "../UserContext";
 
 // Should only allow change of password if old password matches!
 const ChangePasswordPage: React.FC = () => {
@@ -24,7 +22,7 @@ const ChangePasswordPage: React.FC = () => {
     if (Object.keys(currentUser).length != 0 && !currentUser.username) {
       navigate("/login");
     }
-  });
+  }, [currentUser, navigate]);
 
   const handleChangePassword = async () => {
     if (!oldPassword || !newPassword || newPassword !== confirmPassword) {
