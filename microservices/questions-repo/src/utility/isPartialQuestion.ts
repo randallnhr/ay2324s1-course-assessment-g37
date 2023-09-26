@@ -6,7 +6,7 @@ import { hasKey, isArrayOfType } from ".";
  * @param unknown item of unknown type.
  * @returns True if the item is a partial Question, false otherwise.
  */
-export function isPartialQuestion(unknown: unknown): unknown is Question {
+export function isPartialQuestion(unknown: unknown): unknown is Partial<Question> {
   if (hasKey(unknown, 'title')
       && typeof unknown['title'] !== 'string') {
     return false;
