@@ -53,6 +53,7 @@ Returns: `Question` URI in response's header.Location.
 #### List questions
 
 Request: GET /api/questions
+Body (Optional): `Partial<Question>` in JSON format to list only documents with specific field values.
 Returns: List of questions with their id (`QuestionWithId[]`) in JSON format.
 
 #### Get question by id
