@@ -1,6 +1,10 @@
 import { Server } from "socket.io";
 
-const io = new Server(3111);
+const io = new Server(3111, {
+  cors: {
+    origin: "http://127.0.0.1:5173",
+  },
+});
 
 io.use((socket, next) => {
   console.log("Incoming connection");
