@@ -209,23 +209,5 @@
     ],
     "complexity": "Hard",
     "descriptionImage": ""
-  },
-  {
-    "title": "Lalalala",
-    "description": "MeeeeMeee",
-    "category": [
-      "Others"
-    ],
-    "complexity": "Hard",
-    "id": 21
-  },
-  {
-    "title": "Meeee",
-    "description": "www",
-    "category": [
-      "Others"
-    ],
-    "complexity": "Easy",
-    "id": 22
   }
 ]

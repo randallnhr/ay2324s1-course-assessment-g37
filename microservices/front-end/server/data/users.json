@@ -1,10 +1,14 @@
 [
   {
     "username": "heyi",
-    "password": "123456"
+    "displayName": "heeeyi",
+    "password": "123456",
+    "role": "basic"
   },
   {
     "username": "admin",
-    "password": "kelwin"
+    "displayName": "ADMIN",
+    "password": "kelwin",
+    "role": "admin"
   }
 ]
