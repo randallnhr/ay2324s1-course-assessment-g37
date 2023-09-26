@@ -6,8 +6,7 @@
   "scripts": {
     "build": "npx tsc",
     "start": "node ./dist/app.js",
-    "devstart": "tsc-watch --onSuccess \"node ./dist/app.js\"",
-    "serve": "SET DEBUG=true:* & npm run devstart"
+    "dev": "SET DEBUG=true:* & tsc-watch --onSuccess \"node ./dist/app.js\""
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
