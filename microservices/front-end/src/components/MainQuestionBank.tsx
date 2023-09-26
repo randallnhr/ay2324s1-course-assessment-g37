@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./QuestionBank.module.css";
-import { Question, User } from "./types";
+import { Question } from "./types";
 import {
   getQuestions,
   addQuestion,
@@ -9,10 +9,9 @@ import {
   updateQuestion,
 } from "./fetchData";
 import AddQuestionForm from "./AddQuestionForm";
-import axios from "axios";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
-import { UserProvider, useUserContext } from "../UserContext";
+import { useUserContext } from "../UserContext";
 
 const allCategories = [
   "Arrays",
@@ -97,31 +96,14 @@ const QuestionBank: React.FC = () => {
     }
   }, []);
 
-  // on windows reload, need to re-fetch user credential
-  useEffect(() => {
-    if (Object.keys(currentUser).length === 0) {
-      // initially currentUser = {}
-      axios
-        .get("/api/auth/current-user")
-        .then((response) => {
-          console.log(response.data);
-          const userData: User = response.data;
-          setCurrentUser(userData);
-          console.log(currentUser.username);
-        })
-        .catch((error) => {
-          console.error("Error fetching current user", error);
-        });
-    }
-  }, [currentUser, setCurrentUser]);
-
   // check if currentUser is authenticated, if not, direct back to login
+  // Including an dependency array is good practice! Otherwise will re-render whenever some state changes
   useEffect(() => {
     if (Object.keys(currentUser).length != 0 && !currentUser.username) {
       console.log("Question bank redirects");
       navigate("/login");
     }
-  });
+  }, [currentUser, navigate]);
 
   const toggleQuestionDetails = (id: string) => {
     setExpandedQuestionId(expandedQuestionId === id ? null : id);

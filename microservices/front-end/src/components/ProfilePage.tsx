@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { User } from "./types";
 import styles from "./ProfilePage.module.css";
-import { UserProvider, useUserContext } from "../UserContext";
+import { useUserContext } from "../UserContext";
 
 const ProfilePage: React.FC = () => {
   const navigate = useNavigate();
@@ -14,25 +14,7 @@ const ProfilePage: React.FC = () => {
     if (Object.keys(currentUser).length != 0 && !currentUser.username) {
       navigate("/login");
     }
-  });
-
-  // on windows reload, need to re-fetch user credential
-  useEffect(() => {
-    if (Object.keys(currentUser).length === 0) {
-      // initially currentUser = {}
-      axios
-        .get("/api/auth/current-user")
-        .then((response) => {
-          console.log(response.data);
-          const userData: User = response.data;
-          setCurrentUser(userData);
-          console.log(currentUser.username);
-        })
-        .catch((error) => {
-          console.error("Error fetching current user", error);
-        });
-    }
-  }, [currentUser, setCurrentUser]);
+  }, [currentUser, navigate]);
 
   const handleDelete = () => {
     if (

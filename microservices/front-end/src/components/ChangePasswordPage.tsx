@@ -2,8 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import styles from "./ChangePasswordPage.module.css";
-import { User } from "./types";
-import { UserProvider, useUserContext } from "../UserContext";
+import { useUserContext } from "../UserContext";
 
 // Should only allow change of password if old password matches!
 const ChangePasswordPage: React.FC = () => {
@@ -18,25 +17,7 @@ const ChangePasswordPage: React.FC = () => {
     if (Object.keys(currentUser).length != 0 && !currentUser.username) {
       navigate("/login");
     }
-  });
-
-  // on windows reload, need to re-fetch user credential
-  useEffect(() => {
-    if (Object.keys(currentUser).length === 0) {
-      // initially currentUser = {}
-      axios
-        .get("/api/auth/current-user")
-        .then((response) => {
-          console.log(response.data);
-          const userData: User = response.data;
-          setCurrentUser(userData);
-          console.log(currentUser.username);
-        })
-        .catch((error) => {
-          console.error("Error fetching current user", error);
-        });
-    }
-  }, [currentUser, setCurrentUser]);
+  }, [currentUser, navigate]);
 
   const handleChangePassword = async () => {
     if (!oldPassword || !newPassword || newPassword !== confirmPassword) {
