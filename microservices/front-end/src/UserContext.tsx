@@ -1,49 +1,32 @@
 // should be able to carry both attribute & function
-import React, { useState, useContext, ReactNode, useEffect } from 'react';
-import Cookies from 'js-cookie';
-import { User } from './components/types';
+import React, { useState, useContext, ReactNode } from "react";
+import { User } from "./components/types";
 
 interface UserContextType {
-    currentUser: User | null;
-    setCurrentUser: React.Dispatch<React.SetStateAction<User | null>>;
+  currentUser: User;
+  setCurrentUser: React.Dispatch<React.SetStateAction<User>>;
 }
 
 const UserContext = React.createContext<UserContextType | null>(null);
 
-export function useUser() {
-    return useContext(UserContext);
-}
-
 interface UserProviderProps {
-    children: ReactNode;
+  children: ReactNode;
 }
 
+// Since App is wrapped inside UserProvider, it will get the value initialised by UserProvider
 export function UserProvider({ children }: UserProviderProps) {
-    const [currentUser, setCurrentUser] = useState<User | null>(null);
-
-    const updateCurrentUserFromCookie = () => {
-        const cookieValue = Cookies.get('currentUser');
-        if (cookieValue) {
-            setCurrentUser(JSON.parse(cookieValue));
-        }
-    };
-
-    useEffect(() => {
-        window.addEventListener('load', updateCurrentUserFromCookie);
-        return () => {
-            window.removeEventListener('load', updateCurrentUserFromCookie);
-        };
-    }, []);
-
-    const value: UserContextType = {
-        currentUser,
-        setCurrentUser,
-    };
-
-    return (
-        <UserContext.Provider value={value}>
-            {children}
-        </UserContext.Provider>
-    );
+  const [currentUser, setCurrentUser] = useState<User>({} as User);
+  const value: UserContextType = {
+    currentUser,
+    setCurrentUser,
+  };
+  return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
 }
 
+export function useUserContext() {
+  const context = useContext(UserContext);
+  if (!context) {
+    throw new Error("useAppContext not available");
+  }
+  return context;
+}

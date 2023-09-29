@@ -1,90 +1,105 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Grid, Box, Card, Stack, Typography } from '@mui/material';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import { useUser } from '../UserContext';
-import { User } from './types';
-
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { Grid, Box, Card, Stack, Typography } from "@mui/material";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { UserProvider, useUserContext } from "../UserContext";
+import { User } from "./types";
 // components
-import PageContainer from './container/PageContainer';
-import AuthLogin from './auth/AuthLogin';
+import PageContainer from "./container/PageContainer";
+import AuthLogin from "./auth/AuthLogin";
 
-const Login2: React.FC = () => {
+const Login: React.FC = () => {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const [loginFailed, setLoginFailed] = useState<boolean>(false);
-
-  const context = useUser();
+  const { currentUser, setCurrentUser } = useUserContext();
   const navigate = useNavigate();
 
-  if (!context) {
-    console.log("Context not available");
-    return <div>Error: Context not available</div>;
-  } 
+  // try to fetch user credential as well?
+  // useEffect(() => {
+  //   if (Object.keys(currentUser).length === 0) {
+  //     axios
+  //       .get("/api/auth/current-user")
+  //       .then((response) => {
+  //         console.log(response.data);
+  //         const userData: User = response.data;
+  //         setCurrentUser(userData);
+  //         console.log(currentUser.username);
+  //       })
+  //       .catch((error) => {
+  //         console.error("Error fetching current user", error);
+  //       });
+  //   }
+  // }, [currentUser, setCurrentUser]);
 
-  const {
-    currentUser,
-    setCurrentUser
-  } = context;
-
+  useEffect(() => {
+    if (
+      currentUser &&
+      Object.keys(currentUser).length != 0 &&
+      currentUser.username
+    ) {
+      console.log("Shortcut to question bank");
+      console.log(currentUser.username);
+      navigate("/question-bank");
+    }
+  }, [currentUser, navigate]);
 
   const handleLogin = async () => {
     try {
-      console.log(username);
-      console.log(password);
-      
-      const response = await axios.post("/api/auth/log-in", {
-        username,
-        password
-      }, {
-        withCredentials: true
-      });
-        
+      const response = await axios.post(
+        "/api/auth/log-in",
+        {
+          username,
+          password,
+        },
+        {
+          withCredentials: true,
+        }
+      );
+
       if (response.status === 200) {
         // REQUIREMENT: Backend returns user data
-
         const userData: User = response.data;
+        console.log("Received user data");
+        console.log(userData.username);
         setCurrentUser(userData);
-
-        // console.log("Updated User Context: ", context); 
-        // console.log("Details: ", context?.currentUser?.username)
-        // --> These will show null REGARDLESS of success or not, should check by currentUser?.username
-
-        navigate("/question-bank");
+        console.log("Current user set");
+        console.log(currentUser.username);
+        // navigate("/question-bank");
       }
-        
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
-        console.error("Login failed: ", error);
-        if (error.response && error.response.status === 401) {
-            alert("Incorrect user credentials!");
-            setLoginFailed(true);
-        }
+        alert("Incorrect user credentials!");
       } else {
+        alert("An unknown error occured. Try again later.");
         console.error("An unknown error occured: ", error);
       }
     }
   };
-  
+
   return (
     <PageContainer title="Login" description="this is Login page">
       <Box
         sx={{
-          position: 'relative',
-          '&:before': {
+          position: "relative",
+          "&:before": {
             content: '""',
-            background: 'radial-gradient(#d2f1df, #d3d7fa, #bad8f4)',
-            backgroundSize: '400% 400%',
-            animation: 'gradient 15s ease infinite',
-            position: 'absolute',
-            height: '100%',
-            width: '100%',
-            opacity: '0.3',
+            background: "radial-gradient(#D2F1DF, #D3D7FA, #BAD8F4)",
+            backgroundSize: "400% 400%",
+            animation: "gradient 15s ease infinite",
+            position: "absolute",
+            height: "100%",
+            width: "100%",
+            opacity: "0.3",
           },
         }}
       >
-        <Grid container spacing={0} justifyContent="center" sx={{ height: '100vh' }}>
+        <Grid
+          container
+          spacing={0}
+          justifyContent="center"
+          sx={{ height: "100vh" }}
+        >
           <Grid
             item
             xs={12} // how many grids the item should take, when the screen is extra small
@@ -95,29 +110,52 @@ const Login2: React.FC = () => {
             justifyContent="center"
             alignItems="center"
           >
-          
-            <Card elevation={9} sx={{ p: 4, zIndex: 1, width: '100%', maxWidth: '500px' }}>
+            <Card
+              elevation={9}
+              sx={{
+                p: 4,
+                zIndex: 1,
+                width: "100%",
+                maxWidth: "500px",
+              }}
+            >
               <Box display="flex" alignItems="center" justifyContent="center">
                 {/* <Logo /> */}
               </Box>
               <AuthLogin
                 subtext={
-                  <Typography variant="subtitle1" textAlign="center" color="textSecondary" mb={1}>
+                  <Typography
+                    variant="subtitle1"
+                    textAlign="center"
+                    color="textSecondary"
+                    mb={1}
+                    fontSize="1.25rem"
+                  >
                     Your Technical Interview Prep Platform
                   </Typography>
                 }
                 subtitle={
-                  <Stack direction="row" spacing={1} justifyContent="center" mt={3}>
-                    <Typography color="textSecondary" variant="h6" fontWeight="500">
+                  <Stack
+                    direction="row"
+                    spacing={1}
+                    justifyContent="center"
+                    mt={3}
+                    alignItems="center"
+                  >
+                    <Typography
+                      color="textSecondary"
+                      fontWeight="500"
+                      fontSize="1.25rem"
+                    >
                       New to PeerPrep?
                     </Typography>
                     <Typography
                       component={Link}
-                      to="/signup2"
+                      to="/signup"
                       fontWeight="500"
                       sx={{
-                        textDecoration: 'none',
-                        color: 'primary.main',
+                        textDecoration: "none",
+                        color: "primary.main",
                       }}
                     >
                       Create an account
@@ -137,5 +175,4 @@ const Login2: React.FC = () => {
     </PageContainer>
   );
 };
-
-export default Login2;
+export default Login;

@@ -17,8 +17,8 @@ export const addQuestion = async (newQuestion: Partial<Question>) => {
         return;
     }
     // set to others if no category
-    if (!newQuestion.category || newQuestion.category.length == 0) {
-        newQuestion.category = ["Others"];
+    if (!newQuestion.categories || newQuestion.categories.length == 0) {
+        newQuestion.categories = ["Others"];
     }
 
     // First fetch all questions to check for duplicates
@@ -43,64 +43,55 @@ export const addQuestion = async (newQuestion: Partial<Question>) => {
     });
 };
 
+// When using asnc, generally do not need to explicitly create a new Promise
+// Can use tr catch
 export const deleteQuestion = async (id: string): Promise<void> => {
-    return new Promise<void>((resolve, reject) => {
-        fetch(`/api/questions/${id}`, {
-            method: 'DELETE',
-        })
-        .then(() => {
-            resolve();  // Resolve the promise without any value
-        })
-        .catch((error) => {
-            reject(error);  // Reject the promise if an error occurs
+    try {
+        await fetch(`/api/questions/${id}`, {
+            method: 'DELETE'
         });
-    });    
+    } catch (error) {
+        console.log(error);
+    }
 };
 
 export const updateQuestion = async (updatedQuestion: Question, id: string | number): Promise<void> => {
     // Empty field check
-    return new Promise<void>((resolve, reject) => {
-        (async () => {
-            // Empty field check
-            if (!updatedQuestion.title || !updatedQuestion.description) {
-                alert('Question title and description cannot be empty.');
-                reject('Empty field');
-                return;
-            }
+    if (!updatedQuestion.title || !updatedQuestion.description) {
+        alert('Question title and description cannot be empty.');
+        return;
+    }
 
-            if (!updatedQuestion.category || updatedQuestion.category.length === 0) {
-                updatedQuestion.category = ["Others"];
-            }
+    if (!updatedQuestion.categories || updatedQuestion.categories.length === 0) {
+        updatedQuestion.categories = ["Others"];
+    }
 
-            try {
-                // Do the duplicate check
-                const res = await fetch('/api/questions');
-                const existingQuestions: Question[] = await res.json();
-                
-                const duplicate = existingQuestions.find(
-                    q => q.title == updatedQuestion.title && q._id !== updatedQuestion._id
-                );
-                
-                if (duplicate) {
-                    alert("Question with this title already exists.");
-                    reject('Duplicate question');
-                    return;
-                }
-                
-                await fetch(`/api/questions/${id}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(updatedQuestion),
-                });
+    // the try catch block itself is a Promise
+    try {
+        // Do the duplicate check
+        // the code will wait here, until the await unciton finishes
+        const res = await fetch('/api/questions');
+        const existingQuestions: Question[] = await res.json();
+        
+        const duplicate = existingQuestions.find(
+            q => q.title == updatedQuestion.title && q._id !== updatedQuestion._id
+        );
+        
+        if (duplicate) {
+            alert("Question with this title already exists.");
+            return;
+        }
 
-                resolve();
-            } catch (error) {
-                reject(error);
-            }
-        })();
-    });
+        await fetch(`/api/questions/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(updatedQuestion),
+        });      
+    } catch (error) {
+        console.log(error);
+    }
 };
 
 
