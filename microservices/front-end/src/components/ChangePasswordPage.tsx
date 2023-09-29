@@ -4,12 +4,20 @@ import { useNavigate } from "react-router-dom";
 import styles from "./ChangePasswordPage.module.css";
 import { useUserContext } from "../UserContext";
 
+import { Box } from "@mui/material";
+import Alert from "@mui/material/Alert";
+import AlertTitle from "@mui/material/AlertTitle";
+
 // Should only allow change of password if old password matches!
 const ChangePasswordPage: React.FC = () => {
   const { currentUser, setCurrentUser } = useUserContext();
   const [oldPassword, setOldPassword] = useState<string>("");
   const [newPassword, setNewPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
+
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+
   const navigate = useNavigate();
 
   // check if currentUser is authenticated, if not, direct back to login
@@ -21,7 +29,7 @@ const ChangePasswordPage: React.FC = () => {
 
   const handleChangePassword = async () => {
     if (!oldPassword || !newPassword || newPassword !== confirmPassword) {
-      alert("Please fill in credentials, and ensure new passwords match.");
+      setError("Please fill in credentials, and ensure new passwords match.");
       return;
     }
 
@@ -32,19 +40,22 @@ const ChangePasswordPage: React.FC = () => {
       });
 
       if (response.status === 200) {
-        alert("Password changed successfully");
+        setSuccess("Password changed successfully");
         setOldPassword("");
         setNewPassword("");
         setConfirmPassword("");
         // no update of localStorage, do not store password locally
-        navigate("/profile");
+
+        setTimeout(() => {
+          navigate("/profile");
+        }, 500);
       }
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
         console.error("Change password failed:", error);
-        alert("User credential is incorrect");
+        setError("User credential is incorrect");
       } else {
-        alert("Changing password failed. Try again later.");
+        setError("Changing password failed. Try again later.");
         console.error("An unknown error occurred:", error);
       }
     }
@@ -69,7 +80,10 @@ const ChangePasswordPage: React.FC = () => {
             id="oldPassword"
             type="password"
             value={oldPassword}
-            onChange={(e) => setOldPassword(e.target.value)}
+            onChange={(e) => {
+              setOldPassword(e.target.value);
+              setError(null);
+            }}
           />
         </div>
         <div className={styles.input_field}>
@@ -81,7 +95,10 @@ const ChangePasswordPage: React.FC = () => {
             id="newPassword"
             type="password"
             value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
+            onChange={(e) => {
+              setNewPassword(e.target.value);
+              setError(null);
+            }}
           />
         </div>
         <div className={styles.input_field}>
@@ -93,9 +110,33 @@ const ChangePasswordPage: React.FC = () => {
             id="confirmPassword"
             type="password"
             value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
+            onChange={(e) => {
+              setConfirmPassword(e.target.value);
+              setError(null);
+            }}
           />
         </div>
+
+        {/* Handle error situation */}
+        {error && (
+          <Box mb={2}>
+            <Alert severity="error" onClose={() => setError(null)}>
+              <AlertTitle>Change Password Error</AlertTitle>
+              {error}
+            </Alert>
+          </Box>
+        )}
+
+        {/* Provide feedback when success */}
+        {success && (
+          <Box mb={2}>
+            <Alert severity="success">
+              <AlertTitle>Change Password Success</AlertTitle>
+              {success}
+            </Alert>
+          </Box>
+        )}
+
         <button className={styles.action_button} onClick={handleChangePassword}>
           Save
         </button>
