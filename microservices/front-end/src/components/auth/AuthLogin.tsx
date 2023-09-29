@@ -1,5 +1,7 @@
 import React, { FC, ReactNode } from "react";
 import { Box, Typography, Button, Stack } from "@mui/material";
+import Alert from "@mui/material/Alert";
+import AlertTitle from "@mui/material/AlertTitle";
 
 import CustomTextField from "../forms/theme-elements/CustomTextField";
 
@@ -12,6 +14,8 @@ interface AuthLoginProps {
   onSubmit: () => void;
   username: string;
   password: string;
+  error: string | null;
+  onErrorChange: (error: string | null) => void;
 }
 
 const AuthLogin: FC<AuthLoginProps> = ({
@@ -23,6 +27,8 @@ const AuthLogin: FC<AuthLoginProps> = ({
   onSubmit,
   username,
   password,
+  error,
+  onErrorChange,
 }) => (
   <>
     {title ? (
@@ -68,7 +74,10 @@ const AuthLogin: FC<AuthLoginProps> = ({
           variant="outlined"
           fullWidth
           value={password}
-          onChange={(e) => onPasswordChange(e.target.value)}
+          onChange={(e) => {
+            onPasswordChange(e.target.value);
+            onErrorChange(null); // clear the error when user types
+          }}
         />
       </Box>
       <Stack
@@ -79,6 +88,16 @@ const AuthLogin: FC<AuthLoginProps> = ({
       >
         {/* Removed the part of Remember this device FormGroup */}
       </Stack>
+
+      {/* Handle error situation */}
+      {error && (
+        <Box mb={2}>
+          <Alert severity="error" onClose={() => onErrorChange(null)}>
+            <AlertTitle>Sign-in Error</AlertTitle>
+            {error}
+          </Alert>
+        </Box>
+      )}
     </Stack>
     <Box>
       <Button

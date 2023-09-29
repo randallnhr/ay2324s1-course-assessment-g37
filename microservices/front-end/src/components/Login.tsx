@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { Grid, Box, Card, Stack, Typography } from "@mui/material";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { UserProvider, useUserContext } from "../UserContext";
+import { useUserContext } from "../UserContext";
 import { User } from "./types";
 // components
 import PageContainer from "./container/PageContainer";
@@ -13,24 +13,8 @@ const Login: React.FC = () => {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const { currentUser, setCurrentUser } = useUserContext();
+  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
-
-  // try to fetch user credential as well?
-  // useEffect(() => {
-  //   if (Object.keys(currentUser).length === 0) {
-  //     axios
-  //       .get("/api/auth/current-user")
-  //       .then((response) => {
-  //         console.log(response.data);
-  //         const userData: User = response.data;
-  //         setCurrentUser(userData);
-  //         console.log(currentUser.username);
-  //       })
-  //       .catch((error) => {
-  //         console.error("Error fetching current user", error);
-  //       });
-  //   }
-  // }, [currentUser, setCurrentUser]);
 
   useEffect(() => {
     if (
@@ -69,9 +53,9 @@ const Login: React.FC = () => {
       }
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
-        alert("Incorrect user credentials!");
+        setError("Incorrect user credentials!");
       } else {
-        alert("An unknown error occured. Try again later.");
+        setError("An unknown error occurred. Try again later.");
         console.error("An unknown error occured: ", error);
       }
     }
@@ -167,6 +151,8 @@ const Login: React.FC = () => {
                 onSubmit={handleLogin}
                 username={username}
                 password={password}
+                error={error}
+                onErrorChange={setError}
               />
             </Card>
           </Grid>
