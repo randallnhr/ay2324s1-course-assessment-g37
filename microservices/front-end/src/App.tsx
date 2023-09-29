@@ -20,7 +20,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
-import { HelmetProvider } from "react-helmet-async";
+import { Helmet, HelmetProvider } from "react-helmet-async";
 import TopBar from "./components/TopBar";
 
 // useContext: create a global state, that can be accessed by any component
@@ -54,6 +54,9 @@ function App() {
 
   return (
     <HelmetProvider>
+      <Helmet>
+        <title>PeerPrep</title>
+      </Helmet>
       <Router>
         {Object.keys(currentUser).length === 0 ? (
           <Backdrop

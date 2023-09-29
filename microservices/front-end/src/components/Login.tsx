@@ -13,7 +13,10 @@ const Login: React.FC = () => {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const { currentUser, setCurrentUser } = useUserContext();
+
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -50,8 +53,12 @@ const Login: React.FC = () => {
         console.log("Current user set");
         console.log(currentUser.username);
         // navigate("/question-bank");
+
+        setSuccess("Successfully logged in!");
       }
     } catch (error: unknown) {
+      setSuccess(null);
+
       if (axios.isAxiosError(error)) {
         setError("Incorrect user credentials!");
       } else {
@@ -153,6 +160,7 @@ const Login: React.FC = () => {
                 password={password}
                 error={error}
                 onErrorChange={setError}
+                success={success}
               />
             </Card>
           </Grid>

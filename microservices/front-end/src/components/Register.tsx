@@ -15,23 +15,26 @@ const Register: React.FC = () => {
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [role, setRole] = useState<"basic" | "admin">("basic");
 
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+
   const navigate = useNavigate();
 
   const handleSignup = async () => {
     const alphanumeric = /^[a-z0-9]+$/i; // only allow alphanumeric for username, displayName
 
     if (!username || !displayName || !password) {
-      alert("Required fields not filled up");
+      setError("Required fields not filled up");
       return;
     }
 
     if (!alphanumeric.test(username) || !alphanumeric.test(displayName)) {
-      alert("Username and Display Name must be alphanumeric.");
+      setError("Username and Display Name must be alphanumeric.");
       return;
     }
 
     if (password != confirmPassword) {
-      alert("Passwords do not match");
+      setError("Passwords do not match");
       return;
     }
     try {
@@ -44,19 +47,25 @@ const Register: React.FC = () => {
       });
 
       if (response.status == 200) {
-        navigate("/login");
+        setSuccess("Account successfully created!");
+
+        setTimeout(() => {
+          navigate("/login");
+        }, 500); // 500ms delay before navigating, let user see success message
       }
     } catch (error: unknown) {
+      setSuccess(null);
+
       if (axios.isAxiosError(error)) {
         if (error.response?.status === 422) {
           // Status code for repetitive account
-          alert("Username is already being used. Please use another one.");
+          setError("Username is already being used. Please use another one.");
         } else {
           console.error("Signup failed:", error);
-          alert(error.response?.data.message || "Failed to create account");
+          setError(error.response?.data.message || "Failed to create account");
         }
       } else {
-        alert("An unknown error occurred. Try again later.");
+        setError("An unknown error occurred. Try again later.");
         console.error("An unknown error occurred:", error);
       }
     }
@@ -156,6 +165,9 @@ const Register: React.FC = () => {
                 displayName={displayName}
                 password={password}
                 confirmPassword={confirmPassword}
+                error={error}
+                onErrorChange={setError}
+                success={success}
               />
             </Card>
           </Grid>
