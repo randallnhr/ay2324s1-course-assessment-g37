@@ -12,8 +12,12 @@ import { User } from "./types";
 import { Outlet } from "react-router-dom"; // allow render nested routes
 
 const TopBar: React.FC = () => {
-  const { currentUser, setCurrentUser } = useUserContext();
+  const { setCurrentUser } = useUserContext();
   const navigate = useNavigate();
+
+  const handleFindMatch = () => {
+    navigate("/find-match");
+  };
 
   const handleQuestion = () => {
     navigate("/question-bank");
@@ -46,11 +50,13 @@ const TopBar: React.FC = () => {
           <Typography fontSize="1.5rem" style={{ flexGrow: 1 }}>
             HOME
           </Typography>
-          <Button color="inherit" onClick={handleProfile}>
-            Profile
-          </Button>
+          <Button color="inherit" onClick={handleFindMatch}>
+            Find Match          </Button>
           <Button color="inherit" onClick={handleQuestion}>
             Question
+          </Button>
+          <Button color="inherit" onClick={handleProfile}>
+            Profile
           </Button>
           <Button color="inherit" onClick={handleSignout}>
             Log Out

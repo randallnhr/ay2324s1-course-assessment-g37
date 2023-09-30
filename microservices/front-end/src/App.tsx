@@ -1,6 +1,3 @@
-// import { useState } from 'react'
-// import reactLogo from './assets/react.svg'
-// import viteLogo from '/vite.svg'
 import "./App.css";
 import { useUserContext } from "./UserContext";
 import {
@@ -22,6 +19,7 @@ import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
 import { HelmetProvider } from "react-helmet-async";
 import TopBar from "./components/TopBar";
+import FindMatchPage from "./components/matchingService/FindMatchPage";
 
 // useContext: create a global state, that can be accessed by any component
 function App() {
@@ -72,7 +70,14 @@ function App() {
                 <Route path="/signup" element={<Register />} />
                 <Route path="/" element={<TopBar />}>
                   {/* TopBar should appear in all these 4 pages */}
-                  <Route path="/question-bank" element={<QuestionBank />} />
+                  <Route
+                    path="/find-match"
+                    element={<FindMatchPage />}
+                  />
+                  <Route
+                    path="/question-bank"
+                    element={<QuestionBank />}
+                  />
                   <Route
                     path="/change-password"
                     element={<ChangePasswordPage />}
