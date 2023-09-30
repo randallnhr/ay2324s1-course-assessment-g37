@@ -26,6 +26,7 @@ const FindMatchForm: FC<MatchFormProps> = ({
   const { currentUser } = useUserContext();
   const [complexity, setComplexity] = useState<QuestionComplexity>('Easy');
   const [isSearching, setIsSearching] = useState(false);
+  const [searchDuration, setSearchDuration] = useState(0);
 
   const handleToggleSearch = () => {
     setIsSearching(!isSearching);
@@ -41,6 +42,7 @@ const FindMatchForm: FC<MatchFormProps> = ({
       complexity
     };
     console.log('Starting search:', matchRequest)
+    const interval = setInterval(() => setSearchDuration(n => n + 1), 1000)
     findMatch(matchRequest).then((foundMatch) => {
       if (isCancelled) {
         return;
@@ -49,8 +51,9 @@ const FindMatchForm: FC<MatchFormProps> = ({
     })
 
     const cleanup =  () => {
-
-      console.log('Cancelling search: ', matchRequest)
+      console.log('Cancelling search: ', matchRequest);
+      clearInterval(interval);
+      setSearchDuration(0);
       isCancelled = true;
     }
     return cleanup;
@@ -83,6 +86,20 @@ const FindMatchForm: FC<MatchFormProps> = ({
           isSearching ? 'Cancel' : 'Find Match'
         }
       </button>
+      {
+        !isSearching
+          ? <></>
+          : (
+            <>
+              <div>
+                Finding suitable match{'.'.repeat(searchDuration % 4)}
+              </div>
+              <div>
+                Time elapsed:{' '}{searchDuration}s
+              </div>
+            </>
+          )
+      }
     </form>
   );  
 }
