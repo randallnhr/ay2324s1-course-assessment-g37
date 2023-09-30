@@ -20,3 +20,8 @@ export interface NewQuestion {
     categories: string[];
     complexity: QuestionComplexity
 }
+
+export type MatchRequest = {
+    userId: string
+    complexity: QuestionComplexity
+}
