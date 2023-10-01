@@ -51,7 +51,7 @@ export const deleteQuestion = async (id: string): Promise<void> => {
             method: 'DELETE'
         });
     } catch (error) {
-        console.log(error);
+        console.error(error);
     }
 };
 
@@ -90,7 +90,7 @@ export const updateQuestion = async (updatedQuestion: Question, id: string | num
             body: JSON.stringify(updatedQuestion),
         });      
     } catch (error) {
-        console.log(error);
+        console.error(error);
     }
 };
 
