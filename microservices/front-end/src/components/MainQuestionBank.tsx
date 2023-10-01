@@ -86,14 +86,18 @@ const QuestionBank: React.FC = () => {
   // fetch when component mounts
   // Use isFetching on question fetching
   useEffect(() => {
-    try {
-      setIsFetching(true);
-      fetchQuestions();
-    } catch (error) {
-      console.error("Error fetching questions", error);
-    } finally {
-      setIsFetching(false);
+    async function init() {
+      try {
+        setIsFetching(true);
+        await fetchQuestions();
+      } catch (error) {
+        console.error("Error fetching questions", error);
+      } finally {
+        setIsFetching(false);
+      }
     }
+
+    init();
   }, []);
 
   // check if currentUser is authenticated, if not, direct back to login
