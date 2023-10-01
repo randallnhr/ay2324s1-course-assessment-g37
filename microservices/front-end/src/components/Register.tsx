@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { Grid, Box, Card, Typography, Stack } from "@mui/material";
@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import PageContainer from "./container/PageContainer";
 // import Logo from '../layouts/full/shared/logo/Logo';
 import AuthRegister from "./auth/AuthRegister";
+import { useUserContext } from "../UserContext";
 
 const Register: React.FC = () => {
   const [username, setUsername] = useState<string>("");
@@ -14,8 +15,19 @@ const Register: React.FC = () => {
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [role, setRole] = useState<"basic" | "admin">("basic");
+  const { currentUser, setCurrentUser } = useUserContext();
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (
+      currentUser &&
+      Object.keys(currentUser).length != 0 &&
+      currentUser.username
+    ) {
+      navigate("/question-bank");
+    }
+  }, [currentUser, navigate]);
 
   const handleSignup = async () => {
     const alphanumeric = /^[a-z0-9]+$/i; // only allow alphanumeric for username, displayName
