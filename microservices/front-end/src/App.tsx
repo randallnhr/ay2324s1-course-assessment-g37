@@ -30,16 +30,13 @@ function App() {
   // Do this once at App launch. When app launches, all the previous data will be emptied, and useEffect will re-run
 
   useEffect(() => {
-    console.log("Current user: ", currentUser);
     if (Object.keys(currentUser).length === 0) {
       // initially currentUser = {}
       axios
         .get("/api/auth/current-user")
         .then((response) => {
-          console.log(response.data);
           const userData: User = response.data;
           setCurrentUser(userData);
-          console.log(currentUser.username);
         })
         .catch((error) => {
           console.error("Error fetching current user", error);

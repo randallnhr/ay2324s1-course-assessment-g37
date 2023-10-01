@@ -100,7 +100,7 @@ const QuestionBank: React.FC = () => {
   // Including an dependency array is good practice! Otherwise will re-render whenever some state changes
   useEffect(() => {
     if (Object.keys(currentUser).length != 0 && !currentUser.username) {
-      console.log("Question bank redirects");
+      // console.log("Question bank redirects");
       navigate("/login");
     }
   }, [currentUser, navigate]);

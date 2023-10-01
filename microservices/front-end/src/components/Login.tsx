@@ -38,8 +38,8 @@ const Login: React.FC = () => {
       Object.keys(currentUser).length != 0 &&
       currentUser.username
     ) {
-      console.log("Shortcut to question bank");
-      console.log(currentUser.username);
+      // console.log("Shortcut to question bank");
+      // console.log(currentUser.username);
       navigate("/question-bank");
     }
   }, [currentUser, navigate]);
@@ -60,11 +60,11 @@ const Login: React.FC = () => {
       if (response.status === 200) {
         // REQUIREMENT: Backend returns user data
         const userData: User = response.data;
-        console.log("Received user data");
-        console.log(userData.username);
+        // console.log("Received user data");
+        // console.log(userData.username);
         setCurrentUser(userData);
-        console.log("Current user set");
-        console.log(currentUser.username);
+        // console.log("Current user set");
+        // console.log(currentUser.username);
         // navigate("/question-bank");
       }
     } catch (error: unknown) {
