@@ -1,12 +1,11 @@
 import amqp from 'amqplib';
-import { MatchRequest } from '../../types';
 
 const QUEUE_NAME = 'matching_service_queue';
 
 const HOST = '127.0.0.1';
 const PORT = '5672';
 
-export async function findMatch(request: MatchRequest) {
+export async function sendMessage(message: string) {
   const connection = await amqp.connect(`amqp://${HOST}:${PORT}`);
   const channel = await connection.createChannel();
   const q = await channel.assertQueue('', { exclusive: true });
@@ -35,7 +34,7 @@ export async function findMatch(request: MatchRequest) {
 
   channel.sendToQueue(
     QUEUE_NAME,
-    Buffer.from(JSON.stringify(request)),
+    Buffer.from(message),
     {
       correlationId: correlationId,
       replyTo: q.queue

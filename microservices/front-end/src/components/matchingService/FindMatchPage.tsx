@@ -4,20 +4,10 @@ import { MatchRequest, QuestionComplexity } from "../types";
 import FindMatchForm from "./FindMatchForm";
 import styles from "./FindMatchPage.module.css";
 import { useUserContext } from "../../UserContext";
+import findMatch from "./utility/findMatch";
+import FindMatchStatus from "./FindMatchStatus";
 
 const MAX_WAITING_TIME = 20;
-
-function delay(delayInms: number) {
-  return new Promise(resolve => setTimeout(resolve, delayInms));
-}
-
-async function findMatch(matchRequest: MatchRequest): Promise<MatchRequest> {
-  await delay(5000);
-  return {
-    userId: 'fake user',
-    complexity: matchRequest.complexity
-  };
-}
 
 function joinRoom(allocatedMatch: MatchRequest) {
   //TODO: use collaboration service to join room
@@ -46,7 +36,7 @@ const FindMatchPage: React.FC = () => {
     };
     console.log('Starting search:', matchRequest)
     findMatch(matchRequest).then((foundMatch) => {
-      if (isCancelled) {
+      if (isCancelled || !foundMatch) {
         return;
       }
       joinRoom(foundMatch);
@@ -68,7 +58,7 @@ const FindMatchPage: React.FC = () => {
   }, [timeElapsed, resetTimer]);
 
   return (
-    <div>
+    <>
       <div className={styles.header_container}>
         <h1>Find Match</h1>
       </div>
@@ -85,27 +75,16 @@ const FindMatchPage: React.FC = () => {
           }
         }}
       />
-      <div className={styles.display_container}>
-        <div>
-          { messageToUser }
-        </div>
-        {
-          !timerIsRunning
-            ? <></>
-            : (
-                <>
-                  <div>
-                    Finding suitable match{'.'.repeat(timeElapsed % 4)}
-                  </div>
-                  <div>
-                    Time elapsed:{' '}{timeElapsed}s
-                  </div>
-                </>            
-            )
+      <FindMatchStatus
+        messageToUser={
+          timerIsRunning
+            ? 'Finding suitable match'+ '.'.repeat(timeElapsed % 4)
+            : messageToUser
         }
-      </div>
-      
-    </div>
+        timeElapsed={timeElapsed}
+        timerIsRunning={timerIsRunning}
+      />
+    </>
   );
 };
 export default FindMatchPage;
