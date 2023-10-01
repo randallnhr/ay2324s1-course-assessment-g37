@@ -19,15 +19,18 @@ const Register: React.FC = () => {
 
   const navigate = useNavigate();
 
+  const isAuthenticated =
+    currentUser && Object.keys(currentUser).length != 0 && currentUser.username;
+
   useEffect(() => {
-    if (
-      currentUser &&
-      Object.keys(currentUser).length != 0 &&
-      currentUser.username
-    ) {
+    if (isAuthenticated) {
       navigate("/question-bank");
     }
-  }, [currentUser, navigate]);
+  }, [isAuthenticated, navigate]);
+
+  if (isAuthenticated) {
+    return <></>;
+  }
 
   const handleSignup = async () => {
     const alphanumeric = /^[a-z0-9]+$/i; // only allow alphanumeric for username, displayName

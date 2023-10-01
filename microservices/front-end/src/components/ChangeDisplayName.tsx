@@ -11,11 +11,24 @@ const ChangeDisplayName: React.FC = () => {
   const navigate = useNavigate();
 
   // check if currentUser is authenticated, if not, direct back to login
+  // useEffect(() => {
+  //   if (Object.keys(currentUser).length != 0 && !currentUser.username) {
+  //     navigate("/login");
+  //   }
+  // }, [currentUser, navigate]);
+
+  const isAuthenticated =
+    currentUser && Object.keys(currentUser).length != 0 && currentUser.username;
+
   useEffect(() => {
-    if (Object.keys(currentUser).length != 0 && !currentUser.username) {
+    if (!isAuthenticated) {
       navigate("/login");
     }
-  }, [currentUser, navigate]);
+  }, [isAuthenticated, navigate]);
+
+  if (!isAuthenticated) {
+    return <></>;
+  }
 
   const handleChangeDisplayName = async () => {
     const alphanumeric = /^[a-z0-9]+$/i;

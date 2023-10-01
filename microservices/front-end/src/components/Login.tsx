@@ -32,17 +32,18 @@ const Login: React.FC = () => {
   //   }
   // }, [currentUser, setCurrentUser]);
 
+  const isAuthenticated =
+    currentUser && Object.keys(currentUser).length != 0 && currentUser.username;
+
   useEffect(() => {
-    if (
-      currentUser &&
-      Object.keys(currentUser).length != 0 &&
-      currentUser.username
-    ) {
-      // console.log("Shortcut to question bank");
-      // console.log(currentUser.username);
+    if (isAuthenticated) {
       navigate("/question-bank");
     }
-  }, [currentUser, navigate]);
+  }, [isAuthenticated, navigate]);
+
+  if (isAuthenticated) {
+    return <></>;
+  }
 
   const handleLogin = async () => {
     try {

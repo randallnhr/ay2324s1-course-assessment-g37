@@ -102,12 +102,25 @@ const QuestionBank: React.FC = () => {
 
   // check if currentUser is authenticated, if not, direct back to login
   // Including an dependency array is good practice! Otherwise will re-render whenever some state changes
+  // useEffect(() => {
+  //   if (Object.keys(currentUser).length != 0 && !currentUser.username) {
+  //     // console.log("Question bank redirects");
+  //     navigate("/login");
+  //   }
+  // }, [currentUser, navigate]);
+
+  const isAuthenticated =
+    currentUser && Object.keys(currentUser).length != 0 && currentUser.username;
+
   useEffect(() => {
-    if (Object.keys(currentUser).length != 0 && !currentUser.username) {
-      // console.log("Question bank redirects");
+    if (!isAuthenticated) {
       navigate("/login");
     }
-  }, [currentUser, navigate]);
+  }, [isAuthenticated, navigate]);
+
+  if (!isAuthenticated) {
+    return <></>;
+  }
 
   const toggleQuestionDetails = (id: string) => {
     setExpandedQuestionId(expandedQuestionId === id ? null : id);
