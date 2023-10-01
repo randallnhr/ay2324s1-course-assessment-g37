@@ -79,14 +79,16 @@ function App() {
                     element={<ChangeDisplayName />}
                   />
                   <Route path="/profile" element={<ProfilePage />} />
-                  <Route path="*" element={<Navigate to="/login" />} />{" "}
+                  <Route path="/" element={<Navigate to="/question-bank" />} />
+                  <Route path="/*" element={<div>404 Page Not Found</div>} />
                 </Route>
               </Routes>
             ) : (
               <Routes>
-                <Route path="*" element={<Navigate to="/login" />} />{" "}
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<Register />} />
+                <Route path="/" element={<Navigate to="/login" />} />
+                <Route path="/*" element={<div>404 Page Not Found</div>} />
               </Routes>
             )}
           </>
