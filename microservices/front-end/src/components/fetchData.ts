@@ -55,11 +55,11 @@ export const deleteQuestion = async (id: string): Promise<void> => {
     }
 };
 
-export const updateQuestion = async (updatedQuestion: Question, id: string | number): Promise<void> => {
+export const updateQuestion = async (updatedQuestion: Question, id: string | number, setError: (error: string | null) => void): Promise<boolean> => {
     // Empty field check
     if (!updatedQuestion.title || !updatedQuestion.description) {
-        alert('Question title and description cannot be empty.');
-        return;
+        setError('Question title and description cannot be empty.');
+        return false;
     }
 
     if (!updatedQuestion.categories || updatedQuestion.categories.length === 0) {
@@ -78,8 +78,8 @@ export const updateQuestion = async (updatedQuestion: Question, id: string | num
         );
         
         if (duplicate) {
-            alert("Question with this title already exists.");
-            return;
+            setError("Question with this title already exists.");
+            return false;
         }
 
         await fetch(`/api/questions/${id}`, {
@@ -88,9 +88,13 @@ export const updateQuestion = async (updatedQuestion: Question, id: string | num
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(updatedQuestion),
-        });      
+        });     
+        setError(null);
+        return true; 
     } catch (error) {
         console.log(error);
+        setError('Failed to update the question due to an unexpected error.');
+        return false;
     }
 };
 

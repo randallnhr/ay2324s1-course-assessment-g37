@@ -13,6 +13,10 @@ import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useUserContext } from "../UserContext";
 
+import Alert from "@mui/material/Alert";
+import AlertTitle from "@mui/material/AlertTitle";
+import { Box } from "@mui/material";
+
 const allCategories = [
   "Arrays",
   "Strings",
@@ -75,9 +79,7 @@ const QuestionBank: React.FC = () => {
 
   // set the Add & Update status
   const [addError, setAddError] = useState<string | null>(null);
-  const [addSuccess, setAddSuccess] = useState<string | null>(null);
   const [updateError, setUpdateError] = useState<string | null>(null);
-  const [updateSuccess, setUpdateSuccess] = useState<string | null>(null);
 
   // Need to fetch current user as well
   const [isFetching, setIsFetching] = useState<boolean>(true);
@@ -130,8 +132,9 @@ const QuestionBank: React.FC = () => {
     updatedQuestion: Question,
     id: string | number
   ) => {
-    await updateQuestion(updatedQuestion, id);
+    const success = await updateQuestion(updatedQuestion, id, setUpdateError);
     fetchQuestions();
+    return success;
   };
 
   const updateExistingCategoryArray = (
@@ -208,6 +211,7 @@ const QuestionBank: React.FC = () => {
                                 ref={titleRef}
                                 type="text"
                                 defaultValue={question.title}
+                                onChange={() => setUpdateError(null)}
                               />
                             </div>
                             <div>
@@ -218,6 +222,7 @@ const QuestionBank: React.FC = () => {
                                 className={styles.text_area}
                                 ref={descriptionRef}
                                 defaultValue={question.description}
+                                onChange={() => setUpdateError(null)}
                               ></textarea>
                             </div>
                             <div>
@@ -254,6 +259,7 @@ const QuestionBank: React.FC = () => {
                                     "add"
                                   );
                                   setUpdateSelectedOption(""); // reset the selected option
+                                  setUpdateError(null);
                                 }}
                               >
                                 <option value="" disabled>
@@ -279,6 +285,7 @@ const QuestionBank: React.FC = () => {
                                 className={styles.the_select}
                                 ref={complexityRef}
                                 defaultValue={question.complexity}
+                                onChange={() => setUpdateError(null)}
                               >
                                 <option value="Easy">Easy</option>
                                 <option value="Medium">Medium</option>
@@ -286,6 +293,18 @@ const QuestionBank: React.FC = () => {
                               </select>
                             </div>
                           </div>
+
+                          {updateError && (
+                            <Box mt={1} mb={1}>
+                              <Alert
+                                severity="error"
+                                onClose={() => setUpdateError(null)}
+                              >
+                                <AlertTitle>Update Question Error</AlertTitle>
+                                {updateError}
+                              </Alert>
+                            </Box>
+                          )}
                         </td>
                         <td>
                           <button
@@ -296,7 +315,7 @@ const QuestionBank: React.FC = () => {
                           </button>
                           <button
                             className={styles.action_button}
-                            onClick={() => {
+                            onClick={async () => {
                               const updatedTitle =
                                 titleRef.current?.value || "";
                               // const updatedCategory = categoryRef.current?.value || "";
@@ -311,11 +330,15 @@ const QuestionBank: React.FC = () => {
                                 complexity: updatedComplexity,
                                 description: updatedDescription, // New field
                               };
-                              handleUpdateQuestion(
+                              const success = await handleUpdateQuestion(
                                 updatedQuestion,
                                 question._id
                               );
-                              setUpdatingQuestionId(null);
+
+                              // Only close the update tab if there is no error
+                              if (success) {
+                                setUpdatingQuestionId(null);
+                              }
                             }}
                           >
                             Save
