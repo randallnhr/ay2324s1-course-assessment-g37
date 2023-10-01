@@ -73,6 +73,12 @@ const QuestionBank: React.FC = () => {
   const complexityRef = React.createRef<HTMLSelectElement>();
   const descriptionRef = React.createRef<HTMLTextAreaElement>();
 
+  // set the Add & Update status
+  const [addError, setAddError] = useState<string | null>(null);
+  const [addSuccess, setAddSuccess] = useState<string | null>(null);
+  const [updateError, setUpdateError] = useState<string | null>(null);
+  const [updateSuccess, setUpdateSuccess] = useState<string | null>(null);
+
   // Need to fetch current user as well
   const [isFetching, setIsFetching] = useState<boolean>(true);
   const { currentUser, setCurrentUser } = useUserContext();
@@ -111,7 +117,7 @@ const QuestionBank: React.FC = () => {
 
   // adding a new question
   const handleAddQuestion = async (newQuestion: Partial<Question>) => {
-    await addQuestion(newQuestion);
+    await addQuestion(newQuestion, setAddError);
     fetchQuestions();
   };
 
@@ -388,6 +394,8 @@ const QuestionBank: React.FC = () => {
                   setNewQuestion={setNewQuestion}
                   handleAddQuestions={handleAddQuestion}
                   setSelectedCategory={setSelectedCategory}
+                  error={addError}
+                  onErrorChange={setAddError}
                 />
               </>
             )}

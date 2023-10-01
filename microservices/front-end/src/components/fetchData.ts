@@ -10,10 +10,10 @@ export const getQuestions = async (): Promise<Question[]> => {
         .then(res => res.json());
 }
 
-export const addQuestion = async (newQuestion: Partial<Question>) => {
+export const addQuestion = async (newQuestion: Partial<Question>, setError: (error: string | null) => void) => {
     // empty field check
     if (!newQuestion.title || !newQuestion.description) {
-        alert('Question title and description cannot be empty.');
+        setError('Question title and description cannot be empty.');
         return;
     }
     // set to others if no category
@@ -27,7 +27,7 @@ export const addQuestion = async (newQuestion: Partial<Question>) => {
     .then((existingQuestions: Question[]) => {
         const duplicate = existingQuestions.find(q => q.title === newQuestion.title);
         if (duplicate) {
-            alert('Question with this title already exists.');
+            setError('Question with this title already exists.');
             return;
         }
 
