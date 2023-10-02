@@ -50,7 +50,6 @@ const Register: React.FC = () => {
       return;
     }
     try {
-      // console.log(username, displayName, password, role);
       const response = await axios.post("/api/auth/sign-up", {
         username,
         displayName,
