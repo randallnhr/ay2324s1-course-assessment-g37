@@ -24,8 +24,8 @@ if (
 const PORT = process.env.PORT !== undefined ? Number(process.env.PORT) : 8080;
 
 const useLocalhost = process.env.USE_LOCALHOST === "1";
-const USER_SERVICE_URL = useLocalhost ? "http://localhost:3219" : "";
-const QUESTION_SERVICE_URL = useLocalhost ? "http://localhost:3001" : "";
+const USER_SERVICE_URL = process.env.USER_SERVICE_URL ? process.env.USER_SERVICE_URL : "http://localhost:3219";
+const QUESTION_SERVICE_URL = process.env.QUESTION_SERVICE_URL ? process.env.QUESTION_SERVICE_URL : "http://localhost:3001";
 
 // ============================================================================
 // set up passport
