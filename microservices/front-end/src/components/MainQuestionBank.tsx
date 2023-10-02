@@ -77,22 +77,17 @@ const QuestionBank: React.FC = () => {
   const [isFetching, setIsFetching] = useState<boolean>(true);
   const { currentUser, setCurrentUser } = useUserContext();
 
-  // functions to fetch all questions and update UI
-  const fetchQuestions = async () => {
-    const fetchedQuestions = await getQuestions();
-
-    if (fetchedQuestions === undefined) {
-      alert("Failed to fetch questions");
-      return;
-    }
-
-    setQuestions(fetchedQuestions);
-  };
+  const isAuthenticated =
+    currentUser && Object.keys(currentUser).length != 0 && currentUser.username;
 
   // fetch when component mounts
   // Use isFetching on question fetching
   useEffect(() => {
     async function init() {
+      if (!isAuthenticated) {
+        return;
+      }
+
       try {
         setIsFetching(true);
         await fetchQuestions();
@@ -104,20 +99,10 @@ const QuestionBank: React.FC = () => {
     }
 
     init();
-  }, []);
+  }, [isAuthenticated]);
 
   // check if currentUser is authenticated, if not, direct back to login
   // Including an dependency array is good practice! Otherwise will re-render whenever some state changes
-  // useEffect(() => {
-  //   if (Object.keys(currentUser).length != 0 && !currentUser.username) {
-  //     // console.log("Question bank redirects");
-  //     navigate("/login");
-  //   }
-  // }, [currentUser, navigate]);
-
-  const isAuthenticated =
-    currentUser && Object.keys(currentUser).length != 0 && currentUser.username;
-
   useEffect(() => {
     if (!isAuthenticated) {
       navigate("/login");
@@ -127,6 +112,18 @@ const QuestionBank: React.FC = () => {
   if (!isAuthenticated) {
     return <></>;
   }
+
+  // functions to fetch all questions and update UI
+  const fetchQuestions = async () => {
+    const fetchedQuestions = await getQuestions();
+
+    if (fetchedQuestions === undefined) {
+      alert("Failed to fetch questions");
+      return;
+    }
+
+    setQuestions(fetchedQuestions);
+  };
 
   const toggleQuestionDetails = (id: string) => {
     setExpandedQuestionId(expandedQuestionId === id ? null : id);
