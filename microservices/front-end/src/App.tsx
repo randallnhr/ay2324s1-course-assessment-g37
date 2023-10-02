@@ -7,7 +7,6 @@ import {
   BrowserRouter as Router,
   Route,
   Routes,
-  Navigate,
 } from "react-router-dom";
 import QuestionBank from "./components/MainQuestionBank";
 import ChangePasswordPage from "./components/ChangePasswordPage";
@@ -18,8 +17,6 @@ import Register from "./components/Register";
 import { User } from "./components/types";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import Backdrop from "@mui/material/Backdrop";
-import CircularProgress from "@mui/material/CircularProgress";
 import { HelmetProvider } from "react-helmet-async";
 import TopBar from "./components/TopBar";
 import HomePage from "./components/HomePage";
