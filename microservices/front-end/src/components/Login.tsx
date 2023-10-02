@@ -18,18 +18,18 @@ const Login: React.FC = () => {
   const [success, setSuccess] = useState<string | null>(null);
 
   const navigate = useNavigate();
+  const isAuthenticated =
+    currentUser && Object.keys(currentUser).length != 0 && currentUser.username;
 
   useEffect(() => {
-    if (
-      currentUser &&
-      Object.keys(currentUser).length != 0 &&
-      currentUser.username
-    ) {
-      console.log("Shortcut to question bank");
-      console.log(currentUser.username);
+    if (isAuthenticated) {
       navigate("/question-bank");
     }
-  }, [currentUser, navigate]);
+  }, [isAuthenticated, navigate]);
+
+  if (isAuthenticated) {
+    return <></>;
+  }
 
   const handleLogin = async () => {
     try {
@@ -45,10 +45,7 @@ const Login: React.FC = () => {
       );
 
       if (response.status === 200) {
-        // REQUIREMENT: Backend returns user data
         const userData: User = response.data;
-        console.log("Received user data");
-        console.log(userData.username);
         setCurrentUser(userData);
         console.log("Current user set");
         console.log(currentUser.username);
