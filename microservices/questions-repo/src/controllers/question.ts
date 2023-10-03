@@ -8,7 +8,12 @@ export const getQuestions: RequestHandler = async (
   req: Request,
   res: Response
 ) => {
-  QuestionModel.find()
+  const question = req.body ?? {};
+  if (!isPartialQuestion(question)) {
+    res.status(CODE_BAD_REQUEST).end();
+    return;
+  }
+  QuestionModel.find(question)
     .then(questions => res.json(questions))
     .catch((err) => {
       console.error(err);
