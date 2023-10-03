@@ -77,33 +77,53 @@ const QuestionBank: React.FC = () => {
   const [isFetching, setIsFetching] = useState<boolean>(true);
   const { currentUser, setCurrentUser } = useUserContext();
 
-  // functions to fetch all questions and update UI
-  const fetchQuestions = async () => {
-    const fetchedQuestions = await getQuestions();
-    setQuestions(fetchedQuestions);
-  };
+  const isAuthenticated =
+    currentUser && Object.keys(currentUser).length != 0 && currentUser.username;
 
   // fetch when component mounts
   // Use isFetching on question fetching
   useEffect(() => {
-    try {
-      setIsFetching(true);
-      fetchQuestions();
-    } catch (error) {
-      console.error("Error fetching questions", error);
-    } finally {
-      setIsFetching(false);
+    async function init() {
+      if (!isAuthenticated) {
+        return;
+      }
+
+      try {
+        setIsFetching(true);
+        await fetchQuestions();
+      } catch (error) {
+        console.error("Error fetching questions", error);
+      } finally {
+        setIsFetching(false);
+      }
     }
-  }, []);
+
+    init();
+  }, [isAuthenticated]);
 
   // check if currentUser is authenticated, if not, direct back to login
   // Including an dependency array is good practice! Otherwise will re-render whenever some state changes
   useEffect(() => {
-    if (Object.keys(currentUser).length != 0 && !currentUser.username) {
-      console.log("Question bank redirects");
+    if (!isAuthenticated) {
       navigate("/login");
     }
-  }, [currentUser, navigate]);
+  }, [isAuthenticated, navigate]);
+
+  if (!isAuthenticated) {
+    return <></>;
+  }
+
+  // functions to fetch all questions and update UI
+  const fetchQuestions = async () => {
+    const fetchedQuestions = await getQuestions();
+
+    if (fetchedQuestions === undefined) {
+      alert("Failed to fetch questions");
+      return;
+    }
+
+    setQuestions(fetchedQuestions);
+  };
 
   const toggleQuestionDetails = (id: string) => {
     setExpandedQuestionId(expandedQuestionId === id ? null : id);
@@ -183,7 +203,8 @@ const QuestionBank: React.FC = () => {
                   <th className={styles.table_header}>Complexity</th>
                   {currentUser &&
                     Object.keys(currentUser).length != 0 &&
-                    currentUser.username && (
+                    currentUser.username &&
+                    currentUser.role === "admin" && (
                       <th className={styles.table_header}>Actions</th>
                     )}
                 </tr>
@@ -336,7 +357,8 @@ const QuestionBank: React.FC = () => {
                           {/* Render Actions conditionally for non-basic users */}
                           {currentUser &&
                             Object.keys(currentUser).length != 0 &&
-                            currentUser.username && (
+                            currentUser.username &&
+                            currentUser.role === "admin" && (
                               <>
                                 <button
                                   className={styles.action_button}
@@ -378,7 +400,8 @@ const QuestionBank: React.FC = () => {
           {/* Render AddQuestionForm conditionally */}
           {currentUser &&
             Object.keys(currentUser).length != 0 &&
-            currentUser.username && (
+            currentUser.username &&
+            currentUser.role === "admin" && (
               <>
                 <h2 className={styles.add_header}>Add a New Question</h2>
                 <AddQuestionForm

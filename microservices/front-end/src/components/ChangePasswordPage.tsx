@@ -12,12 +12,19 @@ const ChangePasswordPage: React.FC = () => {
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const navigate = useNavigate();
 
+  const isAuthenticated =
+    currentUser && Object.keys(currentUser).length != 0 && currentUser.username;
+
   // check if currentUser is authenticated, if not, direct back to login
   useEffect(() => {
-    if (Object.keys(currentUser).length != 0 && !currentUser.username) {
+    if (!isAuthenticated) {
       navigate("/login");
     }
-  }, [currentUser, navigate]);
+  }, [isAuthenticated, navigate]);
+
+  if (!isAuthenticated) {
+    return <></>;
+  }
 
   const handleChangePassword = async () => {
     if (!oldPassword || !newPassword || newPassword !== confirmPassword) {

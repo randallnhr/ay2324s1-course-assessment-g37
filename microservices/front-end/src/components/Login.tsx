@@ -15,34 +15,18 @@ const Login: React.FC = () => {
   const { currentUser, setCurrentUser } = useUserContext();
   const navigate = useNavigate();
 
-  // try to fetch user credential as well?
-  // useEffect(() => {
-  //   if (Object.keys(currentUser).length === 0) {
-  //     axios
-  //       .get("/api/auth/current-user")
-  //       .then((response) => {
-  //         console.log(response.data);
-  //         const userData: User = response.data;
-  //         setCurrentUser(userData);
-  //         console.log(currentUser.username);
-  //       })
-  //       .catch((error) => {
-  //         console.error("Error fetching current user", error);
-  //       });
-  //   }
-  // }, [currentUser, setCurrentUser]);
+  const isAuthenticated =
+    currentUser && Object.keys(currentUser).length != 0 && currentUser.username;
 
   useEffect(() => {
-    if (
-      currentUser &&
-      Object.keys(currentUser).length != 0 &&
-      currentUser.username
-    ) {
-      console.log("Shortcut to question bank");
-      console.log(currentUser.username);
+    if (isAuthenticated) {
       navigate("/question-bank");
     }
-  }, [currentUser, navigate]);
+  }, [isAuthenticated, navigate]);
+
+  if (isAuthenticated) {
+    return <></>;
+  }
 
   const handleLogin = async () => {
     try {
@@ -58,21 +42,15 @@ const Login: React.FC = () => {
       );
 
       if (response.status === 200) {
-        // REQUIREMENT: Backend returns user data
         const userData: User = response.data;
-        console.log("Received user data");
-        console.log(userData.username);
         setCurrentUser(userData);
-        console.log("Current user set");
-        console.log(currentUser.username);
-        // navigate("/question-bank");
       }
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
         alert("Incorrect user credentials!");
       } else {
-        alert("An unknown error occured. Try again later.");
-        console.error("An unknown error occured: ", error);
+        alert("An unknown error occurred. Try again later.");
+        console.error("An unknown error occurred: ", error);
       }
     }
   };
