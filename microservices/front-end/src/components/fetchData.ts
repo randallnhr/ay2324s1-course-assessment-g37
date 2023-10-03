@@ -113,7 +113,10 @@ export const updateQuestion = async (updatedQuestion: Question, id: string | num
       setError("Failed to update question");
       return false;
     }
+
+    return true;
   } catch (error) {
     console.error(error);
+    return false;
   }
 };
