@@ -113,10 +113,12 @@ export const updateQuestion = async (updatedQuestion: Question, id: string | num
       setError("Failed to update question");
       return false;
     }
-
+    setError(null);
     return true;
+
   } catch (error) {
     console.error(error);
+    setError('Failed to update the question due to an unexpected error.');
     return false;
   }
 };
