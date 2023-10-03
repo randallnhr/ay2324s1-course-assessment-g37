@@ -22,6 +22,7 @@ import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
 import { HelmetProvider } from "react-helmet-async";
 import TopBar from "./components/TopBar";
+import CollaborationPage from "./components/CollaborationPage";
 
 // useContext: create a global state, that can be accessed by any component
 function App() {
@@ -82,6 +83,7 @@ function App() {
                     element={<ChangeDisplayName />}
                   />
                   <Route path="/profile" element={<ProfilePage />} />
+                  <Route path="/collab" element={<CollaborationPage />} />
                   <Route path="*" element={<Navigate to="/login" />} />{" "}
                 </Route>
               </Routes>

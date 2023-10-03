@@ -2,7 +2,7 @@ import { Server } from "socket.io";
 
 const io = new Server(3111, {
   cors: {
-    origin: "http://127.0.0.1:5173",
+    origin: "http://localhost:5173",
   },
 });
 
@@ -31,8 +31,8 @@ io.on("connection", (socket) => {
   // emit number of clients in room to ensure room is ready
   socket.in(room).emit("room count", io.sockets.adapter.rooms.get(room)?.size);
 
-  socket.on("client code changes", (change) => {
-    io.to(room).emit("server code changes", change);
+  socket.on("client code changes", (delta) => {
+    io.to(room).emit("server code changes", delta);
   });
 
   socket.on("other user has left", () => {
