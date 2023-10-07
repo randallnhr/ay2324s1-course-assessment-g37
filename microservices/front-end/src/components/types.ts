@@ -1,9 +1,11 @@
+export type QuestionComplexity = 'Easy' | 'Medium' | 'Hard'
+
 export interface Question {
     _id: string;
     title: string;
     description: string;
     categories: string[];
-    complexity: 'Easy' | 'Medium' | 'Hard';
+    complexity: QuestionComplexity
 }
 
 export interface User {
@@ -16,5 +18,10 @@ export interface NewQuestion {
     title: string;
     description: string;
     categories: string[];
-    complexity: 'Easy' | 'Medium' | 'Hard';
+    complexity: QuestionComplexity
+}
+
+export type MatchRequest = {
+    userId: string
+    complexity: QuestionComplexity
 }
