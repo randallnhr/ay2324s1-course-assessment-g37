@@ -18,6 +18,8 @@ const ChangePasswordPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const navigate = useNavigate();
 
   const isAuthenticated =
@@ -35,8 +37,11 @@ const ChangePasswordPage: React.FC = () => {
   }
 
   const handleChangePassword = async () => {
+    setIsSubmitting(true);
+
     if (!oldPassword || !newPassword || newPassword !== confirmPassword) {
       setError("Please fill in credentials, and ensure new passwords match.");
+      setIsSubmitting(false);
       return;
     }
 
@@ -65,6 +70,8 @@ const ChangePasswordPage: React.FC = () => {
         setError("Changing password failed. Try again later.");
         console.error("An unknown error occurred:", error);
       }
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -144,7 +151,11 @@ const ChangePasswordPage: React.FC = () => {
           </Box>
         )}
 
-        <button className={styles.action_button} onClick={handleChangePassword}>
+        <button
+          className={styles.action_button}
+          onClick={handleChangePassword}
+          disabled={isSubmitting}
+        >
           Save
         </button>
         <button className={styles.action_button} onClick={handleCancel}>

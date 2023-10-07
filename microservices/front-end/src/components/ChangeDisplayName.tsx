@@ -16,6 +16,8 @@ const ChangeDisplayName: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const navigate = useNavigate();
 
   const isAuthenticated =
@@ -33,14 +35,18 @@ const ChangeDisplayName: React.FC = () => {
   }
 
   const handleChangeDisplayName = async () => {
+    setIsSubmitting(true);
+
     const alphanumeric = /^[a-z0-9]+$/i;
     if (!displayName) {
       setError("New display name cannot be empty");
+      setIsSubmitting(false);
       return;
     }
 
     if (!alphanumeric.test(displayName)) {
       setError("Display Name must be alphanumeric.");
+      setIsSubmitting(false);
       return;
     }
 
@@ -67,6 +73,8 @@ const ChangeDisplayName: React.FC = () => {
       setSuccess(null);
       setError("Changing of display name failed");
       console.error("An unknown error occurred:", error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -118,6 +126,7 @@ const ChangeDisplayName: React.FC = () => {
         <button
           className={styles.action_button}
           onClick={handleChangeDisplayName}
+          disabled={isSubmitting}
         >
           Save
         </button>

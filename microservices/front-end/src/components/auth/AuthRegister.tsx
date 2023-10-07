@@ -21,6 +21,7 @@ interface AuthRegisterProps {
   error: string | null;
   onErrorChange: (error: string | null) => void;
   success: string | null;
+  isSubmitting: boolean;
 }
 
 const AuthRegister: FC<AuthRegisterProps> = ({
@@ -39,8 +40,9 @@ const AuthRegister: FC<AuthRegisterProps> = ({
   error,
   onErrorChange,
   success,
+  isSubmitting,
 }) => (
-  <>
+  <Box display="flex" flexDirection="column">
     {title ? (
       <Typography fontWeight="700" variant="h2" mb={1}>
         {title}
@@ -78,7 +80,7 @@ const AuthRegister: FC<AuthRegisterProps> = ({
           component="label"
           htmlFor="displayName"
           mb="5px"
-          mt="25px"
+          mt="20px"
         >
           Display Name
         </Typography>
@@ -99,7 +101,7 @@ const AuthRegister: FC<AuthRegisterProps> = ({
           component="label"
           htmlFor="password"
           mb="5px"
-          mt="25px"
+          mt="20px"
         >
           Password
         </Typography>
@@ -121,7 +123,7 @@ const AuthRegister: FC<AuthRegisterProps> = ({
           component="label"
           htmlFor="confirmPassword"
           mb="5px"
-          mt="25px"
+          mt="20px"
         >
           Confirm Password
         </Typography>
@@ -164,12 +166,13 @@ const AuthRegister: FC<AuthRegisterProps> = ({
         fullWidth
         onClick={onSignup}
         type="button"
+        disabled={isSubmitting} // Disable the button during submission
       >
         Sign Up
       </Button>
     </Box>
     {subtitle}
-  </>
+  </Box>
 );
 
 export default AuthRegister;

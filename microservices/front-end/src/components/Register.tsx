@@ -20,6 +20,8 @@ const Register: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const navigate = useNavigate();
 
   const isAuthenticated =
@@ -36,20 +38,25 @@ const Register: React.FC = () => {
   }
 
   const handleSignup = async () => {
+    setIsSubmitting(true);
+
     const alphanumeric = /^[a-z0-9]+$/i; // only allow alphanumeric for username, displayName
 
     if (!username || !displayName || !password) {
       setError("Required fields not filled up");
+      setIsSubmitting(false);
       return;
     }
 
     if (!alphanumeric.test(username) || !alphanumeric.test(displayName)) {
       setError("Username and Display Name must be alphanumeric.");
+      setIsSubmitting(false);
       return;
     }
 
     if (password != confirmPassword) {
       setError("Passwords do not match");
+      setIsSubmitting(false);
       return;
     }
     try {
@@ -82,6 +89,8 @@ const Register: React.FC = () => {
         setError("An unknown error occurred. Try again later.");
         console.error("An unknown error occurred:", error);
       }
+    } finally {
+      setIsSubmitting(false); // Re-enable the button
     }
   };
 
@@ -120,7 +129,13 @@ const Register: React.FC = () => {
           >
             <Card
               elevation={9}
-              sx={{ p: 4, zIndex: 1, width: "100%", maxWidth: "500px" }}
+              sx={{
+                p: 4,
+                zIndex: 1,
+                width: "100%",
+                maxWidth: "500px",
+                margin: "auto",
+              }}
             >
               <Box display="flex" alignItems="center" justifyContent="center">
                 {/* <Logo /> */}
@@ -182,6 +197,7 @@ const Register: React.FC = () => {
                 error={error}
                 onErrorChange={setError}
                 success={success}
+                isSubmitting={isSubmitting}
               />
             </Card>
           </Grid>
