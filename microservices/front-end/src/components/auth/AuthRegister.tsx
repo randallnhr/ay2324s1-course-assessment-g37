@@ -21,6 +21,7 @@ interface AuthRegisterProps {
   error: string | null;
   onErrorChange: (error: string | null) => void;
   success: string | null;
+  isSubmitting: boolean;
 }
 
 const AuthRegister: FC<AuthRegisterProps> = ({
@@ -39,6 +40,7 @@ const AuthRegister: FC<AuthRegisterProps> = ({
   error,
   onErrorChange,
   success,
+  isSubmitting,
 }) => (
   <Box display="flex" flexDirection="column">
     {title ? (
@@ -164,6 +166,7 @@ const AuthRegister: FC<AuthRegisterProps> = ({
         fullWidth
         onClick={onSignup}
         type="button"
+        disabled={isSubmitting} // Disable the button during submission
       >
         Sign Up
       </Button>
