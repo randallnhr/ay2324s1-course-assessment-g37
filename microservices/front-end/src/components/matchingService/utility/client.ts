@@ -1,4 +1,5 @@
 import amqp from 'amqplib';
+import { v4 as generateUuid } from 'uuid';
 
 const QUEUE_NAME = 'matching_service_queue';
 
@@ -42,10 +43,4 @@ export async function sendMessage(message: string) {
   );
 
   return consumerPromise;
-}
-
-function generateUuid() {
-  return Math.random().toString() +
-         Math.random().toString() +
-         Math.random().toString();
 }
