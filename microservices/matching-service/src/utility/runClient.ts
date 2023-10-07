@@ -20,4 +20,4 @@ if (!isMatchRequest(request)) {
   process.exit(1);
 }
 
-findMatch(request).then(result => console.log(`Match results: ${result}`))
+findMatch(request).then(result => console.log(`Match results: ${JSON.stringify(result)}`))

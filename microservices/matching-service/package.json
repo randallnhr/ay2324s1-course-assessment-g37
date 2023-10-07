@@ -6,7 +6,8 @@
   "scripts": {
     "build": "npx tsc",
     "start:rabbitMQ": "docker run --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq",
-    "dev": "tsc-watch --onSuccess \"node ./dist/app.js\"",
+    "dev:amqp": "tsc-watch --onSuccess \"node ./dist/server.js\"",
+    "dev:socket": "tsc-watch --onSuccess \"node ./dist/app.js\"",
     "test:match": "node ./dist/utility/runClient.js"
   },
   "author": "",

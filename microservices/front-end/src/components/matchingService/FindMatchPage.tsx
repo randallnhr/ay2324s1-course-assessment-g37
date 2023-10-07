@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import useTimer from "../../hooks/useTimer";
 import { MatchRequest, QuestionComplexity } from "../types";
 import FindMatchForm from "./FindMatchForm";
 import styles from "./FindMatchPage.module.css";
 import { useUserContext } from "../../UserContext";
-import findMatch from "./utility/findMatch";
 import FindMatchStatus from "./FindMatchStatus";
+import useMatchingService from "../../hooks/useMatchingService";
 
 const MAX_WAITING_TIME = 20;
 
@@ -25,30 +25,12 @@ const FindMatchPage: React.FC = () => {
   } = useTimer();
   const [messageToUser, setMessageToUser] = useState('');
 
-  useEffect(() => {
-    if (!timerIsRunning) {
-      return () => {};
+  const onMatch = useCallback((match?: MatchRequest) => {
+    if (match && timerIsRunning && complexity == match.complexity) {
+      joinRoom(match);
     }
-    let isCancelled = false;
-    const matchRequest: MatchRequest = {
-      userId: currentUser.username,
-      complexity
-    };
-    console.log('Starting search:', matchRequest)
-    findMatch(matchRequest).then((foundMatch) => {
-      if (isCancelled || !foundMatch) {
-        return;
-      }
-      joinRoom(foundMatch);
-    })
-
-    const cleanup =  () => {
-      console.log('Cancelling search: ', matchRequest);
-      resetTimer();
-      isCancelled = true;
-    }
-    return cleanup;
-  }, [currentUser.username, complexity, resetTimer, timerIsRunning]);
+  }, [complexity, timerIsRunning]);
+  const findMatch = useMatchingService(onMatch);
 
   useEffect(() => {
     if (timeElapsed >= MAX_WAITING_TIME) {
@@ -56,6 +38,20 @@ const FindMatchPage: React.FC = () => {
       setMessageToUser('No match found! Try again?')
     }
   }, [timeElapsed, resetTimer]);
+
+  const toggleSearch = useCallback((newIsSearching: boolean) => {
+    if (!newIsSearching) {
+      resetTimer();
+      return;
+    }
+    const matchRequest: MatchRequest = {
+      userId: currentUser.username,
+      complexity: complexity
+    }
+    findMatch(matchRequest);
+    startTimer();
+    setMessageToUser('');
+  }, [currentUser.username, complexity, startTimer, resetTimer, findMatch])
 
   return (
     <>
@@ -66,14 +62,7 @@ const FindMatchPage: React.FC = () => {
         complexity={complexity}
         setComplexity={setComplexity}
         isSearching={timerIsRunning}
-        setIsSearching={(newIsSearching: boolean) => {
-          if (newIsSearching) {
-            startTimer();
-            setMessageToUser('');
-          } else {
-            resetTimer();
-          }
-        }}
+        setIsSearching={toggleSearch}
       />
       <FindMatchStatus
         messageToUser={

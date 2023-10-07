@@ -1,6 +1,7 @@
 import amqp from 'amqplib';
 import { MatchRequest } from './types';
 import { v4 as generateUuid } from 'uuid';
+import { isMatchRequest } from './utility/isMatchRequest';
 
 const QUEUE_NAME = 'matching_service_queue';
 
@@ -14,19 +15,27 @@ export async function findMatch(request: MatchRequest) {
 
   const correlationId = generateUuid();
 
-  const consumerPromise = new Promise<string>((resolve) => {
+  const consumerPromise = new Promise<MatchRequest | null>((resolve) => {
     channel.consume(
       q.queue,
       function(msg) {
         if (!msg) {
           console.log('No message found on consume, dropping packet');
+          resolve(null);
           return;
         }
         if (msg.properties.correlationId != correlationId) {
           console.log('Request id does not match, dropping packet');
+          resolve(null);
+          return;
         }
         connection.close();
-        resolve(msg.content.toString());
+        const foundMatch = JSON.parse(msg.content.toString());
+        if (!isMatchRequest(foundMatch)) {
+          resolve(null);
+          return;
+        }
+        resolve(foundMatch);
       },
       {
         noAck: true

@@ -25,3 +25,7 @@ export type MatchRequest = {
     userId: string
     complexity: QuestionComplexity
 }
+
+export type SocketEventHandlers = {
+  [event: string]: () => void
+}
