@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { Grid, Box, Card, Stack, Typography } from "@mui/material";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { UserProvider, useUserContext } from "../UserContext";
+import { useUserContext } from "../UserContext";
 import { User } from "./types";
 // components
 import PageContainer from "./container/PageContainer";
@@ -13,36 +13,23 @@ const Login: React.FC = () => {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const { currentUser, setCurrentUser } = useUserContext();
-  const navigate = useNavigate();
 
-  // try to fetch user credential as well?
-  // useEffect(() => {
-  //   if (Object.keys(currentUser).length === 0) {
-  //     axios
-  //       .get("/api/auth/current-user")
-  //       .then((response) => {
-  //         console.log(response.data);
-  //         const userData: User = response.data;
-  //         setCurrentUser(userData);
-  //         console.log(currentUser.username);
-  //       })
-  //       .catch((error) => {
-  //         console.error("Error fetching current user", error);
-  //       });
-  //   }
-  // }, [currentUser, setCurrentUser]);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+
+  const navigate = useNavigate();
+  const isAuthenticated =
+    currentUser && Object.keys(currentUser).length != 0 && currentUser.username;
 
   useEffect(() => {
-    if (
-      currentUser &&
-      Object.keys(currentUser).length != 0 &&
-      currentUser.username
-    ) {
-      console.log("Shortcut to question bank");
-      console.log(currentUser.username);
+    if (isAuthenticated) {
       navigate("/question-bank");
     }
-  }, [currentUser, navigate]);
+  }, [isAuthenticated, navigate]);
+
+  if (isAuthenticated) {
+    return <></>;
+  }
 
   const handleLogin = async () => {
     try {
@@ -58,20 +45,21 @@ const Login: React.FC = () => {
       );
 
       if (response.status === 200) {
-        // REQUIREMENT: Backend returns user data
         const userData: User = response.data;
-        console.log("Received user data");
-        console.log(userData.username);
         setCurrentUser(userData);
         console.log("Current user set");
         console.log(currentUser.username);
         // navigate("/question-bank");
+
+        setSuccess("Successfully logged in!");
       }
     } catch (error: unknown) {
+      setSuccess(null);
+
       if (axios.isAxiosError(error)) {
-        alert("Incorrect user credentials!");
+        setError("Incorrect user credentials!");
       } else {
-        alert("An unknown error occured. Try again later.");
+        setError("An unknown error occurred. Try again later.");
         console.error("An unknown error occured: ", error);
       }
     }
@@ -167,6 +155,9 @@ const Login: React.FC = () => {
                 onSubmit={handleLogin}
                 username={username}
                 password={password}
+                error={error}
+                onErrorChange={setError}
+                success={success}
               />
             </Card>
           </Grid>

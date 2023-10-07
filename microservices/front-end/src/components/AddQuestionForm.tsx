@@ -2,6 +2,10 @@ import React from "react";
 import { Question, NewQuestion } from "./types";
 import styles from "./QuestionBank.module.css";
 
+import Alert from "@mui/material/Alert";
+import AlertTitle from "@mui/material/AlertTitle";
+import { Box } from "@mui/material";
+
 // React.dispatch = a funciton to dispatch actions
 // SetStateAction = set or update current state
 // interface = define a contract. Includes value + function
@@ -12,6 +16,8 @@ interface QuestionFormProps {
   setNewQuestion: React.Dispatch<React.SetStateAction<NewQuestion>>;
   handleAddQuestions: (question: Partial<Question>) => void;
   setSelectedCategory: React.Dispatch<React.SetStateAction<string>>;
+  error: string | null;
+  onErrorChange: (error: string | null) => void;
 }
 
 const AddQuestionForm: React.FC<QuestionFormProps> = ({
@@ -21,6 +27,8 @@ const AddQuestionForm: React.FC<QuestionFormProps> = ({
   setNewQuestion,
   handleAddQuestions,
   setSelectedCategory,
+  error,
+  onErrorChange,
   // Using destructuring to extract the properties form props
 }) => {
   return (
@@ -43,9 +51,10 @@ const AddQuestionForm: React.FC<QuestionFormProps> = ({
           className={styles.input_text}
           type="text"
           value={newQuestion.title}
-          onChange={(e) =>
-            setNewQuestion({ ...newQuestion, title: e.target.value })
-          }
+          onChange={(e) => {
+            setNewQuestion({ ...newQuestion, title: e.target.value });
+            onErrorChange(null);
+          }}
         />
       </div>
       <div>
@@ -53,9 +62,10 @@ const AddQuestionForm: React.FC<QuestionFormProps> = ({
         <textarea
           className={styles.text_area}
           value={newQuestion.description}
-          onChange={(e) =>
-            setNewQuestion({ ...newQuestion, description: e.target.value })
-          }
+          onChange={(e) => {
+            setNewQuestion({ ...newQuestion, description: e.target.value });
+            onErrorChange(null);
+          }}
         ></textarea>
       </div>
       <div>
@@ -96,6 +106,7 @@ const AddQuestionForm: React.FC<QuestionFormProps> = ({
 
               // Reset the selected value
               setSelectedCategory("");
+              onErrorChange(null);
             }}
           >
             <option value="" disabled>
@@ -118,18 +129,30 @@ const AddQuestionForm: React.FC<QuestionFormProps> = ({
         <select
           className={styles.the_select}
           value={newQuestion.complexity as "Easy" | "Medium" | "Hard"}
-          onChange={(e) =>
+          onChange={(e) => {
             setNewQuestion({
               ...newQuestion,
               complexity: e.target.value as "Easy" | "Medium" | "Hard",
-            })
-          }
+            });
+            onErrorChange(null);
+          }}
         >
           <option value="Easy">Easy</option>
           <option value="Medium">Medium</option>
           <option value="Hard">Hard</option>
         </select>
       </div>
+
+      {/* Handle error situation */}
+      {error && (
+        <Box mt={1} mb={1}>
+          <Alert severity="error" onClose={() => onErrorChange(null)}>
+            <AlertTitle>Add Question Error</AlertTitle>
+            {error}
+          </Alert>
+        </Box>
+      )}
+
       <button className={styles.action_button} type="submit">
         Add Question
       </button>
