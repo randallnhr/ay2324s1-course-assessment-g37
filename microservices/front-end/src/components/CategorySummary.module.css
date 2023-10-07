@@ -1,0 +1,17 @@
+.summary_container {
+  width: 90%;
+  margin: auto;
+}
+
+.summary_button {
+  background: none;
+  border: none;
+  font-size: 1em;
+  cursor: pointer;
+  padding: 2px 2px;
+  color: #000000;
+}
+
+.summary_button:hover {
+  background-color: #f1ebeb;
+}

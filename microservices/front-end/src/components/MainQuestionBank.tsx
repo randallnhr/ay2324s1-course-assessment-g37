@@ -7,9 +7,11 @@ import {
   addQuestion,
   deleteQuestion,
   updateQuestion,
+  calculateCategorySummary,
 } from "./fetchData";
 import AddQuestionForm from "./AddQuestionForm";
 import QuestionTable from "./QuestionTable";
+import CategorySummary from "./CategorySummary";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useUserContext } from "../UserContext";
@@ -50,6 +52,11 @@ const allCategories = [
 const QuestionBank: React.FC = () => {
   // State to store the list of questions
   const [questions, setQuestions] = useState<Question[]>([]);
+
+  const [categorySummary, setCategorySummary] = useState<{
+    [key: string]: number;
+  }>({});
+
   const [expandedQuestionId, setExpandedQuestionId] = useState<string | null>(
     null
   );
@@ -95,7 +102,8 @@ const QuestionBank: React.FC = () => {
 
       try {
         setIsFetching(true);
-        await fetchQuestions();
+        const fetchedQuestions = await fetchQuestions();
+        await setQuestionSummary(fetchedQuestions);
       } catch (error) {
         console.error("Error fetching questions", error);
       } finally {
@@ -128,6 +136,16 @@ const QuestionBank: React.FC = () => {
     }
 
     setQuestions(fetchedQuestions);
+    return fetchedQuestions; // return the questions
+  };
+
+  const setQuestionSummary = async (questions?: Question[]) => {
+    if (questions && questions.length > 0) {
+      const summary = calculateCategorySummary(questions);
+      setCategorySummary(summary);
+    } else {
+      alert("Failed to fetch question summary");
+    }
   };
 
   const toggleQuestionDetails = (id: string) => {
@@ -201,25 +219,29 @@ const QuestionBank: React.FC = () => {
               </h2>
             </div>
           ) : (
-            <QuestionTable
-              currentUser={currentUser}
-              questions={questions}
-              updatingQuestionId={updatingQuestionId}
-              titleRef={titleRef}
-              descriptionRef={descriptionRef}
-              setUpdateError={setUpdateError}
-              updateExistingCategoryArray={updateExistingCategoryArray}
-              updateSelectedOption={updateSelectedOption}
-              setUpdateSelectedOption={setUpdateSelectedOption}
-              allCategories={allCategories}
-              complexityRef={complexityRef}
-              updateError={updateError}
-              handleUpdateQuestion={handleUpdateQuestion}
-              toggleQuestionDetails={toggleQuestionDetails}
-              handleDeleteQuestion={handleDeleteQuestion}
-              expandedQuestionId={expandedQuestionId}
-              setUpdatingQuestionId={setUpdatingQuestionId}
-            />
+            <>
+              <CategorySummary categorySummary={categorySummary} />
+
+              <QuestionTable
+                currentUser={currentUser}
+                questions={questions}
+                updatingQuestionId={updatingQuestionId}
+                titleRef={titleRef}
+                descriptionRef={descriptionRef}
+                setUpdateError={setUpdateError}
+                updateExistingCategoryArray={updateExistingCategoryArray}
+                updateSelectedOption={updateSelectedOption}
+                setUpdateSelectedOption={setUpdateSelectedOption}
+                allCategories={allCategories}
+                complexityRef={complexityRef}
+                updateError={updateError}
+                handleUpdateQuestion={handleUpdateQuestion}
+                toggleQuestionDetails={toggleQuestionDetails}
+                handleDeleteQuestion={handleDeleteQuestion}
+                expandedQuestionId={expandedQuestionId}
+                setUpdatingQuestionId={setUpdatingQuestionId}
+              />
+            </>
           )}
           {/* Render AddQuestionForm conditionally */}
           {currentUser &&
