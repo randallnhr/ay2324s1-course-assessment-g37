@@ -11,10 +11,17 @@ export interface UserWithoutPassword {
   role: "basic" | "admin";
 }
 
+export type Complexity = 'Easy' | 'Medium' | 'Hard';
+
 export interface Question {
   _id: string;
   title: string;
   categories: string[];
-  complexity: "Easy" | "Medium" | "Hard";
+  complexity: Complexity;
   description: string;
+}
+
+export type MatchRequest = {
+  userId: string
+  complexity: Complexity
 }

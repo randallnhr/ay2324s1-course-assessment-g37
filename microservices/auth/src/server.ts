@@ -3,10 +3,13 @@ import MongoStore from "connect-mongo";
 import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
+import http from 'http';
 import session from "express-session";
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import { Question, User, UserWithoutPassword } from "./types";
+import { Server } from "socket.io";
+import { findMatch, isMatchRequest } from "./matchingService";
 
 dotenv.config();
 
@@ -26,6 +29,9 @@ const PORT = process.env.PORT !== undefined ? Number(process.env.PORT) : 8080;
 const useLocalhost = process.env.USE_LOCALHOST === "1";
 const USER_SERVICE_URL = useLocalhost ? "http://localhost:3219" : "";
 const QUESTION_SERVICE_URL = useLocalhost ? "http://localhost:3001" : "";
+
+const EVENT_FIND_MATCH = 'match';
+const EVENT_MATCH_FOUND = 'match found';
 
 // ============================================================================
 // set up passport
@@ -532,6 +538,30 @@ app.get("/", (req, res) => {
   res.send("rainbow");
 });
 
-app.listen(PORT, "::", () => {
+// ============================================================================
+// matching service
+// ============================================================================
+
+const server = http.createServer(app);
+const socketIo = new Server(server, {
+  cors: {
+    origin: "*"
+  }
+});
+
+socketIo.on('connection', (socket) => {
+  console.log('User connected to matching service socket');
+
+  socket.on(EVENT_FIND_MATCH, async (matchRequest) => {
+    if (isMatchRequest(matchRequest)) {
+      console.log('Socket received request to match, sending to server:', JSON.stringify(matchRequest));
+      const foundMatch = await findMatch(matchRequest);
+      console.log('Socket received response from server, sending to client:', JSON.stringify(foundMatch));
+      socket.emit(EVENT_MATCH_FOUND, foundMatch);
+    }
+  });
+});
+
+server.listen(PORT, "::", () => {
   console.log(`Listening on http://localhost:${PORT}`);
 });

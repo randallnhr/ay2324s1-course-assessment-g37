@@ -25,7 +25,7 @@ const useMatchingService = (onMatch: (match: MatchRequest) => void) => {
     };
   }, [onMatch])
 
-  const matchSocket = useSocket('127.0.0.1:3002', eventHandlers);
+  const matchSocket = useSocket('127.0.0.1:8080', eventHandlers);
 
   const findMatch = useCallback((matchRequest: MatchRequest) => {
     matchSocket.emit(EVENT_FIND_MATCH, matchRequest);
