@@ -96,113 +96,88 @@ const Register: React.FC = () => {
 
   return (
     <PageContainer title="Register" description="this is Register page">
-      <Box
-        sx={{
-          position: "relative",
-          "&:before": {
-            content: '""',
-            background: "radial-gradient(#d2f1df, #d3d7fa, #bad8f4)",
-            backgroundSize: "400% 400%",
-            animation: "gradient 15s ease infinite",
-            position: "absolute",
-            height: "100%",
-            width: "100%",
-            opacity: "0.3",
-          },
+      <div
+        style={{
+          height: "100vh",
+          width: "100vw",
+          backgroundColor: "#F1F3FE",
+          overflowY: "scroll",
+          display: "flex",
         }}
       >
-        <Grid
-          container
-          spacing={0}
-          justifyContent="center"
-          sx={{ height: "100vh" }}
-        >
-          <Grid
-            item
-            xs={12}
-            sm={12}
-            lg={6}
-            xl={5}
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
+        <div style={{ margin: "auto" }}>
+          <Card
+            elevation={9}
+            sx={{
+              margin: "3rem 0",
+              p: 4,
+              zIndex: 1,
+              width: "500px",
+            }}
           >
-            <Card
-              elevation={9}
-              sx={{
-                p: 4,
-                zIndex: 1,
-                width: "100%",
-                maxWidth: "500px",
-                margin: "auto",
-              }}
-            >
-              <Box display="flex" alignItems="center" justifyContent="center">
-                {/* <Logo /> */}
-              </Box>
-              <AuthRegister
-                subtext={
+            <Box display="flex" alignItems="center" justifyContent="center">
+              {/* <Logo /> */}
+            </Box>
+            <AuthRegister
+              subtext={
+                <Typography
+                  variant="subtitle1"
+                  textAlign="center"
+                  color="textSecondary"
+                  mb={1}
+                  fontSize="1.25rem"
+                >
+                  Your Technical Interview Prep Platform
+                </Typography>
+              }
+              subtitle={
+                <Stack
+                  direction="row"
+                  justifyContent="center"
+                  spacing={1}
+                  mt={3}
+                  alignItems="center" // align them vertically
+                >
                   <Typography
-                    variant="subtitle1"
-                    textAlign="center"
                     color="textSecondary"
-                    mb={1}
-                    fontSize="1.25rem"
+                    // variant="h6"
+                    fontWeight="500" // for how bold the text is
+                    fontSize="1.25rem" // for how large the text is
                   >
-                    Your Technical Interview Prep Platform
+                    Already have an Account?
                   </Typography>
-                }
-                subtitle={
-                  <Stack
-                    direction="row"
-                    justifyContent="center"
-                    spacing={1}
-                    mt={3}
-                    alignItems="center" // align them vertically
+                  <Typography
+                    component={Link}
+                    to="/login"
+                    fontWeight="500"
+                    sx={{
+                      textDecoration: "none",
+                      color: "primary.main",
+                    }}
                   >
-                    <Typography
-                      color="textSecondary"
-                      // variant="h6"
-                      fontWeight="500" // for how bold the text is
-                      fontSize="1.25rem" // for how large the text is
-                    >
-                      Already have an Account?
-                    </Typography>
-                    <Typography
-                      component={Link}
-                      to="/login"
-                      fontWeight="500"
-                      sx={{
-                        textDecoration: "none",
-                        color: "primary.main",
-                      }}
-                    >
-                      Sign In
-                    </Typography>
-                  </Stack>
-                }
-                onUsernameChange={(username) => setUsername(username)}
-                onDisplayNameChange={(displayName) =>
-                  setDisplayName(displayName)
-                }
-                onPasswordChange={(password) => setPassword(password)}
-                onConfirmPasswordChange={(confirmPassword) =>
-                  setConfirmPassword(confirmPassword)
-                }
-                onSignup={handleSignup}
-                username={username}
-                displayName={displayName}
-                password={password}
-                confirmPassword={confirmPassword}
-                error={error}
-                onErrorChange={setError}
-                success={success}
-                isSubmitting={isSubmitting}
-              />
-            </Card>
-          </Grid>
-        </Grid>
-      </Box>
+                    Sign In
+                  </Typography>
+                </Stack>
+              }
+              onUsernameChange={(username) => setUsername(username)}
+              onDisplayNameChange={(displayName) => setDisplayName(displayName)}
+              onPasswordChange={(password) => setPassword(password)}
+              onConfirmPasswordChange={(confirmPassword) =>
+                setConfirmPassword(confirmPassword)
+              }
+              onSignup={handleSignup}
+              username={username}
+              displayName={displayName}
+              password={password}
+              confirmPassword={confirmPassword}
+              error={error}
+              onErrorChange={setError}
+              success={success}
+              isSubmitting={isSubmitting}
+            />
+          </Card>
+        </div>
+      </div>
     </PageContainer>
   );
 };
