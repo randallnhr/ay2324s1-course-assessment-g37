@@ -8,8 +8,11 @@ import PageContainer from "./container/PageContainer";
 // import Logo from '../layouts/full/shared/logo/Logo';
 import AuthRegister from "./auth/AuthRegister";
 import { useUserContext } from "../UserContext";
+import { useAppDispatch } from "../store/hook";
+import { enqueueSuccessSnackbarMessage } from "../store/slices/SuccessSnackbarSlice";
 
 const Register: React.FC = () => {
+  const dispatch = useAppDispatch();
   const [username, setUsername] = useState<string>("");
   const [displayName, setDisplayName] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -68,11 +71,11 @@ const Register: React.FC = () => {
       });
 
       if (response.status == 200) {
-        setSuccess("Account successfully created!");
+        dispatch(
+          enqueueSuccessSnackbarMessage("Account successfully created!")
+        );
 
-        setTimeout(() => {
-          navigate("/login");
-        }, 500); // 500ms delay before navigating, let user see success message
+        navigate("/login");
       }
     } catch (error: unknown) {
       setSuccess(null);
