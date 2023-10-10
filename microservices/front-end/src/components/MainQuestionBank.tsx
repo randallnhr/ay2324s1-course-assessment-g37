@@ -12,6 +12,7 @@ import {
 import AddQuestionForm from "./AddQuestionForm";
 import QuestionTable from "./QuestionTable";
 import CategorySummary from "./CategorySummary";
+import QuestionFilter from "./QuestionFilter";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useUserContext } from "../UserContext";
@@ -148,6 +149,15 @@ const QuestionBank: React.FC = () => {
     }
   };
 
+  // dummy function for filter changes
+  const handleAttemptFilterChange = (attempted: string) => {
+    console.log(`Attempted Filter: ${attempted}`);
+  };
+
+  const handleDifficultyFilterChange = (difficulty: string) => {
+    console.log(`Difficulty Filter: ${difficulty}`);
+  };
+
   const toggleQuestionDetails = (id: string) => {
     setExpandedQuestionId(expandedQuestionId === id ? null : id);
   };
@@ -221,6 +231,11 @@ const QuestionBank: React.FC = () => {
           ) : (
             <>
               <CategorySummary categorySummary={categorySummary} />
+
+              <QuestionFilter
+                onAttemptFilterChange={handleAttemptFilterChange}
+                onDifficultyFilterChange={handleDifficultyFilterChange}
+              />
 
               <QuestionTable
                 currentUser={currentUser}
