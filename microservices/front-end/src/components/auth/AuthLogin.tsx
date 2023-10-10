@@ -1,5 +1,7 @@
 import React, { FC, ReactNode } from "react";
 import { Box, Typography, Button, Stack } from "@mui/material";
+import Alert from "@mui/material/Alert";
+import AlertTitle from "@mui/material/AlertTitle";
 
 import CustomTextField from "../forms/theme-elements/CustomTextField";
 
@@ -12,6 +14,9 @@ interface AuthLoginProps {
   onSubmit: () => void;
   username: string;
   password: string;
+  error: string | null;
+  onErrorChange: (error: string | null) => void;
+  success: string | null;
 }
 
 const AuthLogin: FC<AuthLoginProps> = ({
@@ -23,6 +28,9 @@ const AuthLogin: FC<AuthLoginProps> = ({
   onSubmit,
   username,
   password,
+  error,
+  onErrorChange,
+  success,
 }) => (
   <>
     {title ? (
@@ -49,7 +57,10 @@ const AuthLogin: FC<AuthLoginProps> = ({
           type="text"
           fullWidth
           value={username}
-          onChange={(e) => onUsernameChange(e.target.value)}
+          onChange={(e) => {
+            onUsernameChange(e.target.value);
+            onErrorChange(null); // clear the error when user types
+          }}
         />
       </Box>
       <Box mt="25px">
@@ -68,7 +79,10 @@ const AuthLogin: FC<AuthLoginProps> = ({
           variant="outlined"
           fullWidth
           value={password}
-          onChange={(e) => onPasswordChange(e.target.value)}
+          onChange={(e) => {
+            onPasswordChange(e.target.value);
+            onErrorChange(null); // clear the error when user types
+          }}
         />
       </Box>
       <Stack
@@ -79,6 +93,26 @@ const AuthLogin: FC<AuthLoginProps> = ({
       >
         {/* Removed the part of Remember this device FormGroup */}
       </Stack>
+
+      {/* Handle error situation */}
+      {error && (
+        <Box mb={2}>
+          <Alert severity="error" onClose={() => onErrorChange(null)}>
+            <AlertTitle>Sign-in Error</AlertTitle>
+            {error}
+          </Alert>
+        </Box>
+      )}
+
+      {/* Provide feedback when success */}
+      {success && (
+        <Box mb={2}>
+          <Alert severity="success">
+            <AlertTitle>Sign-in Success</AlertTitle>
+            {success}
+          </Alert>
+        </Box>
+      )}
     </Stack>
     <Box>
       <Button
