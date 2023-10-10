@@ -16,6 +16,7 @@ import axios from "axios";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import TopBar from "./components/TopBar";
 import HomePage from "./components/HomePage";
+import SuccessSnackbar from "./components/SuccessSnackbar";
 
 // useContext: create a global state, that can be accessed by any component
 function App() {
@@ -48,6 +49,9 @@ function App() {
       <Helmet>
         <title>PeerPrep</title>
       </Helmet>
+
+      <SuccessSnackbar />
+
       <Router>
         {Object.keys(currentUser).length === 0 ? (
           <></>

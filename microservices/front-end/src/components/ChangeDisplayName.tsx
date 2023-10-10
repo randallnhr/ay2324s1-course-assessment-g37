@@ -7,9 +7,12 @@ import { useUserContext } from "../UserContext";
 import { Box } from "@mui/material";
 import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
+import { useAppDispatch } from "../store/hook";
+import { enqueueSuccessSnackbarMessage } from "../store/slices/SuccessSnackbarSlice";
 
 // Similarly, should only allow change of display name if passes authentication
 const ChangeDisplayName: React.FC = () => {
+  const dispatch = useAppDispatch();
   const { currentUser, setCurrentUser } = useUserContext();
   const [displayName, setDisplayName] = useState<string>("");
 
@@ -60,13 +63,13 @@ const ChangeDisplayName: React.FC = () => {
         updatedUser
       );
       if (response.status === 200) {
-        setCurrentUser(updatedUser);
-        setSuccess("Display name changed successfully");
-        setDisplayName("");
+        dispatch(
+          enqueueSuccessSnackbarMessage("Display name changed successfully")
+        );
 
-        setTimeout(() => {
-          navigate("/profile");
-        }, 500);
+        setCurrentUser(updatedUser);
+        setDisplayName("");
+        navigate("/profile");
       }
     } catch (error: unknown) {
       // display name can just allow update

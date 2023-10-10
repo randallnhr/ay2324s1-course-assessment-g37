@@ -7,9 +7,12 @@ import { useUserContext } from "../UserContext";
 import { Box } from "@mui/material";
 import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
+import { useAppDispatch } from "../store/hook";
+import { enqueueSuccessSnackbarMessage } from "../store/slices/SuccessSnackbarSlice";
 
 // Should only allow change of password if old password matches!
 const ChangePasswordPage: React.FC = () => {
+  const dispatch = useAppDispatch();
   const { currentUser, setCurrentUser } = useUserContext();
   const [oldPassword, setOldPassword] = useState<string>("");
   const [newPassword, setNewPassword] = useState<string>("");
@@ -52,15 +55,16 @@ const ChangePasswordPage: React.FC = () => {
       });
 
       if (response.status === 200) {
-        setSuccess("Password changed successfully");
+        dispatch(
+          enqueueSuccessSnackbarMessage("Password changed successfully")
+        );
+
         setOldPassword("");
         setNewPassword("");
         setConfirmPassword("");
-        // no update of localStorage, do not store password locally
 
-        setTimeout(() => {
-          navigate("/profile");
-        }, 500);
+        // no update of localStorage, do not store password locally
+        navigate("/profile");
       }
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
