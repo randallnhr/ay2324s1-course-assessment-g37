@@ -1,4 +1,9 @@
 import React, { ChangeEvent } from "react";
+import Box from "@mui/material/Box";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
 import styles from "./QuestionFilter.module.css";
 
 interface QuestionFilterProps {
@@ -10,34 +15,57 @@ const QuestionFilter: React.FC<QuestionFilterProps> = ({
   onAttemptFilterChange,
   onDifficultyFilterChange,
 }) => {
-  const handleAttemptFilterChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    onAttemptFilterChange(e.target.value);
+  const [attempted, setAttempted] = React.useState<string>("all");
+  const [difficulty, setDifficulty] = React.useState<string>("all");
+
+  const handleAttemptFilterChange = (event: SelectChangeEvent<string>) => {
+    const value = event.target.value;
+    setAttempted(value);
+    onAttemptFilterChange(value);
   };
 
-  const handleDifficultyFilterChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    onDifficultyFilterChange(e.target.value);
+  const handleDifficultyFilterChange = (event: SelectChangeEvent<string>) => {
+    const value = event.target.value;
+    setDifficulty(value);
+    onDifficultyFilterChange(value);
   };
 
   return (
     <div className={styles.filter_container}>
-      <select
-        className={styles.the_select}
-        onChange={handleAttemptFilterChange}
-      >
-        <option value="all">All</option>
-        <option value="attempted">Attempted</option>
-        <option value="unattempted">Unattempted</option>
-      </select>
+      <Box sx={{ minWidth: 250 }}>
+        <FormControl fullWidth>
+          <InputLabel id="attempted-label">Attempted</InputLabel>
+          <Select
+            labelId="attempted-label"
+            id="attempted-select"
+            value={attempted}
+            label="Attempted"
+            onChange={handleAttemptFilterChange}
+          >
+            <MenuItem value="all">All</MenuItem>
+            <MenuItem value="attempted">Attempted</MenuItem>
+            <MenuItem value="unattempted">Unattempted</MenuItem>
+          </Select>
+        </FormControl>
+      </Box>
 
-      <select
-        className={styles.the_select}
-        onChange={handleDifficultyFilterChange}
-      >
-        <option value="all">All Levels</option>
-        <option value="easy">Easy</option>
-        <option value="medium">Medium</option>
-        <option value="hard">Hard</option>
-      </select>
+      <Box sx={{ minWidth: 250 }}>
+        <FormControl fullWidth>
+          <InputLabel id="difficulty-label">Difficulty</InputLabel>
+          <Select
+            labelId="difficulty-label"
+            id="difficulty-select"
+            value={difficulty}
+            label="Difficulty"
+            onChange={handleDifficultyFilterChange}
+          >
+            <MenuItem value="all">All Levels</MenuItem>
+            <MenuItem value="easy">Easy</MenuItem>
+            <MenuItem value="medium">Medium</MenuItem>
+            <MenuItem value="hard">Hard</MenuItem>
+          </Select>
+        </FormControl>
+      </Box>
     </div>
   );
 };
