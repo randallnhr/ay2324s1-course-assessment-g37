@@ -9,14 +9,17 @@ import styles from "./QuestionFilter.module.css";
 interface QuestionFilterProps {
   onAttemptFilterChange: (attempted: string) => void;
   onDifficultyFilterChange: (difficulty: string) => void;
+  onSortChange: (sortBy: string) => void;
 }
 
 const QuestionFilter: React.FC<QuestionFilterProps> = ({
   onAttemptFilterChange,
   onDifficultyFilterChange,
+  onSortChange,
 }) => {
   const [attempted, setAttempted] = React.useState<string>("");
   const [difficulty, setDifficulty] = React.useState<string>("");
+  const [sortBy, setSortBy] = React.useState<string>("");
 
   const handleAttemptFilterChange = (event: SelectChangeEvent<string>) => {
     const value = event.target.value;
@@ -28,6 +31,12 @@ const QuestionFilter: React.FC<QuestionFilterProps> = ({
     const value = event.target.value;
     setDifficulty(value);
     onDifficultyFilterChange(value);
+  };
+
+  const handleSortChange = (event: SelectChangeEvent<string>) => {
+    const value = event.target.value;
+    setSortBy(value);
+    onSortChange(value);
   };
 
   return (
@@ -63,6 +72,23 @@ const QuestionFilter: React.FC<QuestionFilterProps> = ({
             <MenuItem value="Easy">Easy</MenuItem>
             <MenuItem value="Medium">Medium</MenuItem>
             <MenuItem value="Hard">Hard</MenuItem>
+          </Select>
+        </FormControl>
+      </Box>
+
+      <Box sx={{ minWidth: 250 }}>
+        <FormControl fullWidth>
+          <InputLabel id="sort-label">Sort By</InputLabel>
+          <Select
+            labelId="sort-label"
+            id="sort-select"
+            value={sortBy}
+            label="Sort By"
+            onChange={handleSortChange} // New handler for sorting
+          >
+            <MenuItem value="">None</MenuItem>
+            <MenuItem value="Title">Title</MenuItem>
+            <MenuItem value="Complexity">Complexity</MenuItem>
           </Select>
         </FormControl>
       </Box>

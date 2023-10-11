@@ -86,9 +86,10 @@ const QuestionBank: React.FC = () => {
   const [addError, setAddError] = useState<string | null>(null);
   const [updateError, setUpdateError] = useState<string | null>(null);
 
-  // maintain filter states
+  // maintain filter & sort states
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>("All");
   const [filteredCategory, setFilteredCategory] = useState<string>("All");
+  const [sortBy, setSortBy] = useState<string>("");
 
   // Need to fetch current user as well
   const [isFetching, setIsFetching] = useState<boolean>(true);
@@ -177,6 +178,21 @@ const QuestionBank: React.FC = () => {
     filteredCategory
   );
 
+  // handle sorting
+  const handleSort = (sortBy: string, questions: Question[]): Question[] => {
+    if (sortBy === "Complexity") {
+      return questions.sort((a, b) => {
+        const complexityOrder = { Easy: 1, Medium: 2, Hard: 3 }; // Define order
+        return complexityOrder[a.complexity] - complexityOrder[b.complexity];
+      });
+    } else if (sortBy === "Title") {
+      return questions.sort((a, b) => a.title.localeCompare(b.title));
+    }
+    return questions; // If neither of above, return original
+  };
+
+  const sortedQuestions = handleSort(sortBy, filteredQuestions);
+
   const toggleQuestionDetails = (id: string) => {
     setExpandedQuestionId(expandedQuestionId === id ? null : id);
   };
@@ -259,11 +275,12 @@ const QuestionBank: React.FC = () => {
                 onDifficultyFilterChange={(difficulty: string) =>
                   setSelectedDifficulty(difficulty)
                 }
+                onSortChange={setSortBy}
               />
 
               <QuestionTable
                 currentUser={currentUser}
-                questions={filteredQuestions}
+                questions={sortedQuestions}
                 updatingQuestionId={updatingQuestionId}
                 titleRef={titleRef}
                 descriptionRef={descriptionRef}
