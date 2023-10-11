@@ -3,7 +3,7 @@
 import amqp from 'amqplib';
 import { isMatchRequest } from './utility/isMatchRequest';
 import { createMatcher } from './controllers/matcher';
-import { MatchRequest } from './types';
+import { MatchResponse } from './types';
 
 const QUEUE_NAME = 'matching_service_queue';
 
@@ -35,11 +35,11 @@ async function main() {
         return;
       }
 
-      const onMatch = (otherRequest: MatchRequest) => {
-        console.log(`Replying to request ${JSON.stringify(request)} with match: ${JSON.stringify(otherRequest)}`)
+      const onMatch = (matchResponse: MatchResponse) => {
+        console.log(`Replying to request ${JSON.stringify(request)} with match: ${JSON.stringify(matchResponse)}`)
         channel.sendToQueue(
           msg.properties.replyTo,
-          Buffer.from(JSON.stringify(otherRequest)),
+          Buffer.from(JSON.stringify(matchResponse)),
           {
             correlationId: msg.properties.correlationId
           }

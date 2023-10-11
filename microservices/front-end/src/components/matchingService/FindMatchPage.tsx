@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import useTimer from "../../hooks/useTimer";
-import { MatchRequest, QuestionComplexity } from "../types";
+import { MatchRequest, MatchResponse, QuestionComplexity } from "../types";
 import FindMatchForm from "./FindMatchForm";
 import styles from "./FindMatchPage.module.css";
 import { useUserContext } from "../../UserContext";
@@ -25,7 +25,7 @@ const FindMatchPage: React.FC = () => {
   } = useTimer();
   const [messageToUser, setMessageToUser] = useState('');
 
-  const onMatch = useCallback((match?: MatchRequest) => {
+  const onMatch = useCallback((match?: MatchResponse) => {
     if (match && timerIsRunning && complexity == match.complexity) {
       setMessageToUser(`Match found! Joining room with ${match.userId}...`)
       joinRoom(match);

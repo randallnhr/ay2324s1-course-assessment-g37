@@ -1,4 +1,5 @@
-import { Complexity, MatchRequest, OnMatch } from "../types";
+import { v4 as generateUuid } from 'uuid';
+import { MatchRequest, OnMatch } from "../types";
 
 export function createMatcher() {
 
@@ -28,8 +29,15 @@ export function createMatcher() {
     } else {
       const match = waitingRequests[matchIndex];
       waitingRequests.splice(matchIndex, 1);
-      onMatch(match.request);
-      match.onMatch(request);
+      const roomId = generateUuid();
+      onMatch({
+        ...match.request,
+        roomId
+      });
+      match.onMatch({
+        ...request,
+        roomId
+      });
     }
   }
 

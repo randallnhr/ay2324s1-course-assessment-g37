@@ -1,7 +1,7 @@
 import amqp from 'amqplib';
-import { MatchRequest } from '../types';
+import { MatchRequest, MatchResponse } from '../types';
 import { v4 as generateUuid } from 'uuid';
-import { isMatchRequest } from './isMatchRequest';
+import { isMatchResponse } from './isMatchResponse';
 
 const QUEUE_NAME = 'matching_service_queue';
 
@@ -15,7 +15,7 @@ export async function findMatch(request: MatchRequest) {
 
   const correlationId = generateUuid();
 
-  const consumerPromise = new Promise<MatchRequest | null>((resolve) => {
+  const consumerPromise = new Promise<MatchResponse | null>((resolve) => {
     channel.consume(
       q.queue,
       function(msg) {
@@ -31,7 +31,7 @@ export async function findMatch(request: MatchRequest) {
         }
         connection.close();
         const foundMatch = JSON.parse(msg.content.toString());
-        if (!isMatchRequest(foundMatch)) {
+        if (!isMatchResponse(foundMatch)) {
           resolve(null);
           return;
         }

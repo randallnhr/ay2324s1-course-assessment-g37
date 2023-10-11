@@ -26,6 +26,10 @@ export type MatchRequest = {
     complexity: QuestionComplexity
 }
 
+export type MatchResponse = MatchRequest & {
+  roomId: string
+}
+
 export type SocketEventHandlers = {
   [event: string]: () => void
 }

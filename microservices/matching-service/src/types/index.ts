@@ -5,4 +5,8 @@ export type MatchRequest = {
   complexity: Complexity
 }
 
-export type OnMatch = (matchedRequest: MatchRequest) => void
+export type MatchResponse = MatchRequest & {
+  roomId: string
+}
+
+export type OnMatch = (matchedResponse: MatchResponse) => void

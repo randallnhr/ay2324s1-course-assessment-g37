@@ -25,3 +25,7 @@ export type MatchRequest = {
   userId: string
   complexity: Complexity
 }
+
+export type MatchResponse = MatchRequest & {
+  roomId: string
+}
