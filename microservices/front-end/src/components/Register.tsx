@@ -9,7 +9,7 @@ import PageContainer from "./container/PageContainer";
 import AuthRegister from "./auth/AuthRegister";
 import { useUserContext } from "../UserContext";
 import { useAppDispatch } from "../store/hook";
-import { enqueueSuccessSnackbarMessage } from "../store/slices/SuccessSnackbarSlice";
+import { enqueueSuccessSnackbarMessage } from "../store/slices/successSnackbarSliceTemp";
 
 const Register: React.FC = () => {
   const dispatch = useAppDispatch();

@@ -1,5 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
-import successSnackbarReducer from "./slices/SuccessSnackbarSlice";
+import successSnackbarReducer from "./slices/successSnackbarSliceTemp";
 
 export const store = configureStore({
   reducer: {

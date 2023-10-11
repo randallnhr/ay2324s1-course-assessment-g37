@@ -8,7 +8,7 @@ import { Box } from "@mui/material";
 import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
 import { useAppDispatch } from "../store/hook";
-import { enqueueSuccessSnackbarMessage } from "../store/slices/SuccessSnackbarSlice";
+import { enqueueSuccessSnackbarMessage } from "../store/slices/successSnackbarSliceTemp";
 
 // Should only allow change of password if old password matches!
 const ChangePasswordPage: React.FC = () => {

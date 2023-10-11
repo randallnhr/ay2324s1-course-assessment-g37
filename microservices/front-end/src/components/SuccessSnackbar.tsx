@@ -5,7 +5,7 @@ import {
   closeSuccessSnackbar,
   popAndShowNextSuccessSnackbarMessage,
   resetCurrentSuccessSnackbarMessage,
-} from "../store/slices/SuccessSnackbarSlice";
+} from "../store/slices/successSnackbarSliceTemp";
 
 function SuccessSnackbar(): JSX.Element {
   const dispatch = useAppDispatch();
