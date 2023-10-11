@@ -27,6 +27,7 @@ const FindMatchPage: React.FC = () => {
 
   const onMatch = useCallback((match?: MatchRequest) => {
     if (match && timerIsRunning && complexity == match.complexity) {
+      setMessageToUser(`Match found! Joining room with ${match.userId}...`)
       joinRoom(match);
     }
   }, [complexity, timerIsRunning]);
@@ -35,13 +36,14 @@ const FindMatchPage: React.FC = () => {
   useEffect(() => {
     if (timeElapsed >= MAX_WAITING_TIME) {
       resetTimer();
-      setMessageToUser('No match found! Try again?')
+      setMessageToUser('Failed to join match! Try again?')
     }
   }, [timeElapsed, resetTimer]);
 
   const toggleSearch = useCallback((newIsSearching: boolean) => {
     if (!newIsSearching) {
       resetTimer();
+      setMessageToUser('');
       return;
     }
     const matchRequest: MatchRequest = {
@@ -50,7 +52,7 @@ const FindMatchPage: React.FC = () => {
     }
     findMatch(matchRequest);
     startTimer();
-    setMessageToUser('');
+    setMessageToUser('Finding suitable match');
   }, [currentUser.username, complexity, startTimer, resetTimer, findMatch])
 
   return (
@@ -65,11 +67,7 @@ const FindMatchPage: React.FC = () => {
         setIsSearching={toggleSearch}
       />
       <FindMatchStatus
-        messageToUser={
-          timerIsRunning
-            ? 'Finding suitable match'+ '.'.repeat(timeElapsed % 4)
-            : messageToUser
-        }
+        messageToUser={`${messageToUser}${'.'.repeat(timeElapsed % 4)}`}
         timeElapsed={timeElapsed}
         timerIsRunning={timerIsRunning}
       />

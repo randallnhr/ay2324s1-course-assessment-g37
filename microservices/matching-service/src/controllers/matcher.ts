@@ -2,16 +2,10 @@ import { Complexity, MatchRequest, OnMatch } from "../types";
 
 export function createMatcher() {
 
-  const waitingRequests: {
-    [difficulty in Complexity]: {
-      request: MatchRequest,
-      onMatch: OnMatch
-      } | null
-  } = {
-    'Easy': null,
-    'Medium': null,
-    'Hard': null
-  };
+  let waitingRequests: {
+    request: MatchRequest,
+    onMatch: OnMatch
+  }[] = [];
 
   /**
    * Queues a match request for a user.
@@ -25,17 +19,18 @@ export function createMatcher() {
     request: MatchRequest, 
     onMatch: OnMatch
   ) {
-    const waitingRequest = waitingRequests[request.complexity];
-    if (!waitingRequest) {
-      waitingRequests[request.complexity] = {
-        request,
-        onMatch
-      }
-      return;
+    waitingRequests = waitingRequests.filter(waiting => waiting.request.userId !== request.userId);
+    const matchIndex = waitingRequests.findIndex(waiting => {
+      return waiting.request.complexity === request.complexity
+    });
+    if (matchIndex === -1) {
+      waitingRequests.push({request, onMatch});
+    } else {
+      const match = waitingRequests[matchIndex];
+      waitingRequests.splice(matchIndex, 1);
+      onMatch(match.request);
+      match.onMatch(request);
     }
-    onMatch(waitingRequest.request);
-    waitingRequest.onMatch(request);
-    waitingRequests[request.complexity] = null;
   }
 
   return { queueRequest };

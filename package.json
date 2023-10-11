@@ -8,7 +8,7 @@
     "build:questions-service": "cd microservices/questions-service && npm install",
     "build:auth-service": "cd microservices/auth && npm install",
     "build:front-end-service": "cd microservices/front-end && npm install",
-    "build:all": "npm-run-all build:user-service build:questions-service build:sync-questions-service build:auth-service build:front-end-service",
+    "build:all": "npm-run-all build:user-service build:questions-service build:auth-service build:front-end-service",
     
     "dev:user-service": "cd microservices/user-service && npm run start",
     "dev:questions-service": "cd microservices/questions-service && npm run dev",
