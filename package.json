@@ -4,15 +4,16 @@
   "description": "[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-24ddc0f5d75046c5622901739e7c5dd533143b0c8e959d652212380cedb1ea36.svg)](https://classroom.github.com/a/6BOvYMwN)\r # AssignmentTemplate",
   "main": "index.js",
   "scripts": {
+    "install:front-end": "cd microservices/front-end && npm install",
+    "install:auth": "cd microservices/auth && npm install",
     "install:user-service": "cd microservices/user-service && npm install",
     "install:questions-service": "cd microservices/questions-service && npm install",
-    "install:auth-service": "cd microservices/auth && npm install",
-    "install:front-end-service": "cd microservices/front-end && npm install",
     "install-all": "concurrently -c \"auto\" \"npm:install:*\"",
+
+    "dev:front-end": "cd microservices/front-end && npm run dev",
+    "dev:auth": "cd microservices/auth && npm run dev",
     "dev:user-service": "cd microservices/user-service && npm run start",
     "dev:questions-service": "cd microservices/questions-service && npm run dev",
-    "dev:auth-service": "cd microservices/auth && npm run dev",
-    "dev:front-end-service": "cd microservices/front-end && npm run dev",
     "dev-all": "concurrently -c \"auto\" \"npm:dev:*\""
   },
   "author": "",
