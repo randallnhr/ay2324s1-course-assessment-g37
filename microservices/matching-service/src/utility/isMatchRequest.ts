@@ -1,5 +1,6 @@
 import { MatchRequest } from "../types";
-import { hasKey } from "./hasKey";
+import { isCancelMatchRequest } from "./isCancelMatchRequest";
+import { isFindMatchRequest } from "./isFindMatchRequest";
 
 /**
  * Checks that the given input is a Match Request
@@ -7,13 +8,5 @@ import { hasKey } from "./hasKey";
  * @returns True if the item is a Match Request, false otherwise.
  */
 export function isMatchRequest(unknown: unknown): unknown is MatchRequest {
-  if (!hasKey(unknown, 'userId')
-      || typeof unknown['userId'] !== 'string') {
-    return false;
-  } else if (!hasKey(unknown, 'complexity')
-      || typeof unknown['complexity'] !== 'string'
-      || !['Easy', 'Medium', 'Hard'].includes(unknown['complexity'])) {
-    return false;
-  }
-  return true;
+  return isFindMatchRequest(unknown) || isCancelMatchRequest(unknown);
 }

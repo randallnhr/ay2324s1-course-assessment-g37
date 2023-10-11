@@ -21,15 +21,22 @@ export interface NewQuestion {
     complexity: QuestionComplexity
 }
 
-export type MatchRequest = {
+export type FindMatchRequest = {
     userId: string
     complexity: QuestionComplexity
 }
 
-export type MatchResponse = MatchRequest & {
-  roomId: string
+export type CancelMatchRequest = {
+    userId: string
+    complexity: null
+}
+
+export type MatchRequest = FindMatchRequest | CancelMatchRequest
+
+export type MatchResponse = FindMatchRequest & {
+  roomId:  string
 }
 
 export type SocketEventHandlers = {
-  [event: string]: () => void
+    [event: string]: () => void
 }

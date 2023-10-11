@@ -9,7 +9,7 @@ import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import { Question, User, UserWithoutPassword } from "./types";
 import { Server } from "socket.io";
-import { findMatch, isMatchRequest } from "./matchingService";
+import { sendMatchRequest, isMatchRequest } from "./matchingService";
 
 dotenv.config();
 
@@ -556,7 +556,7 @@ socketIo.on('connection', (socket) => {
     if (isMatchRequest(matchRequest)) {
       try {
         console.log('Socket received request to match, sending to server:', JSON.stringify(matchRequest));
-        const foundMatch = await findMatch(matchRequest);
+        const foundMatch = await sendMatchRequest(matchRequest);
         console.log('Socket received response from server, sending to client:', JSON.stringify(foundMatch));
         socket.emit(EVENT_MATCH_FOUND, foundMatch);
       } catch (error) {

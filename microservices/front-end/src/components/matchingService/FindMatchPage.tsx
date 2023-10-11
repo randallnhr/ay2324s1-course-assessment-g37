@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import useTimer from "../../hooks/useTimer";
-import { MatchRequest, MatchResponse, QuestionComplexity } from "../types";
+import { CancelMatchRequest, MatchRequest, MatchResponse, QuestionComplexity } from "../types";
 import FindMatchForm from "./FindMatchForm";
 import styles from "./FindMatchPage.module.css";
 import { useUserContext } from "../../UserContext";
@@ -31,7 +31,7 @@ const FindMatchPage: React.FC = () => {
       joinRoom(match);
     }
   }, [complexity, timerIsRunning]);
-  const findMatch = useMatchingService(onMatch);
+  const sendMatchRequest = useMatchingService(onMatch);
 
   useEffect(() => {
     if (timeElapsed >= MAX_WAITING_TIME) {
@@ -42,6 +42,11 @@ const FindMatchPage: React.FC = () => {
 
   const toggleSearch = useCallback((newIsSearching: boolean) => {
     if (!newIsSearching) {
+      const cancelMatchRequest: CancelMatchRequest = {
+        userId: currentUser.username,
+        complexity: null
+      }
+      sendMatchRequest(cancelMatchRequest)
       resetTimer();
       setMessageToUser('');
       return;
@@ -50,10 +55,10 @@ const FindMatchPage: React.FC = () => {
       userId: currentUser.username,
       complexity: complexity
     }
-    findMatch(matchRequest);
+    sendMatchRequest(matchRequest);
     startTimer();
     setMessageToUser('Finding suitable match');
-  }, [currentUser.username, complexity, startTimer, resetTimer, findMatch])
+  }, [currentUser.username, complexity, startTimer, resetTimer, sendMatchRequest])
 
   return (
     <>

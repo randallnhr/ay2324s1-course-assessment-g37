@@ -1,7 +1,7 @@
 import amqp from 'amqplib';
 import { MatchRequest } from './types';
 import { v4 as generateUuid } from 'uuid';
-import { isMatchRequest } from './utility/isMatchRequest';
+import { isMatchResponse } from './utility/isMatchResponse';
 
 const QUEUE_NAME = 'matching_service_queue';
 
@@ -31,7 +31,7 @@ export async function findMatch(request: MatchRequest) {
         }
         connection.close();
         const foundMatch = JSON.parse(msg.content.toString());
-        if (!isMatchRequest(foundMatch)) {
+        if (!isMatchResponse(foundMatch)) {
           resolve(null);
           return;
         }

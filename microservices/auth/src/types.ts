@@ -21,11 +21,18 @@ export interface Question {
   description: string;
 }
 
-export type MatchRequest = {
+export type FindMatchRequest = {
   userId: string
   complexity: Complexity
 }
 
-export type MatchResponse = MatchRequest & {
+export type CancelMatchRequest = {
+  userId: string
+  complexity: null
+}
+
+export type MatchRequest = FindMatchRequest | CancelMatchRequest
+
+export type MatchResponse = FindMatchRequest & {
   roomId: string
 }

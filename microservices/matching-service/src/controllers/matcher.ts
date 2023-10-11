@@ -1,10 +1,13 @@
 import { v4 as generateUuid } from 'uuid';
-import { MatchRequest, OnMatch } from "../types";
+import { Complexity, MatchRequest, OnMatch } from "../types";
 
 export function createMatcher() {
 
   let waitingRequests: {
-    request: MatchRequest,
+    request: {
+      userId: string,
+      complexity: Complexity
+    },
     onMatch: OnMatch
   }[] = [];
 
@@ -21,6 +24,9 @@ export function createMatcher() {
     onMatch: OnMatch
   ) {
     waitingRequests = waitingRequests.filter(waiting => waiting.request.userId !== request.userId);
+    if (request.complexity === null) {
+      return;
+    }
     const matchIndex = waitingRequests.findIndex(waiting => {
       return waiting.request.complexity === request.complexity
     });

@@ -8,7 +8,7 @@ const QUEUE_NAME = 'matching_service_queue';
 const HOST = '127.0.0.1';
 const PORT = '5672';
 
-export async function findMatch(request: MatchRequest) {
+export async function sendMatchRequest(request: MatchRequest) {
   const connection = await amqp.connect(`amqp://${HOST}:${PORT}`);
   const channel = await connection.createChannel();
   const q = await channel.assertQueue('', { exclusive: true });
