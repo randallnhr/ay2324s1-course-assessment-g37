@@ -86,6 +86,10 @@ const QuestionBank: React.FC = () => {
   const [addError, setAddError] = useState<string | null>(null);
   const [updateError, setUpdateError] = useState<string | null>(null);
 
+  // maintain filter states
+  const [selectedDifficulty, setSelectedDifficulty] = useState<string>("All");
+  const [filteredCategory, setFilteredCategory] = useState<string>("All");
+
   // Need to fetch current user as well
   const [isFetching, setIsFetching] = useState<boolean>(true);
   const { currentUser, setCurrentUser } = useUserContext();
@@ -154,9 +158,24 @@ const QuestionBank: React.FC = () => {
     console.log(`Attempted Filter: ${attempted}`);
   };
 
-  const handleDifficultyFilterChange = (difficulty: string) => {
-    console.log(`Difficulty Filter: ${difficulty}`);
+  const filterQuestions = (
+    questions: Question[],
+    difficulty: string,
+    category: string
+  ): Question[] => {
+    return questions.filter(
+      (question) =>
+        (difficulty === "All" || question.complexity === difficulty) &&
+        (category === "All" || question.categories.includes(category))
+    );
   };
+
+  // declare the filteredQuestions here
+  const filteredQuestions = filterQuestions(
+    questions,
+    selectedDifficulty,
+    filteredCategory
+  );
 
   const toggleQuestionDetails = (id: string) => {
     setExpandedQuestionId(expandedQuestionId === id ? null : id);
@@ -230,16 +249,21 @@ const QuestionBank: React.FC = () => {
             </div>
           ) : (
             <>
-              <CategorySummary categorySummary={categorySummary} />
+              <CategorySummary
+                categorySummary={categorySummary}
+                onSelectCategory={setFilteredCategory}
+              />
 
               <QuestionFilter
                 onAttemptFilterChange={handleAttemptFilterChange}
-                onDifficultyFilterChange={handleDifficultyFilterChange}
+                onDifficultyFilterChange={(difficulty: string) =>
+                  setSelectedDifficulty(difficulty)
+                }
               />
 
               <QuestionTable
                 currentUser={currentUser}
-                questions={questions}
+                questions={filteredQuestions}
                 updatingQuestionId={updatingQuestionId}
                 titleRef={titleRef}
                 descriptionRef={descriptionRef}

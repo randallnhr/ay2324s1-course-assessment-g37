@@ -1,4 +1,4 @@
-import React, { ChangeEvent } from "react";
+import React from "react";
 import Box from "@mui/material/Box";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
@@ -15,8 +15,8 @@ const QuestionFilter: React.FC<QuestionFilterProps> = ({
   onAttemptFilterChange,
   onDifficultyFilterChange,
 }) => {
-  const [attempted, setAttempted] = React.useState<string>("all");
-  const [difficulty, setDifficulty] = React.useState<string>("all");
+  const [attempted, setAttempted] = React.useState<string>("");
+  const [difficulty, setDifficulty] = React.useState<string>("");
 
   const handleAttemptFilterChange = (event: SelectChangeEvent<string>) => {
     const value = event.target.value;
@@ -34,7 +34,7 @@ const QuestionFilter: React.FC<QuestionFilterProps> = ({
     <div className={styles.filter_container}>
       <Box sx={{ minWidth: 250 }}>
         <FormControl fullWidth>
-          <InputLabel id="attempted-label">Attempted</InputLabel>
+          <InputLabel id="attempted-label">Status</InputLabel>
           <Select
             labelId="attempted-label"
             id="attempted-select"
@@ -51,7 +51,7 @@ const QuestionFilter: React.FC<QuestionFilterProps> = ({
 
       <Box sx={{ minWidth: 250 }}>
         <FormControl fullWidth>
-          <InputLabel id="difficulty-label">Difficulty</InputLabel>
+          <InputLabel id="difficulty-label">Level</InputLabel>
           <Select
             labelId="difficulty-label"
             id="difficulty-select"
@@ -59,10 +59,10 @@ const QuestionFilter: React.FC<QuestionFilterProps> = ({
             label="Difficulty"
             onChange={handleDifficultyFilterChange}
           >
-            <MenuItem value="all">All Levels</MenuItem>
-            <MenuItem value="easy">Easy</MenuItem>
-            <MenuItem value="medium">Medium</MenuItem>
-            <MenuItem value="hard">Hard</MenuItem>
+            <MenuItem value="All">All Levels</MenuItem>
+            <MenuItem value="Easy">Easy</MenuItem>
+            <MenuItem value="Medium">Medium</MenuItem>
+            <MenuItem value="Hard">Hard</MenuItem>
           </Select>
         </FormControl>
       </Box>
