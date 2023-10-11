@@ -25,3 +25,10 @@ export type MatchRequest = {
   userId: string;
   complexity: QuestionComplexity;
 };
+
+export interface HistoryItem {
+  username: string;
+  timestamp: string;
+  questionId: string;
+  text: string;
+}
