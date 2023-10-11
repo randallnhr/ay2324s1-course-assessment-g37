@@ -20,6 +20,10 @@
   color: #1c9cd2;
 }
 
+.active {
+  color: rgb(55, 145, 230);
+}
+
 .count {
   background-color: rgb(215, 209, 209);
   border-radius: 8px; /* Adjust for the amount of rounding you want */
