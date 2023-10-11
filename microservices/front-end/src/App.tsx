@@ -1,10 +1,6 @@
 import "./App.css";
 import { useUserContext } from "./UserContext";
-import {
-  BrowserRouter as Router,
-  Route,
-  Routes,
-} from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import QuestionBank from "./components/MainQuestionBank";
 import ChangePasswordPage from "./components/ChangePasswordPage";
 import ChangeDisplayName from "./components/ChangeDisplayName";
@@ -14,10 +10,11 @@ import Register from "./components/Register";
 import { User } from "./components/types";
 import React, { useEffect } from "react";
 import axios from "axios";
-import { HelmetProvider } from "react-helmet-async";
+import { Helmet, HelmetProvider } from "react-helmet-async";
 import TopBar from "./components/TopBar";
 import FindMatchPage from "./components/matchingService/FindMatchPage";
 import HomePage from "./components/HomePage";
+import SuccessSnackbar from "./components/SuccessSnackbar";
 
 // useContext: create a global state, that can be accessed by any component
 function App() {
@@ -41,6 +38,12 @@ function App() {
 
   return (
     <HelmetProvider>
+      <Helmet>
+        <title>PeerPrep</title>
+      </Helmet>
+
+      <SuccessSnackbar />
+
       <Router>
         {Object.keys(currentUser).length === 0 ? (
           <></>
