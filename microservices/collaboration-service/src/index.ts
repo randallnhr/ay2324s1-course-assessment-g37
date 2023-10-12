@@ -37,8 +37,8 @@ io.on("connection", (socket) => {
   });
 
   // chat events
-  socket.on("send message", (text) => {
-    io.to(room).emit("receive message", text);
+  socket.on("send message", (text: string, time: string, name: string) => {
+    socket.to(room).emit("receive message", text, time, name);
   });
 
   socket.on("other user has left", () => {
