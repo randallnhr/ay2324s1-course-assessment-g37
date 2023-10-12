@@ -31,8 +31,14 @@ io.on("connection", (socket) => {
   // emit number of clients in room to ensure room is ready
   io.in(room).emit("room count", io.sockets.adapter.rooms.get(room)?.size);
 
+  // Code editor events
   socket.on("client code changes", (change) => {
     io.to(room).emit("server code changes", change);
+  });
+
+  // chat events
+  socket.on("send message", (text) => {
+    io.to(room).emit("receive message", text);
   });
 
   socket.on("other user has left", () => {
