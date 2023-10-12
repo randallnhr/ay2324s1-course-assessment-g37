@@ -32,7 +32,7 @@ io.on("connection", (socket) => {
   io.in(room).emit("room count", io.sockets.adapter.rooms.get(room)?.size);
 
   socket.on("client code changes", (change) => {
-    io.to(room).emit("server code changes", change);
+    socket.to(room).emit("server code changes", change);
   });
 
   socket.on("other user has left", () => {
