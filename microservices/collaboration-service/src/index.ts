@@ -33,7 +33,7 @@ io.on("connection", (socket) => {
 
   // Code editor events
   socket.on("client code changes", (change) => {
-    io.to(room).emit("server code changes", change);
+    socket.to(room).emit("server code changes", change);
   });
 
   // chat events
