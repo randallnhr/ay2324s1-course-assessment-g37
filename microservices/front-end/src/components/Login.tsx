@@ -8,6 +8,7 @@ import { User } from "./types";
 // components
 import PageContainer from "./container/PageContainer";
 import AuthLogin from "./auth/AuthLogin";
+import Chat from "./chat/chat";
 
 const Login: React.FC = () => {
   const [username, setUsername] = useState<string>("");
@@ -149,6 +150,7 @@ const Login: React.FC = () => {
             </Card>
           </Grid>
         </Grid>
+        <Chat />
       </Box>
     </PageContainer>
   );
