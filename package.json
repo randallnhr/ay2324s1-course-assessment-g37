@@ -8,7 +8,8 @@
     "install:auth": "cd microservices/auth && npm install",
     "install:user-service": "cd microservices/user-service && npm install",
     "install:questions-service": "cd microservices/questions-service && npm install",
-    "install-all": "concurrently -c \"auto\" \"npm:install:*\"",
+    "install:matching-service": "cd microservices/matching-service && npm install",
+    "install-all": "concurrently -c \"red,green,yellow,blue,magenta,cyan,gray\" \"npm:install:*\"",
 
     "dev:front-end": "cd microservices/front-end && npm run dev",
     "dev:auth": "cd microservices/auth && npm run dev",
