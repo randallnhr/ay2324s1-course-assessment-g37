@@ -15,13 +15,12 @@ export const getQuestions = async (): Promise<Question[] | undefined> => {
   }
 };
 
-export const addQuestion = async (newQuestion: Partial<Question>) => {
+export const addQuestion = async (newQuestion: Partial<Question>, setError: (error: string | null) => void) => {
   // empty field check
   if (!newQuestion.title || !newQuestion.description) {
-    alert("Question title and description cannot be empty.");
+    setError('Question title and description cannot be empty.');
     return;
   }
-
   // set to others if no category
   if (!newQuestion.categories || newQuestion.categories.length == 0) {
     newQuestion.categories = ["Others"];
@@ -37,7 +36,7 @@ export const addQuestion = async (newQuestion: Partial<Question>) => {
     );
 
     if (isDuplicateQuestion) {
-      alert("Question with this title already exists.");
+      setError("Question with this title already exists.");
       return;
     }
 
@@ -51,7 +50,7 @@ export const addQuestion = async (newQuestion: Partial<Question>) => {
     });
 
     if (response.status !== 200) {
-      alert("Failed to add question");
+      setError("Failed to add question");
       return;
     }
   } catch (error) {
@@ -75,14 +74,10 @@ export const deleteQuestion = async (id: string): Promise<void> => {
   }
 };
 
-export const updateQuestion = async (
-  updatedQuestion: Question,
-  id: string | number
-): Promise<void> => {
-  // Empty field check
+export const updateQuestion = async (updatedQuestion: Question, id: string | number, setError: (error: string | null) => void): Promise<boolean> => {
   if (!updatedQuestion.title || !updatedQuestion.description) {
-    alert("Question title and description cannot be empty.");
-    return;
+    setError('Question title and description cannot be empty.');
+    return false;
   }
 
   if (!updatedQuestion.categories || updatedQuestion.categories.length === 0) {
@@ -102,8 +97,8 @@ export const updateQuestion = async (
     );
 
     if (isDuplicatedQuestion) {
-      alert("Question with this title already exists.");
-      return;
+      setError("Question with this title already exists.");
+      return false;
     }
 
     const response = await fetch(`/api/questions/${id}`, {
@@ -115,10 +110,15 @@ export const updateQuestion = async (
     });
 
     if (response.status !== 200) {
-      alert("Failed to update question");
-      return;
+      setError("Failed to update question");
+      return false;
     }
+    setError(null);
+    return true;
+
   } catch (error) {
     console.error(error);
+    setError('Failed to update the question due to an unexpected error.');
+    return false;
   }
 };
