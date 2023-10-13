@@ -1,11 +1,25 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { User } from "./types";
 import styles from "./ProfilePage.module.css";
 import { useUserContext } from "../UserContext";
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  Button,
+} from "@mui/material";
+import { Box } from "@mui/material";
+import Alert from "@mui/material/Alert";
+import AlertTitle from "@mui/material/AlertTitle";
 
 const ProfilePage: React.FC = () => {
+  const [openDialog, setOpenDialog] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+
   const navigate = useNavigate();
   const { currentUser, setCurrentUser } = useUserContext();
 
@@ -16,27 +30,32 @@ const ProfilePage: React.FC = () => {
     }
   }, [currentUser, navigate]);
 
+  const handleCloseDialog = () => {
+    setError(null); // Clear any previous errors
+    setOpenDialog(false);
+  };
+
+  const handleOpenDialog = () => {
+    setError(null);
+    setOpenDialog(true); // open the dialog when delete button is confirmed
+  };
+
   const handleDelete = () => {
     if (
       !currentUser ||
       Object.keys(currentUser).length === 0 ||
       !currentUser.username
     ) {
+      setError("User data not available");
       console.error("User data not available");
       return;
     }
-    const isConfirmed = window.confirm(
-      "Are you sure you want to delete your account This cannot be undone. "
-    );
-    if (!isConfirmed) return;
 
     axios
       // Should use `` instead of ""! "" will take ${user.username} literally, while `` will parse it
       .delete(`/api/users/${currentUser.username}`)
       .then((response) => {
         if (response.status === 200) {
-          alert("Account deleted successfully");
-          // reset UserContext
           setCurrentUser({} as User);
           navigate("/login");
         }
@@ -44,10 +63,14 @@ const ProfilePage: React.FC = () => {
       .catch((error) => {
         console.error("Error deleting account", error);
         if (axios.isAxiosError(error) && error.response) {
-          alert(`Failed to delete account: ${error.response.data}`);
+          setError(`Failed to delete account: ${error.response.data}`);
         } else {
-          alert("Failed to delete account due to an unknown error");
+          setError("Failed to delete account due to an unknown error");
         }
+      })
+      .finally(() => {
+        // Close the dialog in any case
+        setOpenDialog(false);
       });
   };
 
@@ -81,10 +104,40 @@ const ProfilePage: React.FC = () => {
         >
           Change Display Name
         </button>
-        <button className={styles.action_button} onClick={handleDelete}>
+        <button className={styles.action_button} onClick={handleOpenDialog}>
           Delete Account
         </button>
+
+        {/* Handle error situation */}
+        {error && (
+          <Box mb={2}>
+            <Alert severity="error" onClose={() => setError(null)}>
+              <AlertTitle>Delete Account Error</AlertTitle>
+              {error}
+            </Alert>
+          </Box>
+        )}
       </div>
+
+      <Dialog
+        open={openDialog}
+        onClose={handleCloseDialog}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{"Delete Account"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Are you sure you want to delete your account? This cannot be undone.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog}>Cancel</Button>
+          <Button onClick={handleDelete} autoFocus>
+            Confirm
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };
