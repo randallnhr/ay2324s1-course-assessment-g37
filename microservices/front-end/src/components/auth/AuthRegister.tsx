@@ -1,8 +1,9 @@
 import React, { FC, ReactNode } from "react";
 import { Box, Typography, Button } from "@mui/material";
-
 import CustomTextField from "../forms/theme-elements/CustomTextField";
 import { Stack } from "@mui/system";
+import Alert from "@mui/material/Alert";
+import AlertTitle from "@mui/material/AlertTitle";
 
 interface AuthRegisterProps {
   title?: string;
@@ -17,6 +18,10 @@ interface AuthRegisterProps {
   displayName: string;
   password: string;
   confirmPassword: string;
+  error: string | null;
+  onErrorChange: (error: string | null) => void;
+  success: string | null;
+  isSubmitting: boolean;
 }
 
 const AuthRegister: FC<AuthRegisterProps> = ({
@@ -32,8 +37,12 @@ const AuthRegister: FC<AuthRegisterProps> = ({
   displayName,
   password,
   confirmPassword,
+  error,
+  onErrorChange,
+  success,
+  isSubmitting,
 }) => (
-  <>
+  <Box display="flex" flexDirection="column">
     {title ? (
       <Typography fontWeight="700" variant="h2" mb={1}>
         {title}
@@ -59,7 +68,10 @@ const AuthRegister: FC<AuthRegisterProps> = ({
           variant="outlined"
           fullWidth
           value={username}
-          onChange={(e) => onUsernameChange(e.target.value)}
+          onChange={(e) => {
+            onUsernameChange(e.target.value);
+            onErrorChange(null);
+          }}
         />
 
         <Typography
@@ -68,7 +80,7 @@ const AuthRegister: FC<AuthRegisterProps> = ({
           component="label"
           htmlFor="displayName"
           mb="5px"
-          mt="25px"
+          mt="20px"
         >
           Display Name
         </Typography>
@@ -77,7 +89,10 @@ const AuthRegister: FC<AuthRegisterProps> = ({
           variant="outlined"
           fullWidth
           value={displayName}
-          onChange={(e) => onDisplayNameChange(e.target.value)}
+          onChange={(e) => {
+            onDisplayNameChange(e.target.value);
+            onErrorChange(null);
+          }}
         />
 
         <Typography
@@ -86,7 +101,7 @@ const AuthRegister: FC<AuthRegisterProps> = ({
           component="label"
           htmlFor="password"
           mb="5px"
-          mt="25px"
+          mt="20px"
         >
           Password
         </Typography>
@@ -96,7 +111,10 @@ const AuthRegister: FC<AuthRegisterProps> = ({
           variant="outlined"
           fullWidth
           value={password}
-          onChange={(e) => onPasswordChange(e.target.value)}
+          onChange={(e) => {
+            onPasswordChange(e.target.value);
+            onErrorChange(null);
+          }}
         />
 
         <Typography
@@ -105,7 +123,7 @@ const AuthRegister: FC<AuthRegisterProps> = ({
           component="label"
           htmlFor="confirmPassword"
           mb="5px"
-          mt="25px"
+          mt="20px"
         >
           Confirm Password
         </Typography>
@@ -115,8 +133,31 @@ const AuthRegister: FC<AuthRegisterProps> = ({
           variant="outlined"
           fullWidth
           value={confirmPassword}
-          onChange={(e) => onConfirmPasswordChange(e.target.value)}
+          onChange={(e) => {
+            onConfirmPasswordChange(e.target.value);
+            onErrorChange(null);
+          }}
         />
+
+        {/* Handle error situation */}
+        {error && (
+          <Box mt={2}>
+            <Alert severity="error" onClose={() => onErrorChange(null)}>
+              <AlertTitle>Registeration Error</AlertTitle>
+              {error}
+            </Alert>
+          </Box>
+        )}
+
+        {/* Provide feedback when success */}
+        {success && (
+          <Box mt={2}>
+            <Alert severity="success">
+              <AlertTitle>Sign-up Success</AlertTitle>
+              {success}
+            </Alert>
+          </Box>
+        )}
       </Stack>
       <Button
         color="primary"
@@ -125,12 +166,13 @@ const AuthRegister: FC<AuthRegisterProps> = ({
         fullWidth
         onClick={onSignup}
         type="button"
+        disabled={isSubmitting} // Disable the button during submission
       >
         Sign Up
       </Button>
     </Box>
     {subtitle}
-  </>
+  </Box>
 );
 
 export default AuthRegister;

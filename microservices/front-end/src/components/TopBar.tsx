@@ -17,7 +17,7 @@ const TopBar: React.FC = () => {
 
   const isAuthenticated =
     currentUser && Object.keys(currentUser).length != 0 && currentUser.username;
-    
+
   useEffect(() => {
     if (!isAuthenticated) {
       navigate("/login");
@@ -27,6 +27,14 @@ const TopBar: React.FC = () => {
   if (!isAuthenticated) {
     return <></>;
   }
+
+  const handleHistory = () => {
+    navigate("/history");
+  };
+
+  const handleFindMatch = () => {
+    navigate("/find-match");
+  };
 
   const handleQuestion = () => {
     navigate("/question-bank");
@@ -59,11 +67,17 @@ const TopBar: React.FC = () => {
           <Typography fontSize="1.5rem" style={{ flexGrow: 1 }}>
             HOME
           </Typography>
-          <Button color="inherit" onClick={handleProfile}>
-            Profile
+          <Button color="inherit" onClick={handleFindMatch}>
+            Find Match
           </Button>
           <Button color="inherit" onClick={handleQuestion}>
             Question
+          </Button>
+          <Button color="inherit" onClick={handleHistory}>
+            History
+          </Button>
+          <Button color="inherit" onClick={handleProfile}>
+            Profile
           </Button>
           <Button color="inherit" onClick={handleSignout}>
             Log Out
