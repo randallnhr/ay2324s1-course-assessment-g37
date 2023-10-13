@@ -23,15 +23,14 @@ function readEnvironmentVariables() {
  */
 function initialiseDatabase() {
   // The URI should look like "mongodb+srv://admin:<password>@<clusterxx.yyyyyy>.mongodb.net/test?retryWrites=true&w=majority"
-  var mongoDbUri = process.env.MONGO_URI;
-  if (!mongoDbUri) {
-    console.log("MongoDB atlas URI not found in environment");
-  } else {
-    if (fs.existsSync(mongoDbUri)) {
-      mongoDbUri = fs.readFileSync(mongoDbUri, "utf8").trim();
-    }
-    mongoose.connect(mongoDbUri);
+  if (process.env.MONGO_URI === undefined) {
+    throw new Error("MONGODB_URI is undefined");
   }
+  const mongoDbUri = fs.existsSync(process.env.MONGO_URI)
+    ? fs.readFileSync(process.env.MONGO_URI, "utf8").trim()
+    : process.env.MONGO_URI;
+
+  mongoose.connect(mongoDbUri);
 }
 
 /**
