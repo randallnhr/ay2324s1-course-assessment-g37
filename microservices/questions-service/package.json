@@ -5,14 +5,13 @@
   "main": "dist/app.js",
   "scripts": {
     "build": "npx tsc",
-    "start": "node ./dist/app.js",
-    "devstart": "tsc-watch --onSuccess \"node ./dist/app.js\"",
-    "serverstart": "SET DEBUG=true:* & npm run devstart"
+    "start": "npm run build && node ./dist/app.js",
+    "dev": "tsc-watch --onSuccess \"node ./dist/app.js\""
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
     "dotenv": "^16.3.1",
-    "express": "~4.16.1",
+    "express": "^4.18.2",
     "http-errors": "~1.6.3",
     "mongoose": "^7.5.0",
     "morgan": "~1.9.1"

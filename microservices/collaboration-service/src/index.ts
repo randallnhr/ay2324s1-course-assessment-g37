@@ -29,6 +29,7 @@ io.on("connection", (socket) => {
   console.log(`Total rooms: ${socket.rooms.size - 1}`);
 
   // emit number of clients in room to ensure room is ready
+  console.log("room", io.sockets.adapter.rooms.get(room)?.size);
   socket.in(room).emit("room count", io.sockets.adapter.rooms.get(room)?.size);
 
   socket.on("client code changes", (delta) => {

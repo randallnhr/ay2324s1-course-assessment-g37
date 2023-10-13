@@ -1,12 +1,12 @@
 // Use a separate component in nested routing to save repetitive codes
-import React from "react";
 import { AppBar } from "@mui/material";
+import Button from "@mui/material/Button";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
-import { useUserContext } from "../UserContext";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useUserContext } from "../UserContext";
 import { User } from "./types";
 
 import { Outlet } from "react-router-dom"; // allow render nested routes
@@ -14,6 +14,23 @@ import { Outlet } from "react-router-dom"; // allow render nested routes
 const TopBar: React.FC = () => {
   const { currentUser, setCurrentUser } = useUserContext();
   const navigate = useNavigate();
+
+  const isAuthenticated =
+    currentUser && Object.keys(currentUser).length != 0 && currentUser.username;
+    
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate("/login");
+    }
+  }, [isAuthenticated, navigate]);
+
+  if (!isAuthenticated) {
+    return <></>;
+  }
+
+  const handleFindMatch = () => {
+    navigate("/find-match");
+  };
 
   const handleQuestion = () => {
     navigate("/question-bank");
@@ -46,11 +63,13 @@ const TopBar: React.FC = () => {
           <Typography fontSize="1.5rem" style={{ flexGrow: 1 }}>
             HOME
           </Typography>
-          <Button color="inherit" onClick={handleProfile}>
-            Profile
-          </Button>
+          <Button color="inherit" onClick={handleFindMatch}>
+            Find Match          </Button>
           <Button color="inherit" onClick={handleQuestion}>
             Question
+          </Button>
+          <Button color="inherit" onClick={handleProfile}>
+            Profile
           </Button>
           <Button color="inherit" onClick={handleSignout}>
             Log Out

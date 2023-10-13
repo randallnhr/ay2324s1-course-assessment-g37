@@ -428,6 +428,14 @@ app.post("/api/questions", async (req, res) => {
     return;
   }
 
+  const user = req.user as User;
+
+  // only admin users are allowed to add new questions
+  if (user.role !== "admin") {
+    res.sendStatus(401);
+    return;
+  }
+
   try {
     const json = req.body;
     const question = json as Question;
@@ -450,6 +458,14 @@ app.post("/api/questions", async (req, res) => {
 
 app.put("/api/questions/:id", async (req, res) => {
   if (!req.isAuthenticated()) {
+    res.sendStatus(401);
+    return;
+  }
+
+  const user = req.user as User;
+
+  // only admin users are allowed to update questions
+  if (user.role !== "admin") {
     res.sendStatus(401);
     return;
   }
@@ -480,6 +496,14 @@ app.put("/api/questions/:id", async (req, res) => {
 
 app.delete("/api/questions/:id", async (req, res) => {
   if (!req.isAuthenticated()) {
+    res.sendStatus(401);
+    return;
+  }
+
+  const user = req.user as User;
+
+  // only admin users are allowed to delete questions
+  if (user.role !== "admin") {
     res.sendStatus(401);
     return;
   }
