@@ -43,7 +43,7 @@ const FindMatchPage: React.FC = () => {
       resetTimer();
       setMessageToUser('Failed to join match! Try again?')
     }
-  }, [timeElapsed, resetTimer]);
+  }, [currentUser.username, sendMatchRequest, timeElapsed, resetTimer]);
 
   const toggleSearch = useCallback((newIsSearching: boolean) => {
     if (!newIsSearching) {

@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from "react";
 import { MatchRequest, MatchResponse } from "../components/types";
 import useSocket from "./useSocket";
-import { isMatchRequest } from "../components/matchingService/utility/isMatchRequest";
+import { isMatchRequest } from "../components/matching-service/utility/isMatchRequest";
 
 const EVENT_FIND_MATCH = 'match';
 const EVENT_MATCH_FOUND = 'match found';

@@ -16,7 +16,7 @@ npm run start:rabbitMQ
 
 Start the server.
 ```
-npm run start:matching-service
+npm run dev
 ```
 
 ### Test
