@@ -17,7 +17,7 @@ services:
   question-server:
     container_name: question-server
     build:
-      context: ./microservices/questions-repo
+      context: ./microservices/questions-service
       dockerfile: Dockerfile.question
     ports:
       - "3001:3001"
