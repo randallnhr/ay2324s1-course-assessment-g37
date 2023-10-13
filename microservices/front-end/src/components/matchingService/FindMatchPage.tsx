@@ -35,6 +35,11 @@ const FindMatchPage: React.FC = () => {
 
   useEffect(() => {
     if (timeElapsed >= MAX_WAITING_TIME) {
+      const cancelMatchRequest: CancelMatchRequest = {
+        userId: currentUser.username,
+        complexity: null
+      }
+      sendMatchRequest(cancelMatchRequest)
       resetTimer();
       setMessageToUser('Failed to join match! Try again?')
     }

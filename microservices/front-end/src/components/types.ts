@@ -1,34 +1,34 @@
-export type QuestionComplexity = 'Easy' | 'Medium' | 'Hard'
+export type QuestionComplexity = "Easy" | "Medium" | "Hard";
 
 export interface Question {
-    _id: string;
-    title: string;
-    description: string;
-    categories: string[];
-    complexity: QuestionComplexity
+  _id: string;
+  title: string;
+  description: string;
+  categories: string[];
+  complexity: QuestionComplexity;
 }
 
 export interface User {
-    username: string;
-    displayName: string;
-    role: "basic" | "admin";
+  username: string;
+  displayName: string;
+  role: "basic" | "admin";
 }
 
 export interface NewQuestion {
-    title: string;
-    description: string;
-    categories: string[];
-    complexity: QuestionComplexity
+  title: string;
+  description: string;
+  categories: string[];
+  complexity: QuestionComplexity;
 }
 
 export type FindMatchRequest = {
-    userId: string
-    complexity: QuestionComplexity
+  userId: string
+  complexity: QuestionComplexity
 }
 
 export type CancelMatchRequest = {
-    userId: string
-    complexity: null
+  userId: string
+  complexity: null
 }
 
 export type MatchRequest = FindMatchRequest | CancelMatchRequest
@@ -39,4 +39,11 @@ export type MatchResponse = FindMatchRequest & {
 
 export type SocketEventHandlers = {
     [event: string]: () => void
+}
+
+export interface HistoryItem {
+  username: string;
+  timestamp: string;
+  questionId: string;
+  text: string;
 }

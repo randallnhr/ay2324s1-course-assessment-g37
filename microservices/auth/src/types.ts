@@ -36,3 +36,10 @@ export type MatchRequest = FindMatchRequest | CancelMatchRequest
 export type MatchResponse = FindMatchRequest & {
   roomId: string
 }
+
+export interface HistoryItem {
+  username: string;
+  timestamp: string;
+  questionId: string;
+  text: string;
+}

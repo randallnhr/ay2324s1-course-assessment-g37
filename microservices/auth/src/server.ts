@@ -7,9 +7,9 @@ import http from 'http';
 import session from "express-session";
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
-import { Question, User, UserWithoutPassword } from "./types";
 import { Server } from "socket.io";
 import { sendMatchRequest, isMatchRequest } from "./matchingService";
+import { HistoryItem, Question, User, UserWithoutPassword } from "./types";
 
 dotenv.config();
 
@@ -29,6 +29,7 @@ const PORT = process.env.PORT !== undefined ? Number(process.env.PORT) : 8080;
 const useLocalhost = process.env.USE_LOCALHOST === "1";
 const USER_SERVICE_URL = useLocalhost ? "http://localhost:3219" : "";
 const QUESTION_SERVICE_URL = useLocalhost ? "http://localhost:3001" : "";
+const HISTORY_SERVICE_URL = useLocalhost ? "http://localhost:7999" : "";
 
 const EVENT_FIND_MATCH = 'match';
 const EVENT_MATCH_FOUND = 'match found';
@@ -521,6 +522,65 @@ app.delete("/api/questions/:id", async (req, res) => {
       `${QUESTION_SERVICE_URL}/api/questions/${id}`,
       { method: "DELETE" }
     );
+
+    // pass along the status code
+    res.sendStatus(response.status);
+  } catch (error) {
+    console.error(error);
+    res.sendStatus(500);
+  }
+});
+
+// ============================================================================
+// history service
+// ============================================================================
+
+app.get("/api/history/:username", async (req, res) => {
+  if (!req.isAuthenticated()) {
+    res.sendStatus(401);
+    return;
+  }
+
+  const username = req.params.username;
+
+  try {
+    const response = await fetch(
+      `${HISTORY_SERVICE_URL}/api/history/${username}`
+    );
+
+    if (response.status !== 200) {
+      // pass along the status code
+      res.sendStatus(response.status);
+      return;
+    }
+
+    const json = await response.json();
+    const historyItems = json as HistoryItem[];
+
+    res.status(200).send(historyItems);
+  } catch (error) {
+    console.error(error);
+    res.sendStatus(500);
+  }
+});
+
+app.post("/api/history", async (req, res) => {
+  if (!req.isAuthenticated()) {
+    res.sendStatus(401);
+    return;
+  }
+
+  try {
+    const json = req.body;
+    const newAttempt = json as HistoryItem;
+
+    const response = await fetch(`${HISTORY_SERVICE_URL}/api/history`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newAttempt),
+    });
 
     // pass along the status code
     res.sendStatus(response.status);

@@ -6,7 +6,7 @@
   "scripts": {
     "prestart": "tsc",
     "start": "node .",
-    "dev": "tsc-watch --onSuccess \"node .\""
+    "dev": "tsc-watch --noClear --onSuccess \"node .\""
   },
   "keywords": [],
   "author": "",
