@@ -1,17 +1,15 @@
+import { v4 as generateUuid } from 'uuid';
 import { Complexity, MatchRequest, OnMatch } from "../types";
 
 export function createMatcher() {
 
-  const waitingRequests: {
-    [difficulty in Complexity]: {
-      request: MatchRequest,
-      onMatch: OnMatch
-      } | null
-  } = {
-    'Easy': null,
-    'Medium': null,
-    'Hard': null
-  };
+  let waitingRequests: {
+    request: {
+      userId: string,
+      complexity: Complexity
+    },
+    onMatch: OnMatch
+  }[] = [];
 
   /**
    * Queues a match request for a user.
@@ -25,17 +23,28 @@ export function createMatcher() {
     request: MatchRequest, 
     onMatch: OnMatch
   ) {
-    const waitingRequest = waitingRequests[request.complexity];
-    if (!waitingRequest) {
-      waitingRequests[request.complexity] = {
-        request,
-        onMatch
-      }
+    waitingRequests = waitingRequests.filter(waiting => waiting.request.userId !== request.userId);
+    if (request.complexity === null) {
       return;
     }
-    onMatch(waitingRequest.request);
-    waitingRequest.onMatch(request);
-    waitingRequests[request.complexity] = null;
+    const matchIndex = waitingRequests.findIndex(waiting => {
+      return waiting.request.complexity === request.complexity
+    });
+    if (matchIndex === -1) {
+      waitingRequests.push({request, onMatch});
+    } else {
+      const match = waitingRequests[matchIndex];
+      waitingRequests.splice(matchIndex, 1);
+      const roomId = generateUuid();
+      onMatch({
+        ...match.request,
+        roomId
+      });
+      match.onMatch({
+        ...request,
+        roomId
+      });
+    }
   }
 
   return { queueRequest };

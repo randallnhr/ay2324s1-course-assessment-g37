@@ -3,9 +3,12 @@ import MongoStore from "connect-mongo";
 import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
+import http from 'http';
 import session from "express-session";
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
+import { Server } from "socket.io";
+import { sendMatchRequest, isMatchRequest } from "./matchingService";
 import { HistoryItem, Question, User, UserWithoutPassword } from "./types";
 
 dotenv.config();
@@ -27,6 +30,9 @@ const useLocalhost = process.env.USE_LOCALHOST === "1";
 const USER_SERVICE_URL = useLocalhost ? "http://localhost:3219" : "";
 const QUESTION_SERVICE_URL = useLocalhost ? "http://localhost:3001" : "";
 const HISTORY_SERVICE_URL = useLocalhost ? "http://localhost:7999" : "";
+
+const EVENT_FIND_MATCH = 'match';
+const EVENT_MATCH_FOUND = 'match found';
 
 // ============================================================================
 // set up passport
@@ -592,6 +598,36 @@ app.get("/", (req, res) => {
   res.send("rainbow");
 });
 
-app.listen(PORT, "::", () => {
+// ============================================================================
+// matching service
+// ============================================================================
+
+const server = http.createServer(app);
+const socketIo = new Server(server, {
+  cors: {
+    origin: "*"
+  }
+});
+
+socketIo.on('connection', (socket) => {
+  console.log('User connected to matching service socket');
+
+  socket.on(EVENT_FIND_MATCH, async (matchRequest) => {
+    if (isMatchRequest(matchRequest)) {
+      try {
+        console.log('Socket received request to match, sending to server:', JSON.stringify(matchRequest));
+        const foundMatch = await sendMatchRequest(matchRequest);
+        console.log('Socket received response from server, sending to client:', JSON.stringify(foundMatch));
+        socket.emit(EVENT_MATCH_FOUND, foundMatch);
+      } catch (error) {
+        console.error(error);
+      }
+    } else {
+      console.log('Invalid match request:', matchRequest);
+    }
+  });
+});
+
+server.listen(PORT, "::", () => {
   console.log(`Listening on http://localhost:${PORT}`);
 });

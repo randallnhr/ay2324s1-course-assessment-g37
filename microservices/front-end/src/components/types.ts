@@ -21,10 +21,25 @@ export interface NewQuestion {
   complexity: QuestionComplexity;
 }
 
-export type MatchRequest = {
-  userId: string;
-  complexity: QuestionComplexity;
-};
+export type FindMatchRequest = {
+  userId: string
+  complexity: QuestionComplexity
+}
+
+export type CancelMatchRequest = {
+  userId: string
+  complexity: null
+}
+
+export type MatchRequest = FindMatchRequest | CancelMatchRequest
+
+export type MatchResponse = FindMatchRequest & {
+  roomId:  string
+}
+
+export type SocketEventHandlers = {
+    [event: string]: () => void
+}
 
 export interface HistoryItem {
   username: string;
