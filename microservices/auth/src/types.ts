@@ -18,3 +18,10 @@ export interface Question {
   complexity: "Easy" | "Medium" | "Hard";
   description: string;
 }
+
+export interface HistoryItem {
+  username: string;
+  timestamp: string;
+  questionId: string;
+  text: string;
+}

@@ -12,8 +12,8 @@ const initialState: SuccessSnackbarState = {
   messageQueue: [],
 };
 
-export const SuccessSnackbarSlice = createSlice({
-  name: "SuccessSnackbar",
+export const successSnackbarSlice = createSlice({
+  name: "successSnackbar",
   initialState,
   reducers: {
     closeSuccessSnackbar: (state) => {
@@ -49,6 +49,6 @@ export const {
   resetCurrentSuccessSnackbarMessage,
   enqueueSuccessSnackbarMessage,
   popAndShowNextSuccessSnackbarMessage,
-} = SuccessSnackbarSlice.actions;
+} = successSnackbarSlice.actions;
 
-export default SuccessSnackbarSlice.reducer;
+export default successSnackbarSlice.reducer;
