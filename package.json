@@ -8,12 +8,14 @@
     "install:auth": "cd microservices/auth && npm install",
     "install:user-service": "cd microservices/user-service && npm install",
     "install:questions-service": "cd microservices/questions-service && npm install",
+    "install:history-service": "cd microservices/history-service && npm install",
     "install-all": "concurrently -c \"auto\" \"npm:install:*\"",
 
     "dev:front-end": "cd microservices/front-end && npm run dev",
     "dev:auth": "cd microservices/auth && npm run dev",
     "dev:user-service": "cd microservices/user-service && npm run start",
     "dev:questions-service": "cd microservices/questions-service && npm run dev",
+    "dev:history-service": "cd microservices/history-service && npm run dev",
     "dev-all": "concurrently -c \"auto\" \"npm:dev:*\""
   },
   "author": "",
