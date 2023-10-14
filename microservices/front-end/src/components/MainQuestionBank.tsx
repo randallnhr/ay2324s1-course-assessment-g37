@@ -89,6 +89,7 @@ const QuestionBank: React.FC = () => {
   // maintain filter & sort states
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>("All");
   const [filteredCategory, setFilteredCategory] = useState<string>("All");
+  const [searchQuery, setSearchQuery] = useState<string>("");
   const [sortBy, setSortBy] = useState<string>("");
 
   // Need to fetch current user as well
@@ -159,15 +160,22 @@ const QuestionBank: React.FC = () => {
     console.log(`Attempted Filter: ${attempted}`);
   };
 
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+  };
+
   const filterQuestions = (
     questions: Question[],
     difficulty: string,
-    category: string
+    category: string,
+    query: string
   ): Question[] => {
     return questions.filter(
       (question) =>
         (difficulty === "All" || question.complexity === difficulty) &&
-        (category === "All" || question.categories.includes(category))
+        (category === "All" || question.categories.includes(category)) &&
+        (query === "" ||
+          question.title.toLowerCase().includes(query.toLowerCase()))
     );
   };
 
@@ -175,7 +183,8 @@ const QuestionBank: React.FC = () => {
   const filteredQuestions = filterQuestions(
     questions,
     selectedDifficulty,
-    filteredCategory
+    filteredCategory,
+    searchQuery
   );
 
   // handle sorting
@@ -276,6 +285,8 @@ const QuestionBank: React.FC = () => {
                   setSelectedDifficulty(difficulty)
                 }
                 onSortChange={setSortBy}
+                onSearch={handleSearch}
+                searchQuery={searchQuery}
               />
 
               <QuestionTable
