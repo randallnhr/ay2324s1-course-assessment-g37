@@ -26,6 +26,20 @@ export type MatchRequest = {
   complexity: QuestionComplexity;
 };
 
+// I must define this RootState here, somehow HistoryPage state is
+// able to crrectly recognise the state, while mine in MainQuestionBank asks for explicit type
+interface SuccessSnackbarState {
+  isOpen: boolean;
+  currentMessage: string;
+  messageQueue: string[];
+}
+
+export interface RootState {
+  successSnackbar: SuccessSnackbarState;
+  questions: Question[];
+  history: HistoryItem[];
+}
+
 export interface HistoryItem {
   username: string;
   timestamp: string;

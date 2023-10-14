@@ -59,19 +59,46 @@ const QuestionTable: React.FC<QuestionTableProps> = ({
   expandedQuestionId,
   setUpdatingQuestionId,
 }) => {
+  const hasActionsColumn =
+    currentUser &&
+    Object.keys(currentUser).length !== 0 &&
+    currentUser.username &&
+    currentUser.role === "admin";
+
   return (
     <table className={styles.table_container}>
       <thead>
         <tr>
-          <th className={styles.table_header}>Title</th>
-          <th className={styles.table_header}>Category</th>
-          <th className={styles.table_header}>Complexity</th>
-          {currentUser &&
-            Object.keys(currentUser).length != 0 &&
-            currentUser.username &&
-            currentUser.role === "admin" && (
-              <th className={styles.table_header}>Actions</th>
-            )}
+          {hasActionsColumn ? (
+            <>
+              <th className={`${styles.table_header} ${styles.title}`}>
+                Title
+              </th>
+              <th className={`${styles.table_header} ${styles.category}`}>
+                Category
+              </th>
+              <th className={`${styles.table_header} ${styles.complexity}`}>
+                Complexity
+              </th>
+              <th className={`${styles.table_header} ${styles.actions}`}>
+                Actions
+              </th>
+            </>
+          ) : (
+            <>
+              <th className={`${styles.table_header_basic} ${styles.title}`}>
+                Title
+              </th>
+              <th className={`${styles.table_header_basic} ${styles.category}`}>
+                Category
+              </th>
+              <th
+                className={`${styles.table_header_basic} ${styles.complexity}`}
+              >
+                Complexity
+              </th>
+            </>
+          )}
         </tr>
       </thead>
       <tbody>

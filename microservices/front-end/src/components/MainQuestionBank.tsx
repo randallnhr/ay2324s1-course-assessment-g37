@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./QuestionBank.module.css";
-import { Question } from "./types";
+import { Question, RootState, HistoryItem } from "./types";
 import {
   getQuestions,
   addQuestion,
@@ -16,6 +16,8 @@ import QuestionFilter from "./QuestionFilter";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useUserContext } from "../UserContext";
+import { useAppSelector } from "../store/hook";
+import { createSelector } from "@reduxjs/toolkit";
 
 const allCategories = [
   "Arrays",
@@ -89,6 +91,8 @@ const QuestionBank: React.FC = () => {
   // maintain filter & sort states
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>("All");
   const [filteredCategory, setFilteredCategory] = useState<string>("All");
+  const [attemptedFilter, setAttemptedFilter] = React.useState<string>("All");
+  const [searchQuery, setSearchQuery] = useState<string>("");
   const [sortBy, setSortBy] = useState<string>("");
 
   // Need to fetch current user as well
@@ -97,6 +101,18 @@ const QuestionBank: React.FC = () => {
 
   const isAuthenticated =
     currentUser && Object.keys(currentUser).length != 0 && currentUser.username;
+
+  const selectHistory = (state: RootState) => state.history;
+  const selectAttemptedQuestions = createSelector([selectHistory], (history) =>
+    history.map((historyItem) => historyItem.questionId)
+  );
+  const attemptedQuestions = useAppSelector(selectAttemptedQuestions);
+
+  // const attemptedQuestions = useAppSelector((state) =>
+  //   state.history.map((historyItem) => historyItem.questionId)
+  // );
+  // the .map() function creates a new array reference every time the selector runs, leading to unnecessary re-renders
+  console.log(attemptedQuestions);
 
   // fetch when component mounts
   // Use isFetching on question fetching
@@ -156,18 +172,31 @@ const QuestionBank: React.FC = () => {
 
   // dummy function for filter changes
   const handleAttemptFilterChange = (attempted: string) => {
-    console.log(`Attempted Filter: ${attempted}`);
+    setAttemptedFilter(attempted);
+  };
+
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
   };
 
   const filterQuestions = (
     questions: Question[],
     difficulty: string,
-    category: string
+    category: string,
+    query: string,
+    attempted: string
   ): Question[] => {
     return questions.filter(
       (question) =>
         (difficulty === "All" || question.complexity === difficulty) &&
-        (category === "All" || question.categories.includes(category))
+        (category === "All" || question.categories.includes(category)) &&
+        (query === "" ||
+          question.title.toLowerCase().includes(query.toLowerCase())) &&
+        (attempted === "All" ||
+          (attempted === "Attempted" &&
+            attemptedQuestions.includes(question._id)) ||
+          (attempted === "Unattempted" &&
+            !attemptedQuestions.includes(question._id)))
     );
   };
 
@@ -175,7 +204,9 @@ const QuestionBank: React.FC = () => {
   const filteredQuestions = filterQuestions(
     questions,
     selectedDifficulty,
-    filteredCategory
+    filteredCategory,
+    searchQuery,
+    attemptedFilter
   );
 
   // handle sorting
@@ -276,6 +307,8 @@ const QuestionBank: React.FC = () => {
                   setSelectedDifficulty(difficulty)
                 }
                 onSortChange={setSortBy}
+                onSearch={handleSearch}
+                searchQuery={searchQuery}
               />
 
               <QuestionTable

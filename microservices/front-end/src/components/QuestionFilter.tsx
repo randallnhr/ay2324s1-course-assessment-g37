@@ -9,21 +9,27 @@ import InputBase from "@mui/material/InputBase";
 import IconButton from "@mui/material/IconButton";
 import SearchIcon from "@mui/icons-material/Search";
 import styles from "./QuestionFilter.module.css";
+import Chip from "@mui/material/Chip";
 
 interface QuestionFilterProps {
   onAttemptFilterChange: (attempted: string) => void;
   onDifficultyFilterChange: (difficulty: string) => void;
   onSortChange: (sortBy: string) => void;
+  onSearch: (query: string) => void;
+  searchQuery: string;
 }
 
 const QuestionFilter: React.FC<QuestionFilterProps> = ({
   onAttemptFilterChange,
   onDifficultyFilterChange,
   onSortChange,
+  onSearch,
+  searchQuery,
 }) => {
   const [attempted, setAttempted] = React.useState<string>("");
   const [difficulty, setDifficulty] = React.useState<string>("");
   const [sortBy, setSortBy] = React.useState<string>("");
+  const [localSearchQuery, setLocalSearchQuery] = React.useState<string>("");
 
   const handleAttemptFilterChange = (event: SelectChangeEvent<string>) => {
     const value = event.target.value;
@@ -43,6 +49,17 @@ const QuestionFilter: React.FC<QuestionFilterProps> = ({
     onSortChange(value);
   };
 
+  // search result should not change immediately if input changes
+  const handleSearchInputChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setLocalSearchQuery(event.target.value);
+  };
+
+  const handleSearch = () => {
+    onSearch(localSearchQuery);
+  };
+
   return (
     <div className={styles.filter_container}>
       <Box sx={{ minWidth: 250 }}>
@@ -55,9 +72,9 @@ const QuestionFilter: React.FC<QuestionFilterProps> = ({
             label="Attempted"
             onChange={handleAttemptFilterChange}
           >
-            <MenuItem value="all">All</MenuItem>
-            <MenuItem value="attempted">Attempted</MenuItem>
-            <MenuItem value="unattempted">Unattempted</MenuItem>
+            <MenuItem value="All">All</MenuItem>
+            <MenuItem value="Attempted">Attempted</MenuItem>
+            <MenuItem value="Unattempted">Unattempted</MenuItem>
           </Select>
         </FormControl>
       </Box>
@@ -100,17 +117,46 @@ const QuestionFilter: React.FC<QuestionFilterProps> = ({
       {/* Added Search Bar */}
       <Paper
         component="form"
-        sx={{ p: "2px 4px", display: "flex", alignItems: "center", width: 300 }}
+        sx={{
+          p: "2px 4px",
+          display: "flex",
+          alignItems: "center",
+          width: 300,
+          boxShadow: "none",
+          border: "1px solid rgba(0, 0, 0, 0.23)",
+        }}
       >
         <InputBase
           sx={{ ml: 1, flex: 1 }}
           placeholder="Search Questions"
           inputProps={{ "aria-label": "search questions" }}
+          value={localSearchQuery}
+          onChange={handleSearchInputChange}
         />
-        <IconButton type="button" sx={{ p: "10px" }} aria-label="search">
+        <IconButton
+          type="button"
+          sx={{ p: "10px" }}
+          aria-label="search"
+          onClick={handleSearch}
+        >
           <SearchIcon />
         </IconButton>
       </Paper>
+
+      {/* Display Chip if search query is not empty */}
+      {searchQuery && (
+        <Box sx={{ display: "flex", alignItems: "flex-end" }}>
+          <Chip
+            label={searchQuery}
+            onDelete={() => {
+              setLocalSearchQuery(""); // Clear the search query
+              onSearch(""); // Notify parent component to clear the filter
+            }}
+            variant="outlined"
+            sx={{ ml: 2 }} // Margin for aesthetics
+          />
+        </Box>
+      )}
     </div>
   );
 };
