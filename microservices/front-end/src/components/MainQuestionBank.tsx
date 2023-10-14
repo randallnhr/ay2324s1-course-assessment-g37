@@ -16,6 +16,8 @@ import QuestionFilter from "./QuestionFilter";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useUserContext } from "../UserContext";
+import { useAppSelector } from "../store/hook";
+import { createSelector } from "@reduxjs/toolkit";
 
 const allCategories = [
   "Arrays",
@@ -89,6 +91,7 @@ const QuestionBank: React.FC = () => {
   // maintain filter & sort states
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>("All");
   const [filteredCategory, setFilteredCategory] = useState<string>("All");
+  const [attemptedFilter, setAttemptedFilter] = React.useState<string>("All");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [sortBy, setSortBy] = useState<string>("");
 
@@ -98,6 +101,11 @@ const QuestionBank: React.FC = () => {
 
   const isAuthenticated =
     currentUser && Object.keys(currentUser).length != 0 && currentUser.username;
+
+  // This line is given a warning
+  const attemptedQuestions = useAppSelector((state) =>
+    state.history.map((historyItem) => historyItem.questionId)
+  );
 
   // fetch when component mounts
   // Use isFetching on question fetching
@@ -157,7 +165,7 @@ const QuestionBank: React.FC = () => {
 
   // dummy function for filter changes
   const handleAttemptFilterChange = (attempted: string) => {
-    console.log(`Attempted Filter: ${attempted}`);
+    setAttemptedFilter(attempted);
   };
 
   const handleSearch = (query: string) => {
@@ -168,14 +176,20 @@ const QuestionBank: React.FC = () => {
     questions: Question[],
     difficulty: string,
     category: string,
-    query: string
+    query: string,
+    attempted: string
   ): Question[] => {
     return questions.filter(
       (question) =>
         (difficulty === "All" || question.complexity === difficulty) &&
         (category === "All" || question.categories.includes(category)) &&
         (query === "" ||
-          question.title.toLowerCase().includes(query.toLowerCase()))
+          question.title.toLowerCase().includes(query.toLowerCase())) &&
+        (attempted === "All" ||
+          (attempted === "Attempted" &&
+            attemptedQuestions.includes(question._id)) ||
+          (attempted === "Unattempted" &&
+            !attemptedQuestions.includes(question._id)))
     );
   };
 
@@ -184,7 +198,8 @@ const QuestionBank: React.FC = () => {
     questions,
     selectedDifficulty,
     filteredCategory,
-    searchQuery
+    searchQuery,
+    attemptedFilter
   );
 
   // handle sorting

@@ -72,9 +72,9 @@ const QuestionFilter: React.FC<QuestionFilterProps> = ({
             label="Attempted"
             onChange={handleAttemptFilterChange}
           >
-            <MenuItem value="all">All</MenuItem>
-            <MenuItem value="attempted">Attempted</MenuItem>
-            <MenuItem value="unattempted">Unattempted</MenuItem>
+            <MenuItem value="All">All</MenuItem>
+            <MenuItem value="Attempted">Attempted</MenuItem>
+            <MenuItem value="Unattempted">Unattempted</MenuItem>
           </Select>
         </FormControl>
       </Box>
