@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./QuestionBank.module.css";
-import { Question } from "./types";
+import { Question, RootState, HistoryItem } from "./types";
 import {
   getQuestions,
   addQuestion,
@@ -102,10 +102,17 @@ const QuestionBank: React.FC = () => {
   const isAuthenticated =
     currentUser && Object.keys(currentUser).length != 0 && currentUser.username;
 
-  // This line is given a warning
-  const attemptedQuestions = useAppSelector((state) =>
-    state.history.map((historyItem) => historyItem.questionId)
+  const selectHistory = (state: RootState) => state.history;
+  const selectAttemptedQuestions = createSelector([selectHistory], (history) =>
+    history.map((historyItem) => historyItem.questionId)
   );
+  const attemptedQuestions = useAppSelector(selectAttemptedQuestions);
+
+  // const attemptedQuestions = useAppSelector((state) =>
+  //   state.history.map((historyItem) => historyItem.questionId)
+  // );
+  // the .map() function creates a new array reference every time the selector runs, leading to unnecessary re-renders
+  console.log(attemptedQuestions);
 
   // fetch when component mounts
   // Use isFetching on question fetching
