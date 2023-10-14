@@ -10,16 +10,25 @@ import Register from "./components/Register";
 import { User } from "./components/types";
 import React, { useEffect } from "react";
 import axios from "axios";
-import { HelmetProvider } from "react-helmet-async";
+import { Helmet, HelmetProvider } from "react-helmet-async";
 import TopBar from "./components/TopBar";
 import CollaborationPage from "./components/CollaborationPage";
 import FindMatchPage from "./components/matchingService/FindMatchPage";
 import HomePage from "./components/HomePage";
+import SuccessSnackbar from "./components/SuccessSnackbar";
+import HistoryPage from "./components/history-service/HistoryPage";
+import { useAppDispatch } from "./store/hook";
+import { fetchQuestions } from "./store/slices/questionsSlice";
 
 // useContext: create a global state, that can be accessed by any component
 function App() {
+  const dispatch = useAppDispatch();
   const { currentUser, setCurrentUser } = useUserContext();
   // Do this once at App launch. When app launches, all the previous data will be emptied, and useEffect will re-run
+
+  useEffect(() => {
+    dispatch(fetchQuestions());
+  }, [dispatch]);
 
   useEffect(() => {
     if (Object.keys(currentUser).length === 0) {
@@ -38,6 +47,12 @@ function App() {
 
   return (
     <HelmetProvider>
+      <Helmet>
+        <title>PeerPrep</title>
+      </Helmet>
+
+      <SuccessSnackbar />
+
       <Router>
         {Object.keys(currentUser).length === 0 ? (
           <></>
@@ -55,6 +70,7 @@ function App() {
                 element={<ChangeDisplayName />}
               />
               <Route path="/find-match" element={<FindMatchPage />} />
+              <Route path="/history" element={<HistoryPage />} />
               <Route path="/profile" element={<ProfilePage />} />
               <Route path="/collab" element={<CollaborationPage />} />
             </Route>
