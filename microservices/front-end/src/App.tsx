@@ -12,7 +12,7 @@ import React, { useEffect } from "react";
 import axios from "axios";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import TopBar from "./components/TopBar";
-import CollaborationPage from "./components/CollaborationPage";
+import CollaborationPage from "./components/collaboration/CollaborationPage";
 import FindMatchPage from "./components/matchingService/FindMatchPage";
 import HomePage from "./components/HomePage";
 import SuccessSnackbar from "./components/SuccessSnackbar";
