@@ -17,7 +17,7 @@ import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useUserContext } from "../UserContext";
 import { useAppSelector } from "../store/hook";
-import { createSelector } from "@reduxjs/toolkit";
+import { selectFilteredQuestions } from "../store/slices/questionFilterSlice";
 
 const allCategories = [
   "Arrays",
@@ -88,13 +88,6 @@ const QuestionBank: React.FC = () => {
   const [addError, setAddError] = useState<string | null>(null);
   const [updateError, setUpdateError] = useState<string | null>(null);
 
-  // maintain filter & sort states
-  const [selectedDifficulty, setSelectedDifficulty] = useState<string>("All");
-  const [filteredCategory, setFilteredCategory] = useState<string>("All");
-  const [attemptedFilter, setAttemptedFilter] = React.useState<string>("All");
-  const [searchQuery, setSearchQuery] = useState<string>("");
-  const [sortBy, setSortBy] = useState<string>("None");
-
   // Need to fetch current user as well
   const [isFetching, setIsFetching] = useState<boolean>(true);
   const { currentUser, setCurrentUser } = useUserContext();
@@ -102,17 +95,11 @@ const QuestionBank: React.FC = () => {
   const isAuthenticated =
     currentUser && Object.keys(currentUser).length != 0 && currentUser.username;
 
-  const selectHistory = (state: RootState) => state.history;
-  const selectAttemptedQuestions = createSelector([selectHistory], (history) =>
-    history.map((historyItem) => historyItem.questionId)
+  const filteredCategory = useAppSelector(
+    (state) => state.categoryFilter.filteredCategory
   );
-  const attemptedQuestions = useAppSelector(selectAttemptedQuestions);
-
-  // const attemptedQuestions = useAppSelector((state) =>
-  //   state.history.map((historyItem) => historyItem.questionId)
-  // );
-  // the .map() function creates a new array reference every time the selector runs, leading to unnecessary re-renders
-  console.log(attemptedQuestions);
+  const filteredQuestions = useAppSelector(selectFilteredQuestions);
+  const sortBy = useAppSelector((state) => state.questionFilter.sortBy);
 
   // fetch when component mounts
   // Use isFetching on question fetching
@@ -170,58 +157,10 @@ const QuestionBank: React.FC = () => {
     }
   };
 
-  // dummy function for filter changes
-  const handleAttemptFilterChange = (attempted: string) => {
-    setAttemptedFilter(attempted);
-  };
-
-  const handleSearch = (query: string) => {
-    setSearchQuery(query);
-  };
-
   // break one filterQuestion into
 
-  const filterQuestions = (
-    questions: Question[],
-    difficulty: string,
-    category: string,
-    query: string,
-    attempted: string
-  ): Question[] => {
-    return questions.filter((question) => {
-      const matchesDifficulty =
-        difficulty === "All" || question.complexity === difficulty;
-      const matchesCategory =
-        category === "All" || question.categories.includes(category);
-      const matchesQuery =
-        query === "" ||
-        question.title.toLowerCase().includes(query.toLowerCase());
-      const hasBeenAttempted = attemptedQuestions.includes(question._id);
-      const matchesAttemptStatus =
-        attempted === "All" ||
-        (attempted === "Attempted" && hasBeenAttempted) ||
-        (attempted === "Unattempted" && !hasBeenAttempted);
-
-      return (
-        matchesDifficulty &&
-        matchesCategory &&
-        matchesQuery &&
-        matchesAttemptStatus
-      );
-    });
-  };
-
-  // declare the filteredQuestions here
-  const filteredQuestions = filterQuestions(
-    questions,
-    selectedDifficulty,
-    filteredCategory,
-    searchQuery,
-    attemptedFilter
-  );
-
   // handle sorting
-  const handleSort = (sortBy: string, questions: Question[]): Question[] => {
+  const handleSort = (questions: Question[]): Question[] => {
     if (sortBy === "Complexity") {
       return questions.sort((a, b) => {
         const complexityOrder = { Easy: 1, Medium: 2, Hard: 3 }; // Define order
@@ -233,7 +172,7 @@ const QuestionBank: React.FC = () => {
     return questions; // If neither of above, return original
   };
 
-  const sortedQuestions = handleSort(sortBy, filteredQuestions);
+  const sortedQuestions = handleSort(filteredQuestions);
 
   const toggleQuestionDetails = (id: string) => {
     setExpandedQuestionId(expandedQuestionId === id ? null : id);
@@ -307,19 +246,9 @@ const QuestionBank: React.FC = () => {
             </div>
           ) : (
             <>
-              <CategorySummary
-                categorySummary={categorySummary}
-                onSelectCategory={setFilteredCategory}
-              />
+              <CategorySummary />
 
-              <QuestionFilter
-                onAttemptFilterChange={handleAttemptFilterChange}
-                onDifficultyFilterChange={(difficulty: string) =>
-                  setSelectedDifficulty(difficulty)
-                }
-                onSortChange={setSortBy}
-                onSearch={handleSearch}
-              />
+              <QuestionFilter />
 
               <QuestionTable
                 currentUser={currentUser}

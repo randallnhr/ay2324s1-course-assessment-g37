@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Box from "@mui/material/Box";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
@@ -11,51 +11,40 @@ import SearchIcon from "@mui/icons-material/Search";
 import styles from "./QuestionFilter.module.css";
 import CloseIcon from "@mui/icons-material/Close";
 
-interface QuestionFilterProps {
-  onAttemptFilterChange: (attempted: string) => void;
-  onDifficultyFilterChange: (difficulty: string) => void;
-  onSortChange: (sortBy: string) => void;
-  onSearch: (query: string) => void;
-}
+import { useAppDispatch, useAppSelector } from "../store/hook";
+import {
+  setAttempted,
+  setDifficulty,
+  setSortBy,
+  setLocalSearchQuery,
+} from "../store/slices/questionFilterSlice";
 
-const QuestionFilter: React.FC<QuestionFilterProps> = ({
-  onAttemptFilterChange,
-  onDifficultyFilterChange,
-  onSortChange,
-  onSearch,
-}) => {
-  const [attempted, setAttempted] = React.useState<string>("All");
-  const [difficulty, setDifficulty] = React.useState<string>("All");
-  const [sortBy, setSortBy] = React.useState<string>("None");
-  const [localSearchQuery, setLocalSearchQuery] = React.useState<string>("");
+const QuestionFilter: React.FC = () => {
+  const [inputValue, setInputValue] = useState(""); // set one for handling search value
+
+  const dispatch = useAppDispatch();
+  const { attempted, difficulty, sortBy, localSearchQuery } = useAppSelector(
+    (state) => state.questionFilter
+  );
 
   const handleAttemptFilterChange = (event: SelectChangeEvent<string>) => {
-    const value = event.target.value;
-    setAttempted(value);
-    onAttemptFilterChange(value);
+    dispatch(setAttempted(event.target.value as string));
   };
 
   const handleDifficultyFilterChange = (event: SelectChangeEvent<string>) => {
-    const value = event.target.value;
-    setDifficulty(value);
-    onDifficultyFilterChange(value);
+    dispatch(setDifficulty(event.target.value as string));
   };
 
   const handleSortChange = (event: SelectChangeEvent<string>) => {
-    const value = event.target.value;
-    setSortBy(value);
-    onSortChange(value);
+    dispatch(setSortBy(event.target.value as string));
   };
 
-  // search result should not change immediately if input changes
-  const handleSearchInputChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setLocalSearchQuery(event.target.value);
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(event.target.value);
   };
 
-  const handleSearch = () => {
-    onSearch(localSearchQuery);
+  const handleSearchButtonClick = () => {
+    dispatch(setLocalSearchQuery(inputValue));
   };
 
   return (
@@ -130,17 +119,17 @@ const QuestionFilter: React.FC<QuestionFilterProps> = ({
           sx={{ ml: 1, flex: 1 }}
           placeholder="Search Questions"
           inputProps={{ "aria-label": "search questions" }}
-          value={localSearchQuery}
-          onChange={handleSearchInputChange}
+          value={inputValue}
+          onChange={handleInputChange}
         />
-        {localSearchQuery && (
+        {inputValue && (
           <IconButton
             type="button"
             sx={{ p: "10px" }}
             aria-label="clear search"
             onClick={() => {
-              setLocalSearchQuery(""); // Clear the search query
-              onSearch(""); // Notify parent component to clear the filter
+              setInputValue("");
+              dispatch(setLocalSearchQuery(""));
             }}
           >
             <CloseIcon />
@@ -150,7 +139,7 @@ const QuestionFilter: React.FC<QuestionFilterProps> = ({
           type="button"
           sx={{ p: "10px" }}
           aria-label="search"
-          onClick={handleSearch}
+          onClick={handleSearchButtonClick}
         >
           <SearchIcon />
         </IconButton>
