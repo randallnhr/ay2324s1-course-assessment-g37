@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./QuestionBank.module.css";
-import { Question, RootState, HistoryItem } from "./types";
+import { Question, RootState } from "./types";
 import {
   getQuestions,
   addQuestion,
@@ -93,7 +93,7 @@ const QuestionBank: React.FC = () => {
   const [filteredCategory, setFilteredCategory] = useState<string>("All");
   const [attemptedFilter, setAttemptedFilter] = React.useState<string>("All");
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [sortBy, setSortBy] = useState<string>("");
+  const [sortBy, setSortBy] = useState<string>("None");
 
   // Need to fetch current user as well
   const [isFetching, setIsFetching] = useState<boolean>(true);
@@ -179,6 +179,8 @@ const QuestionBank: React.FC = () => {
     setSearchQuery(query);
   };
 
+  // break one filterQuestion into
+
   const filterQuestions = (
     questions: Question[],
     difficulty: string,
@@ -186,18 +188,27 @@ const QuestionBank: React.FC = () => {
     query: string,
     attempted: string
   ): Question[] => {
-    return questions.filter(
-      (question) =>
-        (difficulty === "All" || question.complexity === difficulty) &&
-        (category === "All" || question.categories.includes(category)) &&
-        (query === "" ||
-          question.title.toLowerCase().includes(query.toLowerCase())) &&
-        (attempted === "All" ||
-          (attempted === "Attempted" &&
-            attemptedQuestions.includes(question._id)) ||
-          (attempted === "Unattempted" &&
-            !attemptedQuestions.includes(question._id)))
-    );
+    return questions.filter((question) => {
+      const matchesDifficulty =
+        difficulty === "All" || question.complexity === difficulty;
+      const matchesCategory =
+        category === "All" || question.categories.includes(category);
+      const matchesQuery =
+        query === "" ||
+        question.title.toLowerCase().includes(query.toLowerCase());
+      const hasBeenAttempted = attemptedQuestions.includes(question._id);
+      const matchesAttemptStatus =
+        attempted === "All" ||
+        (attempted === "Attempted" && hasBeenAttempted) ||
+        (attempted === "Unattempted" && !hasBeenAttempted);
+
+      return (
+        matchesDifficulty &&
+        matchesCategory &&
+        matchesQuery &&
+        matchesAttemptStatus
+      );
+    });
   };
 
   // declare the filteredQuestions here
@@ -308,7 +319,6 @@ const QuestionBank: React.FC = () => {
                 }
                 onSortChange={setSortBy}
                 onSearch={handleSearch}
-                searchQuery={searchQuery}
               />
 
               <QuestionTable
