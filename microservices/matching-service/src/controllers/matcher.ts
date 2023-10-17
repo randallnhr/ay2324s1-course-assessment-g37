@@ -1,6 +1,10 @@
 import { v4 as generateUuid } from 'uuid';
 import { Complexity, MatchRequest, OnMatch } from "../types";
 
+function logQueueState(requests: unknown[]) {
+  console.log(`Queue: ${JSON.stringify(requests)}`);
+}
+
 export function createMatcher() {
 
   let waitingRequests: {
@@ -25,6 +29,7 @@ export function createMatcher() {
   ) {
     waitingRequests = waitingRequests.filter(waiting => waiting.request.userId !== request.userId);
     if (request.complexity === null) {
+      logQueueState(waitingRequests);
       return;
     }
     const matchIndex = waitingRequests.findIndex(waiting => {
@@ -45,6 +50,7 @@ export function createMatcher() {
         roomId
       });
     }
+    logQueueState(waitingRequests);
   }
 
   return { queueRequest };
