@@ -7,6 +7,7 @@ import http from 'http';
 import session from "express-session";
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
+import fs from "fs";
 import { Server } from "socket.io";
 import { sendMatchRequest, isMatchRequest } from "./matchingService";
 import { HistoryItem, Question, User, UserWithoutPassword } from "./types";
@@ -25,10 +26,17 @@ if (
 }
 
 const PORT = process.env.PORT !== undefined ? Number(process.env.PORT) : 8080;
-
+const AUTH_MONGODB_URI = fs.existsSync(process.env.AUTH_MONGODB_URI)
+  ? fs.readFileSync(process.env.AUTH_MONGODB_URI, "utf8").trim()
+  : process.env.AUTH_MONGODB_URI;
+const AUTH_SESSION_SECRET = fs.existsSync(process.env.AUTH_SESSION_SECRET)
+  ? fs.readFileSync(process.env.AUTH_SESSION_SECRET, "utf8").trim()
+  : process.env.AUTH_SESSION_SECRET;
 const useLocalhost = process.env.USE_LOCALHOST === "1";
-const USER_SERVICE_URL = useLocalhost ? "http://localhost:3219" : "";
-const QUESTION_SERVICE_URL = useLocalhost ? "http://localhost:3001" : "";
+const USER_SERVICE_URL =
+  process.env.USER_SERVICE_URL ?? "http://localhost:3219";
+const QUESTION_SERVICE_URL =
+  process.env.QUESTION_SERVICE_URL ?? "http://localhost:3001";
 const HISTORY_SERVICE_URL = useLocalhost ? "http://localhost:7999" : "";
 
 const EVENT_FIND_MATCH = 'match';
@@ -104,12 +112,12 @@ app.use(express.json());
 // express-session middleware must be set up before passport middleware
 app.use(
   session({
-    secret: process.env.AUTH_SESSION_SECRET,
+    secret: AUTH_SESSION_SECRET,
     resave: false,
     saveUninitialized: true,
     cookie: { secure: false },
     store: MongoStore.create({
-      mongoUrl: process.env.AUTH_MONGODB_URI,
+      mongoUrl: AUTH_MONGODB_URI,
       dbName: "main-db",
     }),
   })
