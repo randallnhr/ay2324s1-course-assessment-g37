@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./QuestionBank.module.css";
-import { Question, RootState } from "./types";
+import { Question } from "./types";
+import { RootState } from "../store";
 import {
   getQuestions,
   addQuestion,
