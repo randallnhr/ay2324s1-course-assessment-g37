@@ -3,9 +3,13 @@ import MongoStore from "connect-mongo";
 import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
+import http from 'http';
 import session from "express-session";
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
+import fs from "fs";
+import { Server } from "socket.io";
+import { sendMatchRequest, isMatchRequest } from "./matchingService";
 import { HistoryItem, Question, User, UserWithoutPassword } from "./types";
 
 dotenv.config();
@@ -22,11 +26,21 @@ if (
 }
 
 const PORT = process.env.PORT !== undefined ? Number(process.env.PORT) : 8080;
-
+const AUTH_MONGODB_URI = fs.existsSync(process.env.AUTH_MONGODB_URI)
+  ? fs.readFileSync(process.env.AUTH_MONGODB_URI, "utf8").trim()
+  : process.env.AUTH_MONGODB_URI;
+const AUTH_SESSION_SECRET = fs.existsSync(process.env.AUTH_SESSION_SECRET)
+  ? fs.readFileSync(process.env.AUTH_SESSION_SECRET, "utf8").trim()
+  : process.env.AUTH_SESSION_SECRET;
 const useLocalhost = process.env.USE_LOCALHOST === "1";
-const USER_SERVICE_URL = useLocalhost ? "http://localhost:3219" : "";
-const QUESTION_SERVICE_URL = useLocalhost ? "http://localhost:3001" : "";
+const USER_SERVICE_URL =
+  process.env.USER_SERVICE_URL ?? "http://localhost:3219";
+const QUESTION_SERVICE_URL =
+  process.env.QUESTION_SERVICE_URL ?? "http://localhost:3001";
 const HISTORY_SERVICE_URL = useLocalhost ? "http://localhost:7999" : "";
+
+const EVENT_FIND_MATCH = 'match';
+const EVENT_MATCH_FOUND = 'match found';
 
 // ============================================================================
 // set up passport
@@ -98,12 +112,12 @@ app.use(express.json());
 // express-session middleware must be set up before passport middleware
 app.use(
   session({
-    secret: process.env.AUTH_SESSION_SECRET,
+    secret: AUTH_SESSION_SECRET,
     resave: false,
     saveUninitialized: true,
     cookie: { secure: false },
     store: MongoStore.create({
-      mongoUrl: process.env.AUTH_MONGODB_URI,
+      mongoUrl: AUTH_MONGODB_URI,
       dbName: "main-db",
     }),
   })
@@ -592,6 +606,36 @@ app.get("/", (req, res) => {
   res.send("rainbow");
 });
 
-app.listen(PORT, "::", () => {
+// ============================================================================
+// matching service
+// ============================================================================
+
+const server = http.createServer(app);
+const socketIo = new Server(server, {
+  cors: {
+    origin: "*"
+  }
+});
+
+socketIo.on('connection', (socket) => {
+  console.log('User connected to matching service socket');
+
+  socket.on(EVENT_FIND_MATCH, async (matchRequest) => {
+    if (isMatchRequest(matchRequest)) {
+      try {
+        console.log('Socket received request to match, sending to server:', JSON.stringify(matchRequest));
+        const foundMatch = await sendMatchRequest(matchRequest);
+        console.log('Socket received response from server, sending to client:', JSON.stringify(foundMatch));
+        socket.emit(EVENT_MATCH_FOUND, foundMatch);
+      } catch (error) {
+        console.error(error);
+      }
+    } else {
+      console.log('Invalid match request:', matchRequest);
+    }
+  });
+});
+
+server.listen(PORT, "::", () => {
   console.log(`Listening on http://localhost:${PORT}`);
 });

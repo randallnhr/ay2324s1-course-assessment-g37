@@ -11,12 +11,30 @@ export interface UserWithoutPassword {
   role: "basic" | "admin";
 }
 
+export type Complexity = 'Easy' | 'Medium' | 'Hard';
+
 export interface Question {
   _id: string;
   title: string;
   categories: string[];
-  complexity: "Easy" | "Medium" | "Hard";
+  complexity: Complexity;
   description: string;
+}
+
+export type FindMatchRequest = {
+  userId: string
+  complexity: Complexity
+}
+
+export type CancelMatchRequest = {
+  userId: string
+  complexity: null
+}
+
+export type MatchRequest = FindMatchRequest | CancelMatchRequest
+
+export type MatchResponse = FindMatchRequest & {
+  roomId: string
 }
 
 export interface HistoryItem {

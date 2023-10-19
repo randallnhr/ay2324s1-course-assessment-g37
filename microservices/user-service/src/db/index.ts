@@ -1,8 +1,27 @@
 import { Pool, QueryArrayConfig } from "pg";
 import dotenv from "dotenv";
 import path from "path";
+import fs from "fs";
 
 dotenv.config({ path: path.resolve(__dirname, "../../.env") });
+
+if (
+  process.env.PGHOST === undefined ||
+  process.env.PGUSER === undefined ||
+  process.env.PGPASSWORD == undefined
+) {
+  throw new Error("Missing database environment variables");
+}
+console.log("PGHOST", process.env.PGHOST);
+process.env.PGHOST = fs.existsSync(process.env.PGHOST)
+  ? fs.readFileSync(process.env.PGHOST, "utf-8").trim()
+  : process.env.PGHOST;
+process.env.PGUSER = fs.existsSync(process.env.PGUSER)
+  ? fs.readFileSync(process.env.PGUSER, "utf-8").trim()
+  : process.env.PGUSER;
+process.env.PGPASSWORD = fs.existsSync(process.env.PGPASSWORD)
+  ? fs.readFileSync(process.env.PGPASSWORD, "utf-8").trim()
+  : process.env.PGPASSWORD;
 
 // pools will use environment variables
 // for connection information

@@ -25,15 +25,16 @@ function HistoryPageItem({
     return questions.find((q) => q._id === questionId);
   });
 
-  if (question === undefined) {
-    window.alert(`Failed to find question with _id=${questionId}`);
-    console.error(`Failed to find question with _id=${questionId}`);
-    return <></>;
-  }
-
   return (
     <tr style={{ backgroundColor: index % 2 == 0 ? "#f5f5f5" : "#e6e6e6" }}>
-      <td style={tdStyle}>{question.title}</td>
+      {question === undefined ? (
+        <td style={{ ...tdStyle, fontStyle: "italic" }}>
+          This question has been deleted
+        </td>
+      ) : (
+        <td style={tdStyle}>{question.title}</td>
+      )}
+
       <td style={tdStyle}>
         <HistoryPageItemFullText text={text} />
       </td>
