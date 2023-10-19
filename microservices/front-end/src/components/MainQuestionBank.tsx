@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./QuestionBank.module.css";
 import { Question } from "./types";
-import { RootState } from "../store";
 import {
   getQuestions,
   addQuestion,
@@ -17,7 +16,9 @@ import QuestionFilter from "./QuestionFilter";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useUserContext } from "../UserContext";
-import { useAppSelector } from "../store/hook";
+import { useAppSelector, useAppDispatch } from "../store/hook";
+import { fetchQuestions } from "../store/slices/questionsSlice";
+import { updateQuestionCategory } from "../store/slices/questionsSlice";
 import { selectFilteredQuestions } from "../store/slices/questionFilterSlice";
 
 const allCategories = [
@@ -54,8 +55,8 @@ const allCategories = [
 ];
 
 const QuestionBank: React.FC = () => {
-  // State to store the list of questions
-  const [questions, setQuestions] = useState<Question[]>([]);
+  const dispatch = useAppDispatch();
+  const questions = useAppSelector((state) => state.questions);
 
   const [categorySummary, setCategorySummary] = useState<{
     [key: string]: number;
@@ -112,7 +113,9 @@ const QuestionBank: React.FC = () => {
 
       try {
         setIsFetching(true);
-        const fetchedQuestions = await fetchQuestions();
+
+        const fetchedQuestions = await dispatch(fetchQuestions());
+
         await setQuestionSummary(fetchedQuestions);
       } catch (error) {
         console.error("Error fetching questions", error);
@@ -122,7 +125,7 @@ const QuestionBank: React.FC = () => {
     }
 
     init();
-  }, [isAuthenticated]);
+  }, [isAuthenticated, dispatch]);
 
   // check if currentUser is authenticated, if not, direct back to login
   // Including an dependency array is good practice! Otherwise will re-render whenever some state changes
@@ -132,22 +135,14 @@ const QuestionBank: React.FC = () => {
     }
   }, [isAuthenticated, navigate]);
 
+  useEffect(() => {
+    console.log("This is at Question page");
+    console.log(questions);
+  }, [questions]);
+
   if (!isAuthenticated) {
     return <></>;
   }
-
-  // functions to fetch all questions and update UI
-  const fetchQuestions = async () => {
-    const fetchedQuestions = await getQuestions();
-
-    if (fetchedQuestions === undefined) {
-      alert("Failed to fetch questions");
-      return;
-    }
-
-    setQuestions(fetchedQuestions);
-    return fetchedQuestions; // return the questions
-  };
 
   const setQuestionSummary = async (questions?: Question[]) => {
     if (questions && questions.length > 0) {
@@ -182,12 +177,12 @@ const QuestionBank: React.FC = () => {
   // adding a new question
   const handleAddQuestion = async (newQuestion: Partial<Question>) => {
     await addQuestion(newQuestion, setAddError);
-    fetchQuestions();
+    dispatch(fetchQuestions());
   };
 
   const handleDeleteQuestion = async (id: string) => {
     await deleteQuestion(id);
-    fetchQuestions();
+    dispatch(fetchQuestions());
   };
 
   const handleUpdateQuestion = async (
@@ -195,7 +190,7 @@ const QuestionBank: React.FC = () => {
     id: string | number
   ) => {
     const success = await updateQuestion(updatedQuestion, id, setUpdateError);
-    fetchQuestions();
+    dispatch(fetchQuestions());
     return success;
   };
 
@@ -204,22 +199,7 @@ const QuestionBank: React.FC = () => {
     category: string,
     action: "add" | "remove"
   ) => {
-    const index = questions.findIndex((q) => q._id === qustionId);
-    if (index != -1) {
-      const updatedQuestions = [...questions];
-      const question = { ...updatedQuestions[index] };
-      if (action == "add") {
-        question.categories.push(category);
-      } else {
-        question.categories = question.categories.filter(
-          (cat) => cat != category
-        );
-      }
-      // trigger a re-render to show the current question tags
-      // limit this to ONLY the current question!
-      updatedQuestions[index] = question;
-      setQuestions(updatedQuestions);
-    }
+    dispatch(updateQuestionCategory({ qustionId, category, action }));
   };
 
   return (
