@@ -23,7 +23,7 @@ const QuestionFilter: React.FC = () => {
   const [inputValue, setInputValue] = useState(""); // set one for handling search value
 
   const dispatch = useAppDispatch();
-  const { attempted, difficulty, sortBy, localSearchQuery } = useAppSelector(
+  const { attempted, difficulty, sortBy } = useAppSelector(
     (state) => state.questionFilter
   );
 

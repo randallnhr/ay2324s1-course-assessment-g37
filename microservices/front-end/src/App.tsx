@@ -18,6 +18,7 @@ import SuccessSnackbar from "./components/SuccessSnackbar";
 import HistoryPage from "./components/history-service/HistoryPage";
 import { useAppDispatch } from "./store/hook";
 import { fetchQuestions } from "./store/slices/questionsSlice";
+import { fetchHistory } from "./store/slices/historySlice";
 
 // useContext: create a global state, that can be accessed by any component
 function App() {
@@ -37,6 +38,12 @@ function App() {
         .then((response) => {
           const userData: User = response.data;
           setCurrentUser(userData);
+
+          // fetch questions and history again in case need
+          if (userData.username) {
+            dispatch(fetchQuestions());
+            dispatch(fetchHistory(userData.username));
+          }
         })
         .catch((error) => {
           console.error("Error fetching current user", error);

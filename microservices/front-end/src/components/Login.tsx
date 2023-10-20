@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Grid, Box, Card, Stack, Typography } from "@mui/material";
+import { Box, Card, Stack, Typography } from "@mui/material";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useUserContext } from "../UserContext";
 import { User } from "./types";
 import { useAppDispatch, useAppSelector } from "../store/hook";
 import { fetchQuestions } from "../store/slices/questionsSlice";
+import { fetchHistory } from "../store/slices/historySlice";
 // components
 import PageContainer from "./container/PageContainer";
 import AuthLogin from "./auth/AuthLogin";
@@ -14,6 +15,8 @@ import AuthLogin from "./auth/AuthLogin";
 const Login: React.FC = () => {
   const dispatch = useAppDispatch();
   const questions = useAppSelector((state) => state.questions);
+
+  const historyItems = useAppSelector((state) => state.history);
 
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -53,12 +56,16 @@ const Login: React.FC = () => {
         const userData: User = response.data;
         setCurrentUser(userData);
         console.log("Current user set");
-        console.log(currentUser.username);
+        console.log(userData.username);
         // navigate("/question-bank");
 
+        // fetch the question and history here
         const fetchedQuestions = await dispatch(fetchQuestions());
         console.log(fetchedQuestions);
         console.log(questions);
+
+        dispatch(fetchHistory(userData.username));
+        console.log(historyItems);
 
         setSuccess("Successfully logged in!");
       }

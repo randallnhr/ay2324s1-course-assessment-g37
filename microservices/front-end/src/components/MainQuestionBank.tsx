@@ -56,7 +56,6 @@ const allCategories = [
 
 const QuestionBank: React.FC = () => {
   const dispatch = useAppDispatch();
-  const questions = useAppSelector((state) => state.questions);
 
   const [categorySummary, setCategorySummary] = useState<{
     [key: string]: number;
@@ -97,9 +96,6 @@ const QuestionBank: React.FC = () => {
   const isAuthenticated =
     currentUser && Object.keys(currentUser).length != 0 && currentUser.username;
 
-  const filteredCategory = useAppSelector(
-    (state) => state.categoryFilter.filteredCategory
-  );
   const filteredQuestions = useAppSelector(selectFilteredQuestions);
   const sortBy = useAppSelector((state) => state.questionFilter.sortBy);
 
@@ -114,6 +110,7 @@ const QuestionBank: React.FC = () => {
       try {
         setIsFetching(true);
 
+        // fetch questions here again?
         const fetchedQuestions = await dispatch(fetchQuestions());
 
         await setQuestionSummary(fetchedQuestions);
@@ -134,11 +131,6 @@ const QuestionBank: React.FC = () => {
       navigate("/login");
     }
   }, [isAuthenticated, navigate]);
-
-  useEffect(() => {
-    console.log("This is at Question page");
-    console.log(questions);
-  }, [questions]);
 
   if (!isAuthenticated) {
     return <></>;
