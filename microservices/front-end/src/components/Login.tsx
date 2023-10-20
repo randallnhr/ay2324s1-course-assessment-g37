@@ -5,11 +5,16 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useUserContext } from "../UserContext";
 import { User } from "./types";
+import { useAppDispatch, useAppSelector } from "../store/hook";
+import { fetchQuestions } from "../store/slices/questionsSlice";
 // components
 import PageContainer from "./container/PageContainer";
 import AuthLogin from "./auth/AuthLogin";
 
 const Login: React.FC = () => {
+  const dispatch = useAppDispatch();
+  const questions = useAppSelector((state) => state.questions);
+
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const { currentUser, setCurrentUser } = useUserContext();
@@ -50,6 +55,10 @@ const Login: React.FC = () => {
         console.log("Current user set");
         console.log(currentUser.username);
         // navigate("/question-bank");
+
+        const fetchedQuestions = await dispatch(fetchQuestions());
+        console.log(fetchedQuestions);
+        console.log(questions);
 
         setSuccess("Successfully logged in!");
       }
