@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import styles from "./QuestionBank.module.css";
 import { Question } from "./types";
 import {
-  getQuestions,
   addQuestion,
   deleteQuestion,
   updateQuestion,
@@ -67,16 +66,9 @@ const QuestionBank: React.FC = () => {
   const [updatingQuestionId, setUpdatingQuestionId] = useState<string | null>(
     null
   );
-  const [newQuestion, setNewQuestion] = useState({
-    title: "",
-    description: "",
-    categories: [] as string[],
-    complexity: "Easy" as "Easy" | "Medium" | "Hard", // default value
-  });
   const navigate = useNavigate();
 
   // These are to reset selection field, otherwise it will display strange stuff
-  const [selectedCategory, setSelectedCategory] = useState("");
   const [updateSelectedOption, setUpdateSelectedOption] = useState("");
 
   // Create refs outside the map
@@ -86,7 +78,6 @@ const QuestionBank: React.FC = () => {
   const descriptionRef = React.createRef<HTMLTextAreaElement>();
 
   // set the Add & Update status
-  const [addError, setAddError] = useState<string | null>(null);
   const [updateError, setUpdateError] = useState<string | null>(null);
 
   // Need to fetch current user as well
@@ -164,12 +155,6 @@ const QuestionBank: React.FC = () => {
 
   const toggleQuestionDetails = (id: string) => {
     setExpandedQuestionId(expandedQuestionId === id ? null : id);
-  };
-
-  // adding a new question
-  const handleAddQuestion = async (newQuestion: Partial<Question>) => {
-    await addQuestion(newQuestion, setAddError);
-    dispatch(fetchQuestions());
   };
 
   const handleDeleteQuestion = async (id: string) => {
@@ -251,16 +236,7 @@ const QuestionBank: React.FC = () => {
             currentUser.role === "admin" && (
               <>
                 <h2 className={styles.add_header}>Add a New Question</h2>
-                <AddQuestionForm
-                  newQuestion={newQuestion}
-                  allCategories={allCategories}
-                  selectedCategory={selectedCategory}
-                  setNewQuestion={setNewQuestion}
-                  handleAddQuestions={handleAddQuestion}
-                  setSelectedCategory={setSelectedCategory}
-                  error={addError}
-                  onErrorChange={setAddError}
-                />
+                <AddQuestionForm />
               </>
             )}
         </>

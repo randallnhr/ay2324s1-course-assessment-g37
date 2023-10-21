@@ -49,7 +49,7 @@ function App() {
           console.error("Error fetching current user", error);
         });
     }
-  }, [currentUser, setCurrentUser]);
+  }, [currentUser, setCurrentUser, dispatch]);
 
   return (
     <HelmetProvider>
