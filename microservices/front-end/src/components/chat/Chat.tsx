@@ -8,6 +8,7 @@ import {
   MessageList,
   Message,
   MessageInput,
+  ConversationHeader,
 } from "@chatscope/chat-ui-kit-react";
 
 const Chat: FC = () => {
@@ -86,6 +87,10 @@ const Chat: FC = () => {
     <div style={{ position: "relative", height: "500px" }}>
       <MainContainer>
         <ChatContainer>
+          <ConversationHeader>
+            <ConversationHeader.Content userName="Emily" /> // get display name
+            on initial setup
+          </ConversationHeader>
           <MessageList>{...messages}</MessageList>
           <MessageInput
             placeholder="Type message here"
