@@ -59,12 +59,6 @@ const QuestionBank: React.FC = () => {
     [key: string]: number;
   }>({});
 
-  const [expandedQuestionId, setExpandedQuestionId] = useState<string | null>(
-    null
-  );
-  const [updatingQuestionId, setUpdatingQuestionId] = useState<string | null>(
-    null
-  );
   const navigate = useNavigate();
 
   // These are to reset selection field, otherwise it will display strange stuff
@@ -134,10 +128,6 @@ const QuestionBank: React.FC = () => {
     }
   };
 
-  const toggleQuestionDetails = (id: string) => {
-    setExpandedQuestionId(expandedQuestionId === id ? null : id);
-  };
-
   const handleDeleteQuestion = async (id: string) => {
     await deleteQuestion(id);
     dispatch(fetchQuestions());
@@ -192,7 +182,6 @@ const QuestionBank: React.FC = () => {
               <QuestionTable
                 currentUser={currentUser}
                 questions={sortedQuestions}
-                updatingQuestionId={updatingQuestionId}
                 titleRef={titleRef}
                 descriptionRef={descriptionRef}
                 setUpdateError={setUpdateError}
@@ -203,10 +192,7 @@ const QuestionBank: React.FC = () => {
                 complexityRef={complexityRef}
                 updateError={updateError}
                 handleUpdateQuestion={handleUpdateQuestion}
-                toggleQuestionDetails={toggleQuestionDetails}
                 handleDeleteQuestion={handleDeleteQuestion}
-                expandedQuestionId={expandedQuestionId}
-                setUpdatingQuestionId={setUpdatingQuestionId}
               />
             </>
           )}

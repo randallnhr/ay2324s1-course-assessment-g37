@@ -73,7 +73,10 @@ export const deleteQuestion = async (id: string): Promise<void> => {
   }
 };
 
-export const updateQuestion = async (updatedQuestion: Question, id: string | number, setError: (error: string | null) => void): Promise<boolean> => {
+export const updateQuestion = async (
+  updatedQuestion: Question, id: string | number,
+  setError: (error: string | null) => void
+): Promise<boolean> => {
   if (!updatedQuestion.title || !updatedQuestion.description) {
     setError('Question title and description cannot be empty.');
     return false;

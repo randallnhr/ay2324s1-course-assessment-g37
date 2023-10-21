@@ -7,6 +7,12 @@ import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
 import { Box } from "@mui/material";
 
+import { useAppSelector, useAppDispatch } from "../store/hook";
+import {
+  setExpandedQuestionId,
+  setUpdatingQuestionId,
+} from "../store/slices/questionTableUISlice";
+
 interface QuestionTableProps {
   currentUser: User;
   questions: Question[];
@@ -16,13 +22,6 @@ interface QuestionTableProps {
   descriptionRef: RefObject<HTMLTextAreaElement>;
   complexityRef: RefObject<HTMLSelectElement>;
 
-  expandedQuestionId: string | null;
-
-  updatingQuestionId: string | null;
-  setUpdatingQuestionId: React.Dispatch<React.SetStateAction<string | null>>;
-
-  updateError: string | null;
-  setUpdateError: React.Dispatch<React.SetStateAction<string | null>>;
   updateExistingCategoryArray: (
     questionId: string,
     category: string,
@@ -36,29 +35,36 @@ interface QuestionTableProps {
     updatedQuestion: Question,
     id: string | number
   ) => Promise<boolean>;
-  toggleQuestionDetails: (id: string) => void;
   handleDeleteQuestion: (id: string) => Promise<void>;
+
+  updateError: string | null;
+  setUpdateError: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
 const QuestionTable: React.FC<QuestionTableProps> = ({
   currentUser,
   questions,
-  updatingQuestionId,
   titleRef,
   descriptionRef,
-  setUpdateError,
   updateExistingCategoryArray,
   updateSelectedOption,
   setUpdateSelectedOption,
   allCategories,
   complexityRef,
-  updateError,
   handleUpdateQuestion,
-  toggleQuestionDetails,
   handleDeleteQuestion,
-  expandedQuestionId,
-  setUpdatingQuestionId,
+  updateError,
+  setUpdateError,
 }) => {
+  const dispatch = useAppDispatch();
+
+  const expandedQuestionId = useAppSelector(
+    (state) => state.questionUI.expandedQuestionId
+  );
+  const updatingQuestionId = useAppSelector(
+    (state) => state.questionUI.updatingQuestionId
+  );
+
   const hasActionsColumn =
     currentUser &&
     Object.keys(currentUser).length !== 0 &&
@@ -205,7 +211,7 @@ const QuestionTable: React.FC<QuestionTableProps> = ({
                 <td>
                   <button
                     className={styles.action_button}
-                    onClick={() => setUpdatingQuestionId(null)}
+                    onClick={() => dispatch(setUpdatingQuestionId(null))}
                   >
                     Cancel
                   </button>
@@ -234,7 +240,7 @@ const QuestionTable: React.FC<QuestionTableProps> = ({
 
                       // Only close the update tab if there is no error
                       if (success) {
-                        setUpdatingQuestionId(null);
+                        dispatch(setUpdatingQuestionId(null));
                       }
                     }}
                   >
@@ -247,7 +253,10 @@ const QuestionTable: React.FC<QuestionTableProps> = ({
                 <td>
                   <button
                     className={styles.category_button}
-                    onClick={() => toggleQuestionDetails(question._id)}
+                    onClick={
+                      () => dispatch(setExpandedQuestionId(question._id))
+                      // Here the 'toggle' should be put in setExpandedQuestionId definition!
+                    }
                   >
                     {question.title}
                   </button>
@@ -273,7 +282,9 @@ const QuestionTable: React.FC<QuestionTableProps> = ({
                         </button>
                         <button
                           className={styles.action_button}
-                          onClick={() => setUpdatingQuestionId(question._id)}
+                          onClick={() =>
+                            dispatch(setUpdatingQuestionId(question._id))
+                          }
                         >
                           Update
                         </button>
