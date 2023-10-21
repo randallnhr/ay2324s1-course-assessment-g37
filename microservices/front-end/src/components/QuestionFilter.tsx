@@ -43,10 +43,6 @@ const QuestionFilter: React.FC = () => {
     setInputValue(event.target.value);
   };
 
-  const handleSearchButtonClick = () => {
-    dispatch(setLocalSearchQuery(inputValue));
-  };
-
   return (
     <div className={styles.filter_container}>
       <Box sx={{ minWidth: 250 }}>
@@ -112,8 +108,10 @@ const QuestionFilter: React.FC = () => {
           boxShadow: "none",
           border: "1px solid rgba(0, 0, 0, 0.23)",
         }}
-        onSubmit={(e) => e.preventDefault()}
-        // Prevent refreshing the page every time user press enter
+        onSubmit={(e) => {
+          e.preventDefault(); // Prevent refreshing the page every time user press enter
+          dispatch(setLocalSearchQuery(inputValue)); // let the submit handle stuff
+        }}
       >
         <InputBase
           sx={{ ml: 1, flex: 1 }}
@@ -135,12 +133,7 @@ const QuestionFilter: React.FC = () => {
             <CloseIcon />
           </IconButton>
         )}
-        <IconButton
-          type="button"
-          sx={{ p: "10px" }}
-          aria-label="search"
-          onClick={handleSearchButtonClick}
-        >
+        <IconButton type="submit" sx={{ p: "10px" }} aria-label="search">
           <SearchIcon />
         </IconButton>
       </Paper>
