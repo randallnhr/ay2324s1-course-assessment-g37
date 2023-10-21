@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import styles from "./QuestionBank.module.css";
 import { Question } from "./types";
 import {
-  addQuestion,
   deleteQuestion,
   updateQuestion,
   calculateCategorySummary,
@@ -18,7 +17,7 @@ import { useUserContext } from "../UserContext";
 import { useAppSelector, useAppDispatch } from "../store/hook";
 import { fetchQuestions } from "../store/slices/questionsSlice";
 import { updateQuestionCategory } from "../store/slices/questionsSlice";
-import { selectFilteredQuestions } from "../store/slices/questionFilterSlice";
+import { selectSortedFilteredQuestions } from "../store/slices/questionFilterSlice";
 
 const allCategories = [
   "Arrays",
@@ -87,8 +86,7 @@ const QuestionBank: React.FC = () => {
   const isAuthenticated =
     currentUser && Object.keys(currentUser).length != 0 && currentUser.username;
 
-  const filteredQuestions = useAppSelector(selectFilteredQuestions);
-  const sortBy = useAppSelector((state) => state.questionFilter.sortBy);
+  const sortedQuestions = useAppSelector(selectSortedFilteredQuestions);
 
   // fetch when component mounts
   // Use isFetching on question fetching
@@ -135,23 +133,6 @@ const QuestionBank: React.FC = () => {
       alert("Failed to fetch question summary");
     }
   };
-
-  // break one filterQuestion into
-
-  // handle sorting
-  const handleSort = (questions: Question[]): Question[] => {
-    if (sortBy === "Complexity") {
-      return questions.sort((a, b) => {
-        const complexityOrder = { Easy: 1, Medium: 2, Hard: 3 }; // Define order
-        return complexityOrder[a.complexity] - complexityOrder[b.complexity];
-      });
-    } else if (sortBy === "Title") {
-      return questions.sort((a, b) => a.title.localeCompare(b.title));
-    }
-    return questions; // If neither of above, return original
-  };
-
-  const sortedQuestions = handleSort(filteredQuestions);
 
   const toggleQuestionDetails = (id: string) => {
     setExpandedQuestionId(expandedQuestionId === id ? null : id);

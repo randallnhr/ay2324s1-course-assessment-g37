@@ -38,13 +38,16 @@ const questionFilterSlice = createSlice({
     },
 });
 
-export const selectFilteredQuestions = createSelector(
+// handle the filtering of the questions
+// But if I already handle filter here, why not handle sort here as well?
+// I already set sortBy here
+export const selectSortedFilteredQuestions = createSelector(
     (state: RootState) => state.questions,
     (state: RootState) => state.questionFilter,
     (state: RootState) => state.categoryFilter.filteredCategory,
     selectAttemptedQuestions,
     (questions, filters, filteredCategory, attemptedQuestions) => {
-        return questions.filter((question) => {
+        const filteredQuestions = questions.filter((question) => {
             const matchesDifficulty =
                 filters.difficulty === "All" || question.complexity === filters.difficulty;
             const matchesQuery =
@@ -58,7 +61,7 @@ export const selectFilteredQuestions = createSelector(
                 (filters.attempted === "Attempted" && hasBeenAttempted) ||
                 (filters.attempted === "Unattempted" && !hasBeenAttempted);
 
-            // ... Possibly more filter conditions ...
+
 
             return (
                 matchesDifficulty &&
@@ -67,6 +70,18 @@ export const selectFilteredQuestions = createSelector(
                 matchesCategory
             );
         });
+
+        const sortBy = filters.sortBy;
+        if (sortBy === "Complexity") {
+            return filteredQuestions.sort((a, b) => {
+                const complexityOrder = { Easy: 1, Medium: 2, Hard: 3 };
+                return complexityOrder[a.complexity] - complexityOrder[b.complexity];
+            });
+        } else if (sortBy === "Title") {
+            return filteredQuestions.sort((a, b) => a.title.localeCompare(b.title));
+        }
+
+        return filteredQuestions;
     }
 );
 
