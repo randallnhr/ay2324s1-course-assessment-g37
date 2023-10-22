@@ -26,16 +26,25 @@ function Editor({ socket }: EditorProps) {
         toolbar: TOOLBAR_OPTIONS,
       },
       placeholder: "Write your code here...",
+      scrollingContainer: "#scrolling-container",
     });
 
     socket.on("room count", (count) => {
       if (count === 1) {
         editor.disable();
-        editor.setText("Waiting for another user...");
+        // editor.setText("Waiting for another user...");
       } else {
         editor.enable();
-        editor.setText("");
       }
+    });
+
+    socket.on("request code", (id) => {
+      socket.emit("send code", id, editor.getContents());
+    });
+
+    socket.on("receive code", (delta) => {
+      console.log(delta);
+      editor.setContents(delta);
     });
 
     const textChangeHandler: TextChangeHandler = (
@@ -57,7 +66,7 @@ function Editor({ socket }: EditorProps) {
     setQuill(editor);
   }, [socket]);
   return (
-    <div style={{ width: "50%", height: "100vh" }}>
+    <div id="scrolling-container" className={classes.scrollingContainer}>
       <div id="editor" className={classes.editor} />
     </div>
   );

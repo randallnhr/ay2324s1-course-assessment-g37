@@ -19,6 +19,12 @@ function CollaborationPage() {
   const [socket, setSocket] = useState<Socket>();
   const [modalText, setModalText] = useState<string>("");
 
+  const handleEndSession = () => {
+    if (!socket) return;
+    socket.disconnect();
+    navigate("/find-match");
+  };
+
   useEffect(() => {
     const socket = io(COLLAB_SERVICE_URL, { query: { roomId: roomId } });
     socket.on("connect", () => {
@@ -63,6 +69,13 @@ function CollaborationPage() {
         <CollabQuestion />
         <Editor socket={socket} />
       </div>
+      <Button
+        variant="contained"
+        onClick={handleEndSession}
+        style={{ position: "fixed", bottom: "20px", right: "20px" }}
+      >
+        End session
+      </Button>
     </>
   );
 }

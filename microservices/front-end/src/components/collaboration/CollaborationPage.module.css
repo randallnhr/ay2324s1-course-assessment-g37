@@ -18,6 +18,12 @@
 }
 
 .editor {
-    height: 500px;
+    min-height: 100vh;
     box-shadow: 24;
+}
+
+.scrollingContainer {
+    width: 50%;
+    height: 100%;
+    overflow-y: auto;
 }
