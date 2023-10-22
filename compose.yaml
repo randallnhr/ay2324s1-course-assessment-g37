@@ -17,13 +17,13 @@ services:
   question-server:
     container_name: question-server
     build:
-      context: ./microservices/questions-repo
+      context: ./microservices/questions-service
       dockerfile: Dockerfile.question
     ports:
       - "3001:3001"
     environment:
-      - MONGO_URI: /run/secrets/QUESTION_MONGO_URI
-      - PORT=3001
+      MONGO_URI: /run/secrets/QUESTION_MONGO_URI
+      PORT: 3001
     secrets:
       - QUESTION_MONGO_URI
 
@@ -35,11 +35,11 @@ services:
     ports:
       - "3219:3219"
     environment:
-      - PGHOST: /run/secrets/USER_HOST
-      - PGUSER: /run/secrets/USER_USERNAME
-      - PGDATABASE=neondb
-      - PGPASSWORD: /run/secrets/USER_PASSWORD
-      - PGPORT=5432
+      PGHOST: /run/secrets/USER_HOST
+      PGUSER: /run/secrets/USER_USERNAME
+      PGDATABASE: 'neondb'
+      PGPASSWORD: /run/secrets/USER_PASSWORD
+      PGPORT: 5432
     secrets:
       - USER_USERNAME
       - USER_PASSWORD
@@ -53,10 +53,10 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - AUTH_MONGODB_URI: /run/secrets/AUTH_MONGODB_URI
-      - AUTH_SESSION_SECRET: /run/secrets/AUTH_SESSION_SECRET
-      - USER_SERVICE_URL=http://user-server:3219
-      - QUESTION_SERVICE_URL=http://question-server:3001
+      AUTH_MONGODB_URI: /run/secrets/AUTH_MONGODB_URI
+      AUTH_SESSION_SECRET: /run/secrets/AUTH_SESSION_SECRET
+      USER_SERVICE_URL: http://user-server:3219
+      QUESTION_SERVICE_URL: http://question-server:3001
     secrets:
       - AUTH_MONGODB_URI
       - AUTH_SESSION_SECRET

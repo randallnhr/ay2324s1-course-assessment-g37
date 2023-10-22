@@ -122,3 +122,19 @@ export const updateQuestion = async (updatedQuestion: Question, id: string | num
     return false;
   }
 };
+
+// count the number of questions for each category
+export const calculateCategorySummary = (questions: Question[]): { [key: string]: number } => {
+  // Compute category counts
+  const summary = questions.reduce((acc, question) => {
+    question.categories.forEach(category => {
+      acc[category] = (acc[category] || 0) + 1;
+    });
+    return acc;
+  }, {} as { [key: string]: number }); // provide a type assertion
+
+  // Add "All" category with total count of questions
+  summary["All"] = questions.length;
+
+  return summary;
+}

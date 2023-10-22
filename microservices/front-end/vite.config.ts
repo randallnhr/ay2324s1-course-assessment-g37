@@ -7,9 +7,7 @@ export default defineConfig({
   plugins: [react(), Svgr()],
   server: {
     proxy: {
-      "/api": process.env.AUTH_SERVICE_URL
-        ? process.env.AUTH_SERVICE_URL
-        : "http://localhost:8080",
+      "/api": process.env.AUTH_SERVICE_URL ?? "http://localhost:8080",
     },
     watch: {
       usePolling: true,

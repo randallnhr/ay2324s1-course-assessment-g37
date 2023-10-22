@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { findMatch } from "../client";
-import { isMatchRequest } from "./isMatchRequest";
+import { isFindMatchRequest } from "./isFindMatchRequest";
 
 const args = process.argv.slice(2);
 
@@ -15,9 +15,9 @@ const request = {
   complexity: args[1]
 }
 
-if (!isMatchRequest(request)) {
+if (!isFindMatchRequest(request)) {
   console.log("complexity must be one of ['Easy', 'Medium', 'Hard']");
   process.exit(1);
 }
 
-findMatch(request).then(result => console.log(`Match results: ${result}`))
+findMatch(request).then(result => console.log(`Match results: ${JSON.stringify(result)}`))

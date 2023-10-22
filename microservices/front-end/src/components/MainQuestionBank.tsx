@@ -2,20 +2,23 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./QuestionBank.module.css";
 import { Question } from "./types";
+import { RootState } from "../store";
 import {
   getQuestions,
   addQuestion,
   deleteQuestion,
   updateQuestion,
+  calculateCategorySummary,
 } from "./fetchData";
 import AddQuestionForm from "./AddQuestionForm";
+import QuestionTable from "./QuestionTable";
+import CategorySummary from "./CategorySummary";
+import QuestionFilter from "./QuestionFilter";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useUserContext } from "../UserContext";
-
-import Alert from "@mui/material/Alert";
-import AlertTitle from "@mui/material/AlertTitle";
-import { Box } from "@mui/material";
+import { useAppSelector } from "../store/hook";
+import { createSelector } from "@reduxjs/toolkit";
 
 const allCategories = [
   "Arrays",
@@ -53,6 +56,11 @@ const allCategories = [
 const QuestionBank: React.FC = () => {
   // State to store the list of questions
   const [questions, setQuestions] = useState<Question[]>([]);
+
+  const [categorySummary, setCategorySummary] = useState<{
+    [key: string]: number;
+  }>({});
+
   const [expandedQuestionId, setExpandedQuestionId] = useState<string | null>(
     null
   );
@@ -81,12 +89,31 @@ const QuestionBank: React.FC = () => {
   const [addError, setAddError] = useState<string | null>(null);
   const [updateError, setUpdateError] = useState<string | null>(null);
 
+  // maintain filter & sort states
+  const [selectedDifficulty, setSelectedDifficulty] = useState<string>("All");
+  const [filteredCategory, setFilteredCategory] = useState<string>("All");
+  const [attemptedFilter, setAttemptedFilter] = React.useState<string>("All");
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [sortBy, setSortBy] = useState<string>("None");
+
   // Need to fetch current user as well
   const [isFetching, setIsFetching] = useState<boolean>(true);
   const { currentUser, setCurrentUser } = useUserContext();
 
   const isAuthenticated =
     currentUser && Object.keys(currentUser).length != 0 && currentUser.username;
+
+  const selectHistory = (state: RootState) => state.history;
+  const selectAttemptedQuestions = createSelector([selectHistory], (history) =>
+    history.map((historyItem) => historyItem.questionId)
+  );
+  const attemptedQuestions = useAppSelector(selectAttemptedQuestions);
+
+  // const attemptedQuestions = useAppSelector((state) =>
+  //   state.history.map((historyItem) => historyItem.questionId)
+  // );
+  // the .map() function creates a new array reference every time the selector runs, leading to unnecessary re-renders
+  console.log(attemptedQuestions);
 
   // fetch when component mounts
   // Use isFetching on question fetching
@@ -98,7 +125,8 @@ const QuestionBank: React.FC = () => {
 
       try {
         setIsFetching(true);
-        await fetchQuestions();
+        const fetchedQuestions = await fetchQuestions();
+        await setQuestionSummary(fetchedQuestions);
       } catch (error) {
         console.error("Error fetching questions", error);
       } finally {
@@ -131,7 +159,82 @@ const QuestionBank: React.FC = () => {
     }
 
     setQuestions(fetchedQuestions);
+    return fetchedQuestions; // return the questions
   };
+
+  const setQuestionSummary = async (questions?: Question[]) => {
+    if (questions && questions.length > 0) {
+      const summary = calculateCategorySummary(questions);
+      setCategorySummary(summary);
+    } else {
+      alert("Failed to fetch question summary");
+    }
+  };
+
+  // dummy function for filter changes
+  const handleAttemptFilterChange = (attempted: string) => {
+    setAttemptedFilter(attempted);
+  };
+
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+  };
+
+  // break one filterQuestion into
+
+  const filterQuestions = (
+    questions: Question[],
+    difficulty: string,
+    category: string,
+    query: string,
+    attempted: string
+  ): Question[] => {
+    return questions.filter((question) => {
+      const matchesDifficulty =
+        difficulty === "All" || question.complexity === difficulty;
+      const matchesCategory =
+        category === "All" || question.categories.includes(category);
+      const matchesQuery =
+        query === "" ||
+        question.title.toLowerCase().includes(query.toLowerCase());
+      const hasBeenAttempted = attemptedQuestions.includes(question._id);
+      const matchesAttemptStatus =
+        attempted === "All" ||
+        (attempted === "Attempted" && hasBeenAttempted) ||
+        (attempted === "Unattempted" && !hasBeenAttempted);
+
+      return (
+        matchesDifficulty &&
+        matchesCategory &&
+        matchesQuery &&
+        matchesAttemptStatus
+      );
+    });
+  };
+
+  // declare the filteredQuestions here
+  const filteredQuestions = filterQuestions(
+    questions,
+    selectedDifficulty,
+    filteredCategory,
+    searchQuery,
+    attemptedFilter
+  );
+
+  // handle sorting
+  const handleSort = (sortBy: string, questions: Question[]): Question[] => {
+    if (sortBy === "Complexity") {
+      return questions.sort((a, b) => {
+        const complexityOrder = { Easy: 1, Medium: 2, Hard: 3 }; // Define order
+        return complexityOrder[a.complexity] - complexityOrder[b.complexity];
+      });
+    } else if (sortBy === "Title") {
+      return questions.sort((a, b) => a.title.localeCompare(b.title));
+    }
+    return questions; // If neither of above, return original
+  };
+
+  const sortedQuestions = handleSort(sortBy, filteredQuestions);
 
   const toggleQuestionDetails = (id: string) => {
     setExpandedQuestionId(expandedQuestionId === id ? null : id);
@@ -204,227 +307,41 @@ const QuestionBank: React.FC = () => {
               </h2>
             </div>
           ) : (
-            <table className={styles.table_container}>
-              <thead>
-                <tr>
-                  <th className={styles.table_header}>Title</th>
-                  <th className={styles.table_header}>Category</th>
-                  <th className={styles.table_header}>Complexity</th>
-                  {currentUser &&
-                    Object.keys(currentUser).length != 0 &&
-                    currentUser.username &&
-                    currentUser.role === "admin" && (
-                      <th className={styles.table_header}>Actions</th>
-                    )}
-                </tr>
-              </thead>
-              <tbody>
-                {questions.map((question) => (
-                  <React.Fragment key={question._id}>
-                    {updatingQuestionId === question._id ? (
-                      <tr>
-                        <td colSpan={3}>
-                          <div className={styles.update_form}>
-                            <div>
-                              <label className={styles.the_label}>Title</label>
-                              <input
-                                className={styles.input_text}
-                                ref={titleRef}
-                                type="text"
-                                defaultValue={question.title}
-                                onChange={() => setUpdateError(null)}
-                              />
-                            </div>
-                            <div>
-                              <label className={styles.the_label}>
-                                Description
-                              </label>
-                              <textarea
-                                className={styles.text_area}
-                                ref={descriptionRef}
-                                defaultValue={question.description}
-                                onChange={() => setUpdateError(null)}
-                              ></textarea>
-                            </div>
-                            <div>
-                              <label className={styles.the_label}>
-                                Category
-                              </label>
-                              <div>
-                                {question.categories.map((cat, index) => (
-                                  <span key={index}>
-                                    {cat}
-                                    <button
-                                      className={styles.category_button}
-                                      onClick={() =>
-                                        updateExistingCategoryArray(
-                                          question._id,
-                                          cat,
-                                          "remove"
-                                        )
-                                      }
-                                    >
-                                      X
-                                    </button>
-                                  </span>
-                                ))}
-                              </div>
-                              <select
-                                className={styles.the_select}
-                                value={updateSelectedOption} // explicitly set the value
-                                onChange={(e) => {
-                                  const newValue = e.target.value;
-                                  updateExistingCategoryArray(
-                                    question._id,
-                                    newValue,
-                                    "add"
-                                  );
-                                  setUpdateSelectedOption(""); // reset the selected option
-                                  setUpdateError(null);
-                                }}
-                              >
-                                <option value="" disabled>
-                                  Select your option
-                                </option>
-                                {allCategories
-                                  .filter(
-                                    (cat) => !question.categories.includes(cat)
-                                  )
-                                  .map((cat, index) => (
-                                    <option key={index} value={cat}>
-                                      {cat}
-                                    </option>
-                                  ))}
-                              </select>
-                              {/* <input ref={categoryRef} type="text" defaultValue={question.category} /> */}
-                            </div>
-                            <div>
-                              <label className={styles.the_label}>
-                                Complexity
-                              </label>
-                              <select
-                                className={styles.the_select}
-                                ref={complexityRef}
-                                defaultValue={question.complexity}
-                                onChange={() => setUpdateError(null)}
-                              >
-                                <option value="Easy">Easy</option>
-                                <option value="Medium">Medium</option>
-                                <option value="Hard">Hard</option>
-                              </select>
-                            </div>
-                          </div>
+            <>
+              <CategorySummary
+                categorySummary={categorySummary}
+                onSelectCategory={setFilteredCategory}
+              />
 
-                          {updateError && (
-                            <Box mt={1} mb={1}>
-                              <Alert
-                                severity="error"
-                                onClose={() => setUpdateError(null)}
-                              >
-                                <AlertTitle>Update Question Error</AlertTitle>
-                                {updateError}
-                              </Alert>
-                            </Box>
-                          )}
-                        </td>
-                        <td>
-                          <button
-                            className={styles.action_button}
-                            onClick={() => setUpdatingQuestionId(null)}
-                          >
-                            Cancel
-                          </button>
-                          <button
-                            className={styles.action_button}
-                            onClick={async () => {
-                              const updatedTitle =
-                                titleRef.current?.value || "";
-                              // const updatedCategory = categoryRef.current?.value || "";
-                              const updatedComplexity = complexityRef.current
-                                ?.value as "Easy" | "Medium" | "Hard"; // type assertion
-                              const updatedDescription =
-                                descriptionRef.current?.value || ""; // New line
-                              const updatedQuestion = {
-                                _id: question._id,
-                                title: updatedTitle,
-                                categories: question.categories, // already updated in-place
-                                complexity: updatedComplexity,
-                                description: updatedDescription, // New field
-                              };
-                              const success = await handleUpdateQuestion(
-                                updatedQuestion,
-                                question._id
-                              );
+              <QuestionFilter
+                onAttemptFilterChange={handleAttemptFilterChange}
+                onDifficultyFilterChange={(difficulty: string) =>
+                  setSelectedDifficulty(difficulty)
+                }
+                onSortChange={setSortBy}
+                onSearch={handleSearch}
+              />
 
-                              // Only close the update tab if there is no error
-                              if (success) {
-                                setUpdatingQuestionId(null);
-                              }
-                            }}
-                          >
-                            Save
-                          </button>
-                        </td>
-                      </tr>
-                    ) : (
-                      <tr>
-                        <td>
-                          <button
-                            className={styles.category_button}
-                            onClick={() => toggleQuestionDetails(question._id)}
-                          >
-                            {question.title}
-                          </button>
-                        </td>
-                        <td className={styles.center_align_cell}>
-                          {question.categories.join(", ")}
-                        </td>
-                        <td className={styles.center_align_cell}>
-                          {question.complexity}
-                        </td>
-                        <td>
-                          {/* Render Actions conditionally for non-basic users */}
-                          {currentUser &&
-                            Object.keys(currentUser).length != 0 &&
-                            currentUser.username &&
-                            currentUser.role === "admin" && (
-                              <>
-                                <button
-                                  className={styles.action_button}
-                                  onClick={() =>
-                                    handleDeleteQuestion(question._id)
-                                  }
-                                >
-                                  Delete
-                                </button>
-                                <button
-                                  className={styles.action_button}
-                                  onClick={() =>
-                                    setUpdatingQuestionId(question._id)
-                                  }
-                                >
-                                  Update
-                                </button>
-                              </>
-                            )}
-                        </td>
-                      </tr>
-                    )}
-                    {expandedQuestionId === question._id && (
-                      <tr>
-                        <td colSpan={4}>
-                          <div
-                            dangerouslySetInnerHTML={{
-                              __html: question.description,
-                            }}
-                          ></div>
-                        </td>
-                      </tr>
-                    )}
-                  </React.Fragment>
-                ))}
-              </tbody>
-            </table>
+              <QuestionTable
+                currentUser={currentUser}
+                questions={sortedQuestions}
+                updatingQuestionId={updatingQuestionId}
+                titleRef={titleRef}
+                descriptionRef={descriptionRef}
+                setUpdateError={setUpdateError}
+                updateExistingCategoryArray={updateExistingCategoryArray}
+                updateSelectedOption={updateSelectedOption}
+                setUpdateSelectedOption={setUpdateSelectedOption}
+                allCategories={allCategories}
+                complexityRef={complexityRef}
+                updateError={updateError}
+                handleUpdateQuestion={handleUpdateQuestion}
+                toggleQuestionDetails={toggleQuestionDetails}
+                handleDeleteQuestion={handleDeleteQuestion}
+                expandedQuestionId={expandedQuestionId}
+                setUpdatingQuestionId={setUpdatingQuestionId}
+              />
+            </>
           )}
           {/* Render AddQuestionForm conditionally */}
           {currentUser &&
