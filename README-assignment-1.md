@@ -1,6 +1,7 @@
 # Assignment 1
 
 1. Checkout the commit with tag name `assignment-1` (its commit SHA should be `aa8054aa223ef15bcf8f779896fdc92ed2b8ccba`)
+
 2. Install the dependencies and run the various microservices in separate terminals:
 
    ```shell
