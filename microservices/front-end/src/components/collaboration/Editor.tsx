@@ -29,7 +29,6 @@ function Editor({ socket }: EditorProps) {
     });
 
     socket.on("room count", (count) => {
-      console.log("room count", count);
       if (count === 1) {
         editor.disable();
         editor.setText("Waiting for another user...");

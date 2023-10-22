@@ -9,22 +9,20 @@ import {
   Typography,
 } from "@mui/material";
 import classes from "./CollaborationPage.module.css";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import CollabQuestion from "./CollabQuestion";
 
 function CollaborationPage() {
   const COLLAB_SERVICE_URL = "http://localhost:3111";
   const navigate = useNavigate();
-
+  const { roomId } = useParams();
   const [socket, setSocket] = useState<Socket>();
   const [modalText, setModalText] = useState<string>("");
 
   useEffect(() => {
-    const socket = io(COLLAB_SERVICE_URL, { query: { roomId: "123" } });
+    const socket = io(COLLAB_SERVICE_URL, { query: { roomId: roomId } });
     socket.on("connect", () => {
       console.log("connected");
-    });
-    socket.on("other user has left", () => {
-      setModalText("The other user has left the room.");
     });
     socket.on("room count", (count) => {
       if (count === 1) {
@@ -47,16 +45,24 @@ function CollaborationPage() {
           <Typography variant="h5" style={{}}>
             {modalText}
           </Typography>
-          {modalText === "Waiting for the other user." && <CircularProgress />}
-          {modalText === "The other user has left the room." && (
-            <Button variant="contained" onClick={() => navigate("/find-match")}>
-              {" "}
-              Go back to home page
-            </Button>
+          {modalText === "Waiting for the other user." && (
+            <>
+              <CircularProgress />
+              <Button
+                variant="contained"
+                onClick={() => navigate("/find-match")}
+              >
+                {" "}
+                Go back to home page
+              </Button>
+            </>
           )}
         </Box>
       </Modal>
-      <Editor socket={socket} />
+      <div style={{ display: "flex" }}>
+        <CollabQuestion />
+        <Editor socket={socket} />
+      </div>
     </>
   );
 }
