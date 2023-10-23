@@ -2,11 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./QuestionBank.module.css";
 import { Question } from "./types";
-import {
-  deleteQuestion,
-  updateQuestion,
-  calculateCategorySummary,
-} from "./fetchData";
+import { updateQuestion, calculateCategorySummary } from "./fetchData";
 import AddQuestionForm from "./AddQuestionForm";
 import QuestionTable from "./QuestionTable";
 import CategorySummary from "./CategorySummary";
@@ -128,11 +124,6 @@ const QuestionBank: React.FC = () => {
     }
   };
 
-  const handleDeleteQuestion = async (id: string) => {
-    await deleteQuestion(id);
-    dispatch(fetchQuestions());
-  };
-
   const handleUpdateQuestion = async (
     updatedQuestion: Question,
     id: string | number
@@ -192,7 +183,6 @@ const QuestionBank: React.FC = () => {
                 complexityRef={complexityRef}
                 updateError={updateError}
                 handleUpdateQuestion={handleUpdateQuestion}
-                handleDeleteQuestion={handleDeleteQuestion}
               />
             </>
           )}
