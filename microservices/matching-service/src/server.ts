@@ -7,7 +7,7 @@ import { MatchResponse } from './types';
 
 const QUEUE_NAME = 'matching_service_queue';
 
-const HOST = '127.0.0.1';
+const HOST = process.env.RABBITMQ_HOST ?? '127.0.0.1';
 const PORT = '5672';
 
 function delay(duration: number) {
