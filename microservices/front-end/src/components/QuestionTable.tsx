@@ -12,6 +12,7 @@ import {
   setExpandedQuestionId,
   setUpdatingQuestionId,
 } from "../store/slices/questionTableSlice";
+import { deleteQuestion } from "../store/slices/questionTableSlice";
 
 interface QuestionTableProps {
   currentUser: User;
@@ -35,7 +36,6 @@ interface QuestionTableProps {
     updatedQuestion: Question,
     id: string | number
   ) => Promise<boolean>;
-  handleDeleteQuestion: (id: string) => Promise<void>;
 
   updateError: string | null;
   setUpdateError: React.Dispatch<React.SetStateAction<string | null>>;
@@ -52,7 +52,6 @@ const QuestionTable: React.FC<QuestionTableProps> = ({
   allCategories,
   complexityRef,
   handleUpdateQuestion,
-  handleDeleteQuestion,
   updateError,
   setUpdateError,
 }) => {
@@ -276,7 +275,7 @@ const QuestionTable: React.FC<QuestionTableProps> = ({
                       <>
                         <button
                           className={styles.action_button}
-                          onClick={() => handleDeleteQuestion(question._id)}
+                          onClick={() => dispatch(deleteQuestion(question._id))}
                         >
                           Delete
                         </button>
