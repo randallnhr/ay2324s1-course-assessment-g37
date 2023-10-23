@@ -15,9 +15,41 @@ import {
 import { deleteQuestion } from "../store/slices/questionTableSlice";
 import { useUserContext } from "../UserContext";
 
+const allCategories = [
+  "Arrays",
+  "Strings",
+  "Hash Table",
+  "Math",
+  "Dynamic Programming",
+  "Sorting",
+  "Greedy",
+  "Depth-First Search",
+  "Binary Search",
+  "Databases",
+  "Breadth-First Search",
+  "Tree",
+  "Matrix",
+  "Two Pointers",
+  "Binary Tree",
+  "Bit Manipulation",
+  "Heap (Priority Queue)",
+  "Stack",
+  "Prefix Sum",
+  "Graph",
+  "Simulation",
+  "Design",
+  "Counting",
+  "Backtracking",
+  "Queue",
+  "Algorithms",
+  "Data Structures",
+  "Recursion",
+  "Brainteaser",
+  "Others",
+];
+
 interface QuestionTableProps {
   questions: Question[];
-  allCategories: string[];
 
   titleRef: RefObject<HTMLInputElement>;
   descriptionRef: RefObject<HTMLTextAreaElement>;
@@ -45,11 +77,10 @@ const QuestionTable: React.FC<QuestionTableProps> = ({
   questions,
   titleRef,
   descriptionRef,
+  complexityRef,
   updateExistingCategoryArray,
   updateSelectedOption,
   setUpdateSelectedOption,
-  allCategories,
-  complexityRef,
   handleUpdateQuestion,
   updateError,
   setUpdateError,

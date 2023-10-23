@@ -15,39 +15,6 @@ import { fetchQuestions } from "../store/slices/questionsSlice";
 import { updateQuestionCategory } from "../store/slices/questionsSlice";
 import { selectSortedFilteredQuestions } from "../store/slices/questionFilterSlice";
 
-const allCategories = [
-  "Arrays",
-  "Strings",
-  "Hash Table",
-  "Math",
-  "Dynamic Programming",
-  "Sorting",
-  "Greedy",
-  "Depth-First Search",
-  "Binary Search",
-  "Databases",
-  "Breadth-First Search",
-  "Tree",
-  "Matrix",
-  "Two Pointers",
-  "Binary Tree",
-  "Bit Manipulation",
-  "Heap (Priority Queue)",
-  "Stack",
-  "Prefix Sum",
-  "Graph",
-  "Simulation",
-  "Design",
-  "Counting",
-  "Backtracking",
-  "Queue",
-  "Algorithms",
-  "Data Structures",
-  "Recursion",
-  "Brainteaser",
-  "Others",
-];
-
 const QuestionBank: React.FC = () => {
   const dispatch = useAppDispatch();
 
@@ -178,7 +145,6 @@ const QuestionBank: React.FC = () => {
                 updateExistingCategoryArray={updateExistingCategoryArray}
                 updateSelectedOption={updateSelectedOption}
                 setUpdateSelectedOption={setUpdateSelectedOption}
-                allCategories={allCategories}
                 complexityRef={complexityRef}
                 updateError={updateError}
                 handleUpdateQuestion={handleUpdateQuestion}
