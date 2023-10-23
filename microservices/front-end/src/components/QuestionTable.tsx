@@ -11,7 +11,7 @@ import { useAppSelector, useAppDispatch } from "../store/hook";
 import {
   setExpandedQuestionId,
   setUpdatingQuestionId,
-} from "../store/slices/questionTableUISlice";
+} from "../store/slices/questionTableSlice";
 
 interface QuestionTableProps {
   currentUser: User;
@@ -59,10 +59,10 @@ const QuestionTable: React.FC<QuestionTableProps> = ({
   const dispatch = useAppDispatch();
 
   const expandedQuestionId = useAppSelector(
-    (state) => state.questionUI.expandedQuestionId
+    (state) => state.questionTable.expandedQuestionId
   );
   const updatingQuestionId = useAppSelector(
-    (state) => state.questionUI.updatingQuestionId
+    (state) => state.questionTable.updatingQuestionId
   );
 
   const hasActionsColumn =

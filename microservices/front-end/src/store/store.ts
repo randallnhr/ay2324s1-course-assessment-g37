@@ -5,7 +5,7 @@ import historyReducer from "./slices/historySlice";
 import questionFilterReducer from "./slices/questionFilterSlice";
 import categoryFilterReducer from "./slices/categoryFilterSlice";
 import addFormReducer from './slices/addFormSlice';
-import questionTableUIReducer from "./slices/questionTableUISlice";
+import questionTableReducer from "./slices/questionTableSlice";
 
 export const store = configureStore({
   reducer: {
@@ -15,7 +15,7 @@ export const store = configureStore({
     questionFilter: questionFilterReducer,
     categoryFilter: categoryFilterReducer,
     addForm: addFormReducer,
-    questionUI: questionTableUIReducer
+    questionTable: questionTableReducer
   },
 });
 
