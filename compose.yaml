@@ -63,6 +63,23 @@ services:
     depends_on:
       - user-server
 
+  matching-server:
+    container_name: matching-server
+    build:
+      context: ./microservices/matching-service
+      dockerfile: Dockerfile.match
+    ports:
+      - "5672:5672"
+    depends_on:
+      - rabbitmq
+
+  rabbitmq:
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    image: rabbitmq
+
 secrets:
   AUTH_MONGODB_URI:
     file: ./secrets/auth_service_mongo_uri.txt
