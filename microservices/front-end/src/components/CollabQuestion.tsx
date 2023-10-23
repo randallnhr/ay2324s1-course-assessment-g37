@@ -1,6 +1,6 @@
 import React from "react";
 import { Question } from "./types";
-import styles from "./QuestionBank.module.css";
+import styles from "./CollabQuestion.module.css";
 
 interface CollabQuestionProps {
   questions: Question[];
