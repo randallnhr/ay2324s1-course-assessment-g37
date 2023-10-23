@@ -1,6 +1,6 @@
 import React from "react";
 import { RefObject } from "react";
-import { Question, User } from "./types";
+import { Question } from "./types";
 import styles from "./QuestionBank.module.css";
 
 import Alert from "@mui/material/Alert";
@@ -13,9 +13,9 @@ import {
   setUpdatingQuestionId,
 } from "../store/slices/questionTableSlice";
 import { deleteQuestion } from "../store/slices/questionTableSlice";
+import { useUserContext } from "../UserContext";
 
 interface QuestionTableProps {
-  currentUser: User;
   questions: Question[];
   allCategories: string[];
 
@@ -42,7 +42,6 @@ interface QuestionTableProps {
 }
 
 const QuestionTable: React.FC<QuestionTableProps> = ({
-  currentUser,
   questions,
   titleRef,
   descriptionRef,
@@ -56,6 +55,7 @@ const QuestionTable: React.FC<QuestionTableProps> = ({
   setUpdateError,
 }) => {
   const dispatch = useAppDispatch();
+  const { currentUser, setCurrentUser } = useUserContext();
 
   const expandedQuestionId = useAppSelector(
     (state) => state.questionTable.expandedQuestionId

@@ -171,7 +171,6 @@ const QuestionBank: React.FC = () => {
               <QuestionFilter />
 
               <QuestionTable
-                currentUser={currentUser}
                 questions={sortedQuestions}
                 titleRef={titleRef}
                 descriptionRef={descriptionRef}
