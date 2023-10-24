@@ -30,7 +30,7 @@ const FindMatchPage: React.FC = () => {
   function joinRoom(allocatedMatch: MatchResponse) {
     //TODO: use collaboration service to join room
     console.log("joining room:", allocatedMatch);
-    navigate(`/collab/${allocatedMatch.roomId}`);
+    navigate(`/collab/${allocatedMatch.roomId}/${allocatedMatch.complexity}`);
   }
 
   const onMatch = useCallback(

@@ -1,30 +1,60 @@
+import React from "react";
 import { Question } from "../types";
-import { useEffect, useState } from "react";
+import styles from "./CollabQuestion.module.css";
 
-function CollabQuestion() {
-  const QUESTION_SERVICE_URL = "http://localhost:3001";
-  const [question, setQuestion] = useState<Question>();
-
-  const init = async () => {
-    const res = await fetch("/api/questions/651a6f454386c83a839e15fa");
-    const temp = await res.json();
-    setQuestion(temp);
-  };
-
-  useEffect(() => {
-    init();
-  }, []);
-
-  return (
-    <>
-      {question && (
-        <div style={{ width: "50%", margin: "10px" }}>
-          {question.title}
-          <div dangerouslySetInnerHTML={{ __html: question.description }} />
-        </div>
-      )}
-    </>
-  );
+interface CollabQuestionProps {
+  questions: Question[];
+  expandedQuestionId: string | null;
+  toggleQuestionDetails: (id: string) => void;
 }
+
+const CollabQuestion: React.FC<CollabQuestionProps> = ({
+  questions,
+  expandedQuestionId,
+  toggleQuestionDetails,
+}) => {
+  return (
+    <table className={styles.table_container}>
+      <thead>
+        <>
+          <th className={`${styles.table_header} ${styles.title}`}>Title</th>
+          <th className={`${styles.table_header} ${styles.category}`}>
+            Category
+          </th>
+        </>
+      </thead>
+      <tbody>
+        {questions.map((question) => (
+          <React.Fragment key={question._id}>
+            <tr>
+              <td>
+                <button
+                  className={styles.category_button}
+                  onClick={() => toggleQuestionDetails(question._id)}
+                >
+                  {question.title}
+                </button>
+              </td>
+              <td className={styles.center_align_cell}>
+                {question.categories.join(", ")}
+              </td>
+            </tr>
+            {expandedQuestionId === question._id && (
+              <tr>
+                <td colSpan={4}>
+                  <div
+                    dangerouslySetInnerHTML={{
+                      __html: question.description,
+                    }}
+                  ></div>
+                </td>
+              </tr>
+            )}
+          </React.Fragment>
+        ))}
+      </tbody>
+    </table>
+  );
+};
 
 export default CollabQuestion;

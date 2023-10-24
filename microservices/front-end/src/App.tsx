@@ -20,7 +20,6 @@ import HistoryPage from "./components/history-service/HistoryPage";
 import { useAppDispatch } from "./store/hook";
 import { fetchQuestions } from "./store/slices/questionsSlice";
 import { fetchHistory } from "./store/slices/historySlice";
-import CollabPage from "./components/CollabPage";
 
 // useContext: create a global state, that can be accessed by any component
 function App() {
@@ -80,8 +79,10 @@ function App() {
               <Route path="/find-match" element={<FindMatchPage />} />
               <Route path="/history" element={<HistoryPage />} />
               <Route path="/profile" element={<ProfilePage />} />
-              <Route path="/collab/:roomId" element={<CollaborationPage />} />
-              <Route path="/collab" element={<CollabPage />} />
+              <Route
+                path="/collab/:roomId/:difficulty"
+                element={<CollaborationPage />}
+              />
             </Route>
             <Route path="/*" element={<div>404 Page Not Found</div>} />
           </Routes>

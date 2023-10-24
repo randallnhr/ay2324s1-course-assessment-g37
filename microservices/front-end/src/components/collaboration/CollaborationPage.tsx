@@ -10,12 +10,13 @@ import {
 } from "@mui/material";
 import classes from "./CollaborationPage.module.css";
 import { useNavigate, useParams } from "react-router-dom";
-import CollabQuestion from "./CollabQuestion";
+import CollabQuestionPage from "./CollabQuestionPage";
+import { QuestionComplexity } from "../types";
 
 function CollaborationPage() {
   const COLLAB_SERVICE_URL = "http://localhost:3111";
   const navigate = useNavigate();
-  const { roomId } = useParams();
+  const { roomId, difficulty } = useParams();
   const [socket, setSocket] = useState<Socket>();
   const [modalText, setModalText] = useState<string>("");
 
@@ -66,7 +67,7 @@ function CollaborationPage() {
         </Box>
       </Modal>
       <div style={{ display: "flex" }}>
-        <CollabQuestion />
+        <CollabQuestionPage difficulty={difficulty as QuestionComplexity} />
         <Editor socket={socket} />
       </div>
       <Button
