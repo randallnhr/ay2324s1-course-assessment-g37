@@ -28,8 +28,6 @@ const FindMatchPage: React.FC = () => {
   const [messageToUser, setMessageToUser] = useState("");
 
   function joinRoom(allocatedMatch: MatchResponse) {
-    //TODO: use collaboration service to join room
-    console.log("joining room:", allocatedMatch);
     navigate(`/collab/${allocatedMatch.roomId}/${allocatedMatch.complexity}`);
   }
 
