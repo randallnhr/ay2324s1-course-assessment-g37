@@ -1,26 +1,24 @@
 import { Socket } from "socket.io-client";
 import classes from "./CollaborationPage.module.css";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Quill, { TextChangeHandler } from "quill";
 import "quill/dist/quill.snow.css";
+
+const TOOLBAR_OPTIONS = [
+  ["bold", "italic", "underline", "strike"],
+  [{ color: [] }, { background: [] }],
+  ["code-block"],
+  ["clean"],
+];
 
 interface EditorProps {
   socket: Socket | undefined;
 }
 
 function Editor({ socket }: EditorProps) {
-  const [quill, setQuill] = useState<Quill>();
-
-  const TOOLBAR_OPTIONS = [
-    ["bold", "italic", "underline", "strike"],
-    [{ color: [] }, { background: [] }],
-    ["code-block"],
-    ["clean"],
-  ];
-
   useEffect(() => {
     if (!socket) return;
-    var editor = new Quill("#editor", {
+    const editor = new Quill("#editor", {
       theme: "snow",
       modules: {
         toolbar: TOOLBAR_OPTIONS,
@@ -49,7 +47,7 @@ function Editor({ socket }: EditorProps) {
 
     const textChangeHandler: TextChangeHandler = (
       delta,
-      oldContents,
+      _oldContents,
       source
     ) => {
       if (source !== "user") return;
@@ -63,7 +61,6 @@ function Editor({ socket }: EditorProps) {
       editor.on("text-change", textChangeHandler);
     });
 
-    setQuill(editor);
   }, [socket]);
   return (
     <div id="scrolling-container" className={classes.scrollingContainer}>

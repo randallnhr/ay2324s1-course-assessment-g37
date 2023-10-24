@@ -86,7 +86,7 @@ const QuestionTable: React.FC<QuestionTableProps> = ({
   setUpdateError,
 }) => {
   const dispatch = useAppDispatch();
-  const { currentUser, setCurrentUser } = useUserContext();
+  const { currentUser } = useUserContext();
 
   const expandedQuestionId = useAppSelector(
     (state) => state.questionTable.expandedQuestionId

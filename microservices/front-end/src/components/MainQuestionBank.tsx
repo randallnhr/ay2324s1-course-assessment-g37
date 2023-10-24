@@ -22,7 +22,7 @@ import { setFilteredCategory } from "../store/slices/categoryFilterSlice";
 const QuestionBank: React.FC = () => {
   const dispatch = useAppDispatch();
 
-  const [categorySummary, setCategorySummary] = useState<{
+  const [, setCategorySummary] = useState<{
     [key: string]: number;
   }>({});
 

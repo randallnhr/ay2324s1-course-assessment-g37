@@ -36,7 +36,7 @@ const questionFilterSlice = createSlice({
             state.localSearchQuery = action.payload;
         },
         // for CollabPage
-        resetAndSetDifficulty: (state, action: PayloadAction<string>) => {
+        resetAndSetDifficulty: (_state, action: PayloadAction<string>) => {
             return {
                 ...initialState,
                 difficulty: action.payload
