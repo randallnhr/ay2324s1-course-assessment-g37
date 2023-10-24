@@ -13,7 +13,11 @@ import { useUserContext } from "../UserContext";
 import { useAppSelector, useAppDispatch } from "../store/hook";
 import { fetchQuestions } from "../store/slices/questionsSlice";
 import { updateQuestionCategory } from "../store/slices/questionsSlice";
-import { selectSortedFilteredQuestions } from "../store/slices/questionFilterSlice";
+import {
+  selectSortedFilteredQuestions,
+  resetAndSetDifficulty,
+} from "../store/slices/questionFilterSlice";
+import { setFilteredCategory } from "../store/slices/categoryFilterSlice";
 
 const QuestionBank: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -39,6 +43,12 @@ const QuestionBank: React.FC = () => {
   // Need to fetch current user as well
   const [isFetching, setIsFetching] = useState<boolean>(true);
   const { currentUser, setCurrentUser } = useUserContext();
+
+  // Add an additional step to clear the filters
+  useEffect(() => {
+    dispatch(resetAndSetDifficulty("All"));
+    dispatch(setFilteredCategory("All"));
+  }, [dispatch]);
 
   const isAuthenticated =
     currentUser && Object.keys(currentUser).length != 0 && currentUser.username;

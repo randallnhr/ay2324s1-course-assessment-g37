@@ -79,7 +79,10 @@ function App() {
               <Route path="/find-match" element={<FindMatchPage />} />
               <Route path="/history" element={<HistoryPage />} />
               <Route path="/profile" element={<ProfilePage />} />
-              <Route path="/collab" element={<CollabPage />} />
+              <Route
+                path="/collab"
+                element={<CollabPage difficulty="Easy" />}
+              />
             </Route>
             <Route path="/*" element={<div>404 Page Not Found</div>} />
           </Routes>
