@@ -1,48 +1,76 @@
 import React from "react";
-import { Question, NewQuestion } from "./types";
 import styles from "./QuestionBank.module.css";
+
+import { useAppSelector, useAppDispatch } from "../store/hook";
 
 import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
 import { Box } from "@mui/material";
+import {
+  setNewQuestionTitle,
+  setNewQuestionDescription,
+  addNewQuestionCategory,
+  removeNewQuestionCategory,
+  setNewQuestionComplexity,
+  setSelectedCategory,
+  setAddError,
+  resetForm,
+  submitNewQuestion,
+} from "../store/slices/addFormSlice";
 
 // React.dispatch = a funciton to dispatch actions
 // SetStateAction = set or update current state
 // interface = define a contract. Includes value + function
-interface QuestionFormProps {
-  newQuestion: NewQuestion;
-  allCategories: string[];
-  selectedCategory: string;
-  setNewQuestion: React.Dispatch<React.SetStateAction<NewQuestion>>;
-  handleAddQuestions: (question: Partial<Question>) => void;
-  setSelectedCategory: React.Dispatch<React.SetStateAction<string>>;
-  error: string | null;
-  onErrorChange: (error: string | null) => void;
-}
 
-const AddQuestionForm: React.FC<QuestionFormProps> = ({
-  newQuestion,
-  allCategories,
-  selectedCategory,
-  setNewQuestion,
-  handleAddQuestions,
-  setSelectedCategory,
-  error,
-  onErrorChange,
-  // Using destructuring to extract the properties form props
-}) => {
+const allCategories = [
+  "Arrays",
+  "Strings",
+  "Hash Table",
+  "Math",
+  "Dynamic Programming",
+  "Sorting",
+  "Greedy",
+  "Depth-First Search",
+  "Binary Search",
+  "Databases",
+  "Breadth-First Search",
+  "Tree",
+  "Matrix",
+  "Two Pointers",
+  "Binary Tree",
+  "Bit Manipulation",
+  "Heap (Priority Queue)",
+  "Stack",
+  "Prefix Sum",
+  "Graph",
+  "Simulation",
+  "Design",
+  "Counting",
+  "Backtracking",
+  "Queue",
+  "Algorithms",
+  "Data Structures",
+  "Recursion",
+  "Brainteaser",
+  "Others",
+];
+
+const AddQuestionForm: React.FC = () => {
+  const dispatch = useAppDispatch();
+
+  const newQuestion = useAppSelector((state) => state.addForm.newQuestion);
+  const selectedCategory = useAppSelector(
+    (state) => state.addForm.selectedCategory
+  );
+  const error = useAppSelector((state) => state.addForm.addError);
+
   return (
     <form
       className={styles.form_container}
       onSubmit={(e) => {
         e.preventDefault();
-        handleAddQuestions(newQuestion);
-        setNewQuestion({
-          title: "",
-          description: "",
-          categories: [],
-          complexity: "Easy",
-        });
+        dispatch(submitNewQuestion(newQuestion));
+        dispatch(resetForm());
       }}
     >
       <div>
@@ -52,8 +80,8 @@ const AddQuestionForm: React.FC<QuestionFormProps> = ({
           type="text"
           value={newQuestion.title}
           onChange={(e) => {
-            setNewQuestion({ ...newQuestion, title: e.target.value });
-            onErrorChange(null);
+            dispatch(setNewQuestionTitle(e.target.value));
+            dispatch(setAddError(null));
           }}
         />
       </div>
@@ -63,8 +91,8 @@ const AddQuestionForm: React.FC<QuestionFormProps> = ({
           className={styles.text_area}
           value={newQuestion.description}
           onChange={(e) => {
-            setNewQuestion({ ...newQuestion, description: e.target.value });
-            onErrorChange(null);
+            dispatch(setNewQuestionDescription(e.target.value));
+            dispatch(setAddError(null));
           }}
         ></textarea>
       </div>
@@ -80,15 +108,7 @@ const AddQuestionForm: React.FC<QuestionFormProps> = ({
               <button
                 className={styles.category_button}
                 type="button"
-                onClick={() =>
-                  setNewQuestion(
-                    // in a form, button can be by default "submit". Here need to specify type, in case it just submit the form
-                    (prev) => ({
-                      ...prev,
-                      categories: prev.categories?.filter((c) => c != cat),
-                    })
-                  )
-                }
+                onClick={() => dispatch(removeNewQuestionCategory(cat))}
               >
                 X
               </button>
@@ -99,14 +119,9 @@ const AddQuestionForm: React.FC<QuestionFormProps> = ({
             className={styles.the_select}
             value={selectedCategory}
             onChange={(e) => {
-              setNewQuestion((prev) => ({
-                ...prev,
-                categories: [...(prev.categories || []), e.target.value],
-              }));
-
-              // Reset the selected value
-              setSelectedCategory("");
-              onErrorChange(null);
+              dispatch(addNewQuestionCategory(e.target.value));
+              dispatch(setSelectedCategory(""));
+              dispatch(setAddError(null));
             }}
           >
             <option value="" disabled>
@@ -130,11 +145,12 @@ const AddQuestionForm: React.FC<QuestionFormProps> = ({
           className={styles.the_select}
           value={newQuestion.complexity as "Easy" | "Medium" | "Hard"}
           onChange={(e) => {
-            setNewQuestion({
-              ...newQuestion,
-              complexity: e.target.value as "Easy" | "Medium" | "Hard",
-            });
-            onErrorChange(null);
+            dispatch(
+              setNewQuestionComplexity(
+                e.target.value as "Easy" | "Medium" | "Hard"
+              )
+            );
+            dispatch(setAddError(null));
           }}
         >
           <option value="Easy">Easy</option>
@@ -146,7 +162,7 @@ const AddQuestionForm: React.FC<QuestionFormProps> = ({
       {/* Handle error situation */}
       {error && (
         <Box mt={1} mb={1}>
-          <Alert severity="error" onClose={() => onErrorChange(null)}>
+          <Alert severity="error" onClose={() => dispatch(setAddError(null))}>
             <AlertTitle>Add Question Error</AlertTitle>
             {error}
           </Alert>

@@ -18,6 +18,8 @@ import SuccessSnackbar from "./components/SuccessSnackbar";
 import HistoryPage from "./components/history-service/HistoryPage";
 import { useAppDispatch } from "./store/hook";
 import { fetchQuestions } from "./store/slices/questionsSlice";
+import { fetchHistory } from "./store/slices/historySlice";
+import CollabPage from "./components/CollabPage";
 
 // useContext: create a global state, that can be accessed by any component
 function App() {
@@ -37,12 +39,18 @@ function App() {
         .then((response) => {
           const userData: User = response.data;
           setCurrentUser(userData);
+
+          // fetch questions and history again in case need
+          if (userData.username) {
+            dispatch(fetchQuestions());
+            dispatch(fetchHistory(userData.username));
+          }
         })
         .catch((error) => {
           console.error("Error fetching current user", error);
         });
     }
-  }, [currentUser, setCurrentUser]);
+  }, [currentUser, setCurrentUser, dispatch]);
 
   return (
     <HelmetProvider>
@@ -71,6 +79,7 @@ function App() {
               <Route path="/find-match" element={<FindMatchPage />} />
               <Route path="/history" element={<HistoryPage />} />
               <Route path="/profile" element={<ProfilePage />} />
+              <Route path="/collab" element={<CollabPage />} />
             </Route>
             <Route path="/*" element={<div>404 Page Not Found</div>} />
           </Routes>

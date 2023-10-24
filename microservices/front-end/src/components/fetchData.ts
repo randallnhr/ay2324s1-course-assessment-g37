@@ -15,46 +15,45 @@ export const getQuestions = async (): Promise<Question[] | undefined> => {
   }
 };
 
-export const addQuestion = async (newQuestion: Partial<Question>, setError: (error: string | null) => void) => {
+export const addQuestion = async (newQuestion: Partial<Question>) => {
   // empty field check
   if (!newQuestion.title || !newQuestion.description) {
-    setError('Question title and description cannot be empty.');
-    return;
+    throw new Error('Question title and description cannot be empty.');
   }
   // set to others if no category
   if (!newQuestion.categories || newQuestion.categories.length == 0) {
-    newQuestion.categories = ["Others"];
+    // Cannot directly assign value to object from Redux store!
+    // Need to create a new object instead
+    newQuestion = {
+      ...newQuestion,
+      categories: ["Others"]
+    };
   }
 
-  try {
-    // First fetch all questions to check for duplicates
-    const res = await fetch("/api/questions");
-    const existingQuestions: Question[] = await res.json();
+  // Removed the try-catch block
+  // First fetch all questions to check for duplicates
+  const res = await fetch("/api/questions");
+  const existingQuestions: Question[] = await res.json();
 
-    const isDuplicateQuestion = existingQuestions.find(
-      (q) => q.title === newQuestion.title
-    );
+  const isDuplicateQuestion = existingQuestions.find(
+    (q) => q.title === newQuestion.title
+  );
 
-    if (isDuplicateQuestion) {
-      setError("Question with this title already exists.");
-      return;
-    }
+  if (isDuplicateQuestion) {
+    throw new Error("Question with this title already exists.");
+  }
 
-    // If no duplicates, proceed to add question
-    const response = await fetch("/api/questions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(newQuestion),
-    });
+  // If no duplicates, proceed to add question
+  const response = await fetch("/api/questions", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(newQuestion),
+  });
 
-    if (response.status !== 200) {
-      setError("Failed to add question");
-      return;
-    }
-  } catch (error) {
-    console.error(error);
+  if (response.status !== 200) {
+    throw new Error("Failed to add question");
   }
 };
 
@@ -74,7 +73,10 @@ export const deleteQuestion = async (id: string): Promise<void> => {
   }
 };
 
-export const updateQuestion = async (updatedQuestion: Question, id: string | number, setError: (error: string | null) => void): Promise<boolean> => {
+export const updateQuestion = async (
+  updatedQuestion: Question, id: string | number,
+  setError: (error: string | null) => void
+): Promise<boolean> => {
   if (!updatedQuestion.title || !updatedQuestion.description) {
     setError('Question title and description cannot be empty.');
     return false;
