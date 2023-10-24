@@ -1,16 +1,15 @@
-import React, { useState } from "react";
+import React from "react";
 import styles from "./CategorySummary.module.css";
+import { useAppDispatch, useAppSelector } from "../store/hook";
+import { setFilteredCategory } from "../store/slices/categoryFilterSlice";
+import { selectCategorySummary } from "../store/slices/selectCategorySummary";
 
-interface CategorySummaryProps {
-  categorySummary: { [key: string]: number };
-  onSelectCategory: (category: string) => void;
-}
-
-const CategorySummary: React.FC<CategorySummaryProps> = ({
-  categorySummary,
-  onSelectCategory,
-}) => {
-  const [filteredCategory, setFilteredCategory] = useState<string>("All");
+const CategorySummary: React.FC = () => {
+  const dispatch = useAppDispatch();
+  const filteredCategory = useAppSelector(
+    (state) => state.categoryFilter.filteredCategory
+  );
+  const categorySummary = useAppSelector(selectCategorySummary);
 
   const orderedCategories = [
     "All",
@@ -18,8 +17,7 @@ const CategorySummary: React.FC<CategorySummaryProps> = ({
   ]; // ensure All is always mapped first
 
   const handleCategoryClick = (category: string) => {
-    setFilteredCategory(category);
-    onSelectCategory(category);
+    dispatch(setFilteredCategory(category));
   };
 
   return (
