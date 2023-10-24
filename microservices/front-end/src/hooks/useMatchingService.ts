@@ -17,22 +17,25 @@ const useMatchingService = (onMatch: (match: MatchResponse) => void) => {
       if (isMatchRequest(match)) {
         onMatch(match);
       } else {
-        console.log('Invalid match response from server:', match);
+        console.log("Invalid match response from server:", match);
       }
-    }
+    };
 
     return {
-      [EVENT_MATCH_FOUND]: wrappedOnMatch
+      [EVENT_MATCH_FOUND]: wrappedOnMatch,
     };
-  }, [onMatch])
+  }, [onMatch]);
 
   const matchSocket = useSocket(AUTH_SERVICE_URL, eventHandlers);
 
-  const sendMatchRequest = useCallback((matchRequest: MatchRequest) => {
-    matchSocket.emit(EVENT_FIND_MATCH, matchRequest);
-  }, [matchSocket])
+  const sendMatchRequest = useCallback(
+    (matchRequest: MatchRequest) => {
+      matchSocket.emit(EVENT_FIND_MATCH, matchRequest);
+    },
+    [matchSocket]
+  );
 
   return sendMatchRequest;
-}
+};
 
 export default useMatchingService;

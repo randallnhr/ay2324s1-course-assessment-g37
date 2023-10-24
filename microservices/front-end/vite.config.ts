@@ -12,5 +12,9 @@ export default defineConfig(({ mode }) => {
         "/api": env.VITE_AUTH_SERVICE_URL ?? "http://localhost:8080",
       },
     },
-  }
-})
+    watch: {
+      usePolling: true,
+    },
+  },
+});
+
