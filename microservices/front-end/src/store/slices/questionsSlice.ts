@@ -13,7 +13,7 @@ export const questionsSlice = createSlice({
   name: "questions",
   initialState,
   reducers: {
-    _setQuestions: (state, action: PayloadAction<Question[]>) => action.payload,
+    _setQuestions: (_state, action: PayloadAction<Question[]>) => action.payload,
   },
 });
 
@@ -25,7 +25,7 @@ export function fetchQuestions(): ThunkAction<
   unknown,
   AnyAction
 > {
-  return async function thunk(dispatch, getState) {
+  return async function thunk(dispatch) {
     const res = await fetch("/api/questions");
     const questions: Question[] = await res.json();
     dispatch(_setQuestions(questions));

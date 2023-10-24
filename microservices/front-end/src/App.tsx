@@ -8,7 +8,7 @@ import ProfilePage from "./components/ProfilePage";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import { User } from "./components/types";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import axios from "axios";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import TopBar from "./components/TopBar";

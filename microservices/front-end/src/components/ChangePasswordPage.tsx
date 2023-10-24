@@ -13,14 +13,13 @@ import { enqueueSuccessSnackbarMessage } from "../store/slices/successSnackbarSl
 // Should only allow change of password if old password matches!
 const ChangePasswordPage: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { currentUser, setCurrentUser } = useUserContext();
+  const { currentUser } = useUserContext();
   const [oldPassword, setOldPassword] = useState<string>("");
   const [newPassword, setNewPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
 
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
-
+  const success = true;
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const navigate = useNavigate();

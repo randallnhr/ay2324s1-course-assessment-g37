@@ -13,7 +13,7 @@ export const historySlice = createSlice({
   name: "history",
   initialState,
   reducers: {
-    _setHistoryItems: (state, action: PayloadAction<HistoryItem[]>) =>
+    _setHistoryItems: (_state, action: PayloadAction<HistoryItem[]>) =>
       action.payload,
   },
 });
@@ -26,7 +26,7 @@ export function fetchHistory(username:string): ThunkAction<
   unknown,
   AnyAction
 > {
-  return async function thunk(dispatch, getState) {
+  return async function thunk(dispatch) {
     const res = await fetch(`/api/history/${username}`);
     const historyItems: HistoryItem[] = await res.json();
     dispatch(_setHistoryItems(historyItems));

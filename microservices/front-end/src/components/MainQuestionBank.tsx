@@ -98,7 +98,7 @@ const QuestionBank: React.FC = () => {
 
   // Need to fetch current user as well
   const [isFetching, setIsFetching] = useState<boolean>(true);
-  const { currentUser, setCurrentUser } = useUserContext();
+  const { currentUser } = useUserContext();
 
   const isAuthenticated =
     currentUser && Object.keys(currentUser).length != 0 && currentUser.username;
