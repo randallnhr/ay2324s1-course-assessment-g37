@@ -1,9 +1,21 @@
-import React, { useState } from "react";
-import { useAppSelector } from "../store/hook";
+import React, { useState, useEffect } from "react";
+import { useAppSelector, useAppDispatch } from "../store/hook";
 import { selectSortedFilteredQuestions } from "../store/slices/questionFilterSlice";
 import CollabQuestion from "./CollabQuestion";
+import { QuestionComplexity } from "./types";
+import { resetAndSetDifficulty } from "../store/slices/questionFilterSlice";
 
-const CollabPage: React.FC = () => {
+interface CollabPageProps {
+  difficulty: QuestionComplexity;
+}
+
+const CollabPage: React.FC<CollabPageProps> = ({ difficulty }) => {
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(resetAndSetDifficulty(difficulty));
+  }, [dispatch, difficulty]);
+
   const sortedQuestions = useAppSelector(selectSortedFilteredQuestions);
 
   const [expandedQuestionId, setExpandedQuestionId] = useState<string | null>(
