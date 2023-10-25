@@ -4,7 +4,8 @@ import Svgr from "vite-plugin-svgr";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
-  const env = loadEnv(mode, process.cwd())
+  const env = loadEnv(mode, process.cwd());
+
   return {
     plugins: [react(), Svgr()],
     server: {
@@ -15,6 +16,5 @@ export default defineConfig(({ mode }) => {
     watch: {
       usePolling: true,
     },
-  },
+  };
 });
-
