@@ -6,6 +6,7 @@ import {
 } from "@reduxjs/toolkit";
 import { RootState } from "..";
 import { HistoryItem } from "../../components/types";
+import authServiceUrl from "../../utility/authServiceUrl";
 
 const initialState: HistoryItem[] = [];
 
@@ -27,7 +28,7 @@ export function fetchHistory(username:string): ThunkAction<
   AnyAction
 > {
   return async function thunk(dispatch) {
-    const res = await fetch(`/api/history/${username}`);
+    const res = await fetch(`${authServiceUrl}/api/history/${username}`, { credentials: "include" });
     const historyItems: HistoryItem[] = await res.json();
     dispatch(_setHistoryItems(historyItems));
   };

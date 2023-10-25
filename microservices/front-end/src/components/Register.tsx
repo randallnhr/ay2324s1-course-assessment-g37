@@ -10,6 +10,7 @@ import AuthRegister from "./auth/AuthRegister";
 import { useUserContext } from "../UserContext";
 import { useAppDispatch } from "../store/hook";
 import { enqueueSuccessSnackbarMessage } from "../store/slices/successSnackbarSlice";
+import authServiceUrl from "../utility/authServiceUrl";
 
 const Register: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -63,7 +64,7 @@ const Register: React.FC = () => {
       return;
     }
     try {
-      const response = await axios.post("/api/auth/sign-up", {
+      const response = await axios.post(`${authServiceUrl}/api/auth/sign-up`, {
         username,
         displayName,
         password,

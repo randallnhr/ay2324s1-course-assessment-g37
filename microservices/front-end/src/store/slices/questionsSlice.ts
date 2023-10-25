@@ -6,6 +6,7 @@ import {
 } from "@reduxjs/toolkit";
 import { RootState } from "..";
 import { Question } from "../../components/types";
+import authServiceUrl from "../../utility/authServiceUrl";
 
 const initialState: Question[] = [];
 
@@ -41,7 +42,7 @@ export function fetchQuestions(): ThunkAction<
   AnyAction
 > {
   return async function thunk(dispatch) {
-    const res = await fetch("/api/questions");
+    const res = await fetch(`${authServiceUrl}/api/questions`, { credentials: "include" });
     const questions: Question[] = await res.json();
     dispatch(_setQuestions(questions));
     return questions;

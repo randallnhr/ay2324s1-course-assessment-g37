@@ -15,6 +15,7 @@ import {
 import { Box } from "@mui/material";
 import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
+import authServiceUrl from "../utility/authServiceUrl";
 
 const ProfilePage: React.FC = () => {
   const [openDialog, setOpenDialog] = useState<boolean>(false);
@@ -53,7 +54,7 @@ const ProfilePage: React.FC = () => {
 
     axios
       // Should use `` instead of ""! "" will take ${user.username} literally, while `` will parse it
-      .delete(`/api/users/${currentUser.username}`)
+      .delete(`${authServiceUrl}/api/users/${currentUser.username}`)
       .then((response) => {
         if (response.status === 200) {
           setCurrentUser({} as User);

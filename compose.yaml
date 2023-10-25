@@ -42,6 +42,7 @@ services:
     environment:
       AUTH_MONGODB_URI: /run/secrets/AUTH_MONGODB_URI
       AUTH_SESSION_SECRET: /run/secrets/AUTH_SESSION_SECRET
+      FRONT_END_URL: http://peer-prep.s3-website-ap-southeast-1.amazonaws.com 
       USER_SERVICE_URL: http://user-server:3219
       QUESTION_SERVICE_URL: http://question-server:3001
       RABBITMQ_URL: amqp://rabbitmq:5672

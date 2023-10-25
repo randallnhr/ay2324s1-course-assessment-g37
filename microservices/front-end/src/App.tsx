@@ -20,6 +20,7 @@ import HistoryPage from "./components/history-service/HistoryPage";
 import { useAppDispatch } from "./store/hook";
 import { fetchQuestions } from "./store/slices/questionsSlice";
 import { fetchHistory } from "./store/slices/historySlice";
+import authServiceUrl from "./utility/authServiceUrl";
 
 // useContext: create a global state, that can be accessed by any component
 function App() {
@@ -35,7 +36,7 @@ function App() {
     if (Object.keys(currentUser).length === 0) {
       // initially currentUser = {}
       axios
-        .get("/api/auth/current-user")
+        .get(`${authServiceUrl}/api/auth/current-user`)
         .then((response) => {
           const userData: User = response.data;
           setCurrentUser(userData);

@@ -9,6 +9,7 @@ import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
 import { useAppDispatch } from "../store/hook";
 import { enqueueSuccessSnackbarMessage } from "../store/slices/successSnackbarSlice";
+import authServiceUrl from "../utility/authServiceUrl";
 
 // Similarly, should only allow change of display name if passes authentication
 const ChangeDisplayName: React.FC = () => {
@@ -59,7 +60,7 @@ const ChangeDisplayName: React.FC = () => {
         displayName,
       };
       const response = await axios.put(
-        `/api/users/${updatedUser.username}`,
+        `${authServiceUrl}/api/users/${updatedUser.username}`,
         updatedUser
       );
       if (response.status === 200) {
