@@ -72,6 +72,12 @@ const Chat: FC<ChatProps> = ({ socket }) => {
     };
 
     socket?.on("receive message", onReceiveMessage);
+
+    const cleanup = () => {
+      socket?.off("receive message", onReceiveMessage);
+    };
+
+    return cleanup;
   }, [socket]);
 
   return (
