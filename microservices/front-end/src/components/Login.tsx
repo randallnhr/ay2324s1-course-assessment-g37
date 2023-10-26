@@ -11,7 +11,6 @@ import { fetchHistory } from "../store/slices/historySlice";
 // components
 import PageContainer from "./container/PageContainer";
 import AuthLogin from "./auth/AuthLogin";
-import Chat from "./chat/chat";
 
 const Login: React.FC = () => {
   const dispatch = useAppDispatch();

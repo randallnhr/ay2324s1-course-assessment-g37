@@ -12,6 +12,7 @@ import classes from "./CollaborationPage.module.css";
 import { useNavigate, useParams } from "react-router-dom";
 import CollabQuestionPage from "./CollabQuestionPage";
 import { QuestionComplexity } from "../types";
+import Chat from "../chat/Chat";
 
 function CollaborationPage() {
   const COLLAB_SERVICE_URL = "http://localhost:3111";
@@ -66,9 +67,19 @@ function CollaborationPage() {
           )}
         </Box>
       </Modal>
-      <div style={{ display: "flex" }}>
-        <CollabQuestionPage difficulty={difficulty as QuestionComplexity} />
-        <Editor socket={socket} />
+      <div className={classes.collab_container}>
+        <div className={classes.questions_code_container}>
+          <CollabQuestionPage difficulty={difficulty as QuestionComplexity} />
+          <Editor socket={socket} />
+        </div>
+        <div className={classes.chat_output_container}>
+          <div style={{ width: "100%" }}>
+            <Chat socket={socket} />
+          </div>
+          <div style={{ width: "100%", backgroundColor: "#64f4f4" }}>
+            code output
+          </div>
+        </div>
       </div>
       <Button
         variant="contained"

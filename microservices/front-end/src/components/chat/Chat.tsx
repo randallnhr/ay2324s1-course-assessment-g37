@@ -1,6 +1,6 @@
 import { FC, useEffect, useState } from "react";
 import { useUserContext } from "../../UserContext";
-import io, { Socket } from "socket.io-client";
+import { Socket } from "socket.io-client";
 import { get24HourTime } from "../../utility/get24HourTime";
 import {
   MainContainer,
@@ -11,10 +11,13 @@ import {
   ConversationHeader,
 } from "@chatscope/chat-ui-kit-react";
 
-const Chat: FC = () => {
+interface ChatProps {
+  socket: Socket | undefined;
+}
+
+const Chat: FC<ChatProps> = ({ socket }) => {
   const { currentUser } = useUserContext();
   const [messages, setMessages] = useState<JSX.Element[]>([]);
-  const [socket, setSocket] = useState<Socket>();
 
   const insertMessage = (
     text: string,
@@ -42,12 +45,10 @@ const Chat: FC = () => {
   };
 
   const messageSendHandler = (
-    innerHtml: string,
-    textContent: string,
-    innerText: string,
-    nodes: NodeList
+    _innerHtml: string,
+    _textContent: string,
+    innerText: string
   ) => {
-    console.log(innerHtml, textContent, innerText);
     const currentTime = get24HourTime();
     const SELF_REFERENCE = "You";
 
@@ -61,36 +62,26 @@ const Chat: FC = () => {
     );
   };
 
-  const onReceiveMessage = (
-    text: string,
-    time: string,
-    displayName: string
-  ): void => {
-    insertMessage(text, time, displayName, "incoming");
-  };
-
   useEffect(() => {
-    const socket = io("http://localhost:3111", { query: { roomId: "1" } });
-    socket.on("connect", () => {
-      console.log("socket connected");
-    });
-
-    socket.on("receive message", onReceiveMessage);
-    setSocket(socket);
-
-    return () => {
-      socket.disconnect();
+    const onReceiveMessage = (
+      text: string,
+      time: string,
+      displayName: string
+    ): void => {
+      insertMessage(text, time, displayName, "incoming");
     };
-  }, []);
+
+    socket?.on("receive message", onReceiveMessage);
+  }, [socket]);
 
   return (
     <div style={{ position: "relative", height: "500px" }}>
       <MainContainer>
         <ChatContainer>
-          <ConversationHeader>
+          {/* <ConversationHeader>
             <ConversationHeader.Content userName="Emily" /> // get display name
             on initial setup
-          </ConversationHeader>
+          </ConversationHeader> */}
           <MessageList>{...messages}</MessageList>
           <MessageInput
             placeholder="Type message here"
