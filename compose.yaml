@@ -1,0 +1,85 @@
+version: 'v2.21.0-desktop.1'
+
+services:
+  question-server:
+    container_name: question-server
+    build:
+      context: ./microservices/questions-service
+      dockerfile: Dockerfile.question
+    ports:
+      - "3001:3001"
+    environment:
+      MONGO_URI: /run/secrets/QUESTION_MONGO_URI
+      PORT: 3001
+    secrets:
+      - QUESTION_MONGO_URI
+
+  user-server:
+    container_name: user-server
+    build:
+      context: ./microservices/user-service
+      dockerfile: Dockerfile.user
+    ports:
+      - "3219:3219"
+    environment:
+      PGHOST: /run/secrets/USER_HOST
+      PGUSER: /run/secrets/USER_USERNAME
+      PGDATABASE: neondb
+      PGPASSWORD: /run/secrets/USER_PASSWORD
+      PGPORT: 5432
+    secrets:
+      - USER_USERNAME
+      - USER_PASSWORD
+      - USER_HOST
+
+  auth-server:
+    container_name: auth-server
+    build:
+      context: ./microservices/auth
+      dockerfile: Dockerfile.auth
+    ports:
+      - "8080:8080"
+    environment:
+      AUTH_MONGODB_URI: /run/secrets/AUTH_MONGODB_URI
+      AUTH_SESSION_SECRET: /run/secrets/AUTH_SESSION_SECRET
+      USER_SERVICE_URL: http://user-server:3219
+      QUESTION_SERVICE_URL: http://question-server:3001
+      RABBITMQ_URL: amqp://rabbitmq:5672
+    secrets:
+      - AUTH_MONGODB_URI
+      - AUTH_SESSION_SECRET
+    depends_on:
+      - user-server
+      - question-server
+      - matching-server
+
+  matching-server:
+    container_name: matching-server
+    build:
+      context: ./microservices/matching-service
+      dockerfile: Dockerfile.match
+    environment:
+      RABBITMQ_URL: amqp://rabbitmq:5672
+    depends_on:
+      - rabbitmq
+
+  rabbitmq:
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    image: rabbitmq
+
+secrets:
+  AUTH_MONGODB_URI:
+    file: ./secrets/auth_service_mongo_uri.txt
+  AUTH_SESSION_SECRET:
+    file: ./secrets/auth_service_session_secret.txt
+  QUESTION_MONGO_URI:
+    file: ./secrets/question_service_mongo_uri.txt
+  USER_USERNAME:
+    file: ./secrets/user_service_username.txt
+  USER_PASSWORD:
+    file: ./secrets/user_service_password.txt
+  USER_HOST:
+    file: ./secrets/user_service_host.txt

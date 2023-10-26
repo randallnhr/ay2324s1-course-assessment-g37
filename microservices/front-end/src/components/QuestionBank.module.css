@@ -8,14 +8,14 @@ button:focus-visible {
 .action_button {
   border-radius: 8px;
   border: 2px solid #a09797;
-  padding: 0.6em 1.2em;
+  padding: 0.6em 1em;
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
   background-color: #f9f9f9;
   cursor: pointer;
   transition: border-color 0.25s;
-  margin: 3px;
+  margin: 1px;
 }
 .action_button:hover {
   border-color: #a09797;
@@ -33,6 +33,7 @@ button:focus-visible {
   cursor: pointer;
   transition: border-color 0.25s;
   margin: 3px;
+  text-align: left;
 }
 .category_button:hover {
   border-color: #646cff;
@@ -46,6 +47,7 @@ button:focus-visible {
 .table_container {
   margin-left: auto;
   margin-right: auto;
+  width: 97%;
 }
 
 .table_header {
@@ -53,6 +55,41 @@ button:focus-visible {
   background-color: #c4c5c5;
   text-align: center;
   padding: 10px;
+}
+
+.table_header_basic {
+  font-size: 1.25em;
+  background-color: #c4c5c5;
+  text-align: center;
+  padding: 10px;
+}
+
+.table_header.title {
+  width: 35%;
+}
+
+.table_header.category {
+  width: 35%;
+}
+
+.table_header.complexity {
+  width: 15%;
+}
+
+.table_header.actions {
+  width: 15%;
+}
+
+.table_header_basic.title {
+  width: 40%;
+}
+
+.table_header_basic.category {
+  width: 40%;
+}
+
+.table_header_basic.complexity {
+  width: 20%;
 }
 
 .add_header {

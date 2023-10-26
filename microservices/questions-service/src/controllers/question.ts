@@ -1,6 +1,6 @@
 import { Request, Response, RequestHandler } from "express";
 import { QuestionModel } from "../models/question";
-import { CODE_BAD_REQUEST, CODE_INTERNAL_SERVER_ERROR, CODE_NOT_FOUND, hasKey, isQuestion } from "../utility";
+import { CODE_BAD_REQUEST, CODE_INTERNAL_SERVER_ERROR, CODE_NOT_FOUND, CODE_UNPROCESSABLE_CONTENT, hasKey, isQuestion } from "../utility";
 import { ROUTE_QUESTIONS } from "../routes/questions";
 import { isPartialQuestion } from "../utility/isPartialQuestion";
 
@@ -60,6 +60,12 @@ export const createQuestion: RequestHandler = async (
     .then(question => {
       res.location(`${ROUTE_QUESTIONS}/${question.id}`);
     }).catch(err => {
+      if (err.code == 11000) {
+        // duplicated question title
+        res.status(CODE_UNPROCESSABLE_CONTENT);
+        return;
+      }
+
       console.error(err);
       res.status(CODE_INTERNAL_SERVER_ERROR);
       return;
@@ -80,6 +86,12 @@ export const updateQuestion: RequestHandler = async (
   const id = req.params.id;
   QuestionModel.findByIdAndUpdate(id, question)
     .catch(err => {
+      if (err.code == 11000) {
+        // duplicated question title
+        res.status(CODE_UNPROCESSABLE_CONTENT);
+        return;
+      }
+
       if (!hasKey(err, 'name') || err.name != 'CastError') {
         console.error(err);
         res.status(CODE_INTERNAL_SERVER_ERROR);

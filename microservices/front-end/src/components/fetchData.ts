@@ -18,44 +18,42 @@ export const getQuestions = async (): Promise<Question[] | undefined> => {
 export const addQuestion = async (newQuestion: Partial<Question>) => {
   // empty field check
   if (!newQuestion.title || !newQuestion.description) {
-    alert("Question title and description cannot be empty.");
-    return;
+    throw new Error('Question title and description cannot be empty.');
   }
-
   // set to others if no category
   if (!newQuestion.categories || newQuestion.categories.length == 0) {
-    newQuestion.categories = ["Others"];
+    // Cannot directly assign value to object from Redux store!
+    // Need to create a new object instead
+    newQuestion = {
+      ...newQuestion,
+      categories: ["Others"]
+    };
   }
 
-  try {
-    // First fetch all questions to check for duplicates
-    const res = await fetch("/api/questions");
-    const existingQuestions: Question[] = await res.json();
+  // Removed the try-catch block
+  // First fetch all questions to check for duplicates
+  const res = await fetch("/api/questions");
+  const existingQuestions: Question[] = await res.json();
 
-    const isDuplicateQuestion = existingQuestions.find(
-      (q) => q.title === newQuestion.title
-    );
+  const isDuplicateQuestion = existingQuestions.find(
+    (q) => q.title === newQuestion.title
+  );
 
-    if (isDuplicateQuestion) {
-      alert("Question with this title already exists.");
-      return;
-    }
+  if (isDuplicateQuestion) {
+    throw new Error("Question with this title already exists.");
+  }
 
-    // If no duplicates, proceed to add question
-    const response = await fetch("/api/questions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(newQuestion),
-    });
+  // If no duplicates, proceed to add question
+  const response = await fetch("/api/questions", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(newQuestion),
+  });
 
-    if (response.status !== 200) {
-      alert("Failed to add question");
-      return;
-    }
-  } catch (error) {
-    console.error(error);
+  if (response.status !== 200) {
+    throw new Error("Failed to add question");
   }
 };
 
@@ -76,13 +74,12 @@ export const deleteQuestion = async (id: string): Promise<void> => {
 };
 
 export const updateQuestion = async (
-  updatedQuestion: Question,
-  id: string | number
-): Promise<void> => {
-  // Empty field check
+  updatedQuestion: Question, id: string | number,
+  setError: (error: string | null) => void
+): Promise<boolean> => {
   if (!updatedQuestion.title || !updatedQuestion.description) {
-    alert("Question title and description cannot be empty.");
-    return;
+    setError('Question title and description cannot be empty.');
+    return false;
   }
 
   if (!updatedQuestion.categories || updatedQuestion.categories.length === 0) {
@@ -102,8 +99,8 @@ export const updateQuestion = async (
     );
 
     if (isDuplicatedQuestion) {
-      alert("Question with this title already exists.");
-      return;
+      setError("Question with this title already exists.");
+      return false;
     }
 
     const response = await fetch(`/api/questions/${id}`, {
@@ -115,10 +112,31 @@ export const updateQuestion = async (
     });
 
     if (response.status !== 200) {
-      alert("Failed to update question");
-      return;
+      setError("Failed to update question");
+      return false;
     }
+    setError(null);
+    return true;
+
   } catch (error) {
     console.error(error);
+    setError('Failed to update the question due to an unexpected error.');
+    return false;
   }
 };
+
+// count the number of questions for each category
+export const calculateCategorySummary = (questions: Question[]): { [key: string]: number } => {
+  // Compute category counts
+  const summary = questions.reduce((acc, question) => {
+    question.categories.forEach(category => {
+      acc[category] = (acc[category] || 0) + 1;
+    });
+    return acc;
+  }, {} as { [key: string]: number }); // provide a type assertion
+
+  // Add "All" category with total count of questions
+  summary["All"] = questions.length;
+
+  return summary;
+}

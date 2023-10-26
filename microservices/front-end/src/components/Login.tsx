@@ -1,21 +1,32 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Grid, Box, Card, Stack, Typography } from "@mui/material";
+import { Box, Card, Stack, Typography } from "@mui/material";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { UserProvider, useUserContext } from "../UserContext";
+import { useUserContext } from "../UserContext";
 import { User } from "./types";
+import { useAppDispatch, useAppSelector } from "../store/hook";
+import { fetchQuestions } from "../store/slices/questionsSlice";
+import { fetchHistory } from "../store/slices/historySlice";
 // components
 import PageContainer from "./container/PageContainer";
 import AuthLogin from "./auth/AuthLogin";
 import Chat from "./chat/chat";
 
 const Login: React.FC = () => {
+  const dispatch = useAppDispatch();
+  const questions = useAppSelector((state) => state.questions);
+
+  const historyItems = useAppSelector((state) => state.history);
+
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const { currentUser, setCurrentUser } = useUserContext();
-  const navigate = useNavigate();
 
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+
+  const navigate = useNavigate();
   const isAuthenticated =
     currentUser && Object.keys(currentUser).length != 0 && currentUser.username;
 
@@ -45,113 +56,108 @@ const Login: React.FC = () => {
       if (response.status === 200) {
         const userData: User = response.data;
         setCurrentUser(userData);
+        console.log("Current user set");
+        console.log(userData.username);
+        // navigate("/question-bank");
+
+        // fetch the question and history here
+        const fetchedQuestions = await dispatch(fetchQuestions());
+        console.log(fetchedQuestions);
+        console.log(questions);
+
+        dispatch(fetchHistory(userData.username));
+        console.log(historyItems);
+
+        setSuccess("Successfully logged in!");
       }
     } catch (error: unknown) {
+      setSuccess(null);
+
       if (axios.isAxiosError(error)) {
-        alert("Incorrect user credentials!");
+        setError("Incorrect user credentials!");
       } else {
-        alert("An unknown error occurred. Try again later.");
-        console.error("An unknown error occurred: ", error);
+        setError("An unknown error occurred. Try again later.");
+        console.error("An unknown error occured: ", error);
       }
     }
   };
 
   return (
     <PageContainer title="Login" description="this is Login page">
-      <Box
-        sx={{
-          position: "relative",
-          "&:before": {
-            content: '""',
-            background: "radial-gradient(#D2F1DF, #D3D7FA, #BAD8F4)",
-            backgroundSize: "400% 400%",
-            animation: "gradient 15s ease infinite",
-            position: "absolute",
-            height: "100%",
-            width: "100%",
-            opacity: "0.3",
-          },
+      <div
+        style={{
+          height: "100vh",
+          width: "100vw",
+          backgroundColor: "#F1F3FE",
+          overflowY: "scroll",
+          display: "flex",
         }}
       >
-        <Grid
-          container
-          spacing={0}
-          justifyContent="center"
-          sx={{ height: "100vh" }}
-        >
-          <Grid
-            item
-            xs={12} // how many grids the item should take, when the screen is extra small
-            sm={12}
-            lg={6}
-            xl={5}
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
+        <div style={{ margin: "auto" }}>
+          <Card
+            elevation={9}
+            sx={{
+              margin: "3rem 0",
+              p: 4,
+              zIndex: 1,
+              width: "500px",
+            }}
           >
-            <Card
-              elevation={9}
-              sx={{
-                p: 4,
-                zIndex: 1,
-                width: "100%",
-                maxWidth: "500px",
-              }}
-            >
-              <Box display="flex" alignItems="center" justifyContent="center">
-                {/* <Logo /> */}
-              </Box>
-              <AuthLogin
-                subtext={
+            <Box display="flex" alignItems="center" justifyContent="center">
+              {/* <Logo /> */}
+            </Box>
+            <AuthLogin
+              subtext={
+                <Typography
+                  variant="subtitle1"
+                  textAlign="center"
+                  color="textSecondary"
+                  mb={1}
+                  fontSize="1.25rem"
+                >
+                  Your Technical Interview Prep Platform
+                </Typography>
+              }
+              subtitle={
+                <Stack
+                  direction="row"
+                  spacing={1}
+                  justifyContent="center"
+                  mt={3}
+                  alignItems="center"
+                >
                   <Typography
-                    variant="subtitle1"
-                    textAlign="center"
                     color="textSecondary"
-                    mb={1}
+                    fontWeight="500"
                     fontSize="1.25rem"
                   >
-                    Your Technical Interview Prep Platform
+                    New to PeerPrep?
                   </Typography>
-                }
-                subtitle={
-                  <Stack
-                    direction="row"
-                    spacing={1}
-                    justifyContent="center"
-                    mt={3}
-                    alignItems="center"
+                  <Typography
+                    component={Link}
+                    to="/signup"
+                    fontWeight="500"
+                    sx={{
+                      textDecoration: "none",
+                      color: "primary.main",
+                    }}
                   >
-                    <Typography
-                      color="textSecondary"
-                      fontWeight="500"
-                      fontSize="1.25rem"
-                    >
-                      New to PeerPrep?
-                    </Typography>
-                    <Typography
-                      component={Link}
-                      to="/signup"
-                      fontWeight="500"
-                      sx={{
-                        textDecoration: "none",
-                        color: "primary.main",
-                      }}
-                    >
-                      Create an account
-                    </Typography>
-                  </Stack>
-                }
-                onUsernameChange={(username) => setUsername(username)}
-                onPasswordChange={(password) => setPassword(password)}
-                onSubmit={handleLogin}
-                username={username}
-                password={password}
-              />
-            </Card>
-          </Grid>
-        </Grid>
-        <Chat />
-      </Box>
+                    Create an account
+                  </Typography>
+                </Stack>
+              }
+              onUsernameChange={(username) => setUsername(username)}
+              onPasswordChange={(password) => setPassword(password)}
+              onSubmit={handleLogin}
+              username={username}
+              password={password}
+              error={error}
+              onErrorChange={setError}
+              success={success}
+            />
+          </Card>
+        </div>
+      </div>
     </PageContainer>
   );
 };

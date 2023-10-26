@@ -1,0 +1,42 @@
+.table_container {
+  margin-left: 5px;
+  margin-top: 5px;
+  width: 50%;
+  padding: 2%;
+}
+
+.table_header {
+  font-size: 1.25em; /* Equivalent to h4 size */
+  background-color: #c4c5c5;
+  text-align: center;
+  padding: 10px;
+}
+
+.table_header.title {
+  width: 50%;
+}
+
+.table_header.category {
+  width: 50%;
+}
+
+.category_button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #f9f9f9;
+  cursor: pointer;
+  transition: border-color 0.25s;
+  margin: 3px;
+  text-align: left;
+}
+.category_button:hover {
+  border-color: #646cff;
+}
+
+.center_align_cell {
+  text-align: center;
+}
