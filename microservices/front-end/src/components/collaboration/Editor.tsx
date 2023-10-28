@@ -7,6 +7,7 @@ import "highlight.js/styles/atom-one-dark.css";
 import Quill, { TextChangeHandler } from "quill";
 import "quill/dist/quill.snow.css";
 import { useCallback, useEffect, useState } from "react";
+import { Helmet } from "react-helmet-async";
 import { Socket } from "socket.io-client";
 import classes from "./CollaborationPage.module.css";
 
@@ -53,9 +54,14 @@ const PROGRAMMING_LANGUAGES = [
   "wasm",
 ];
 
+const themeNames = ["atom-one-dark", "github-dark", "monokai", "dark"] as const;
+
+type ThemeNames = (typeof themeNames)[number];
+
 function Editor({ socket }: EditorProps) {
   const [quill, setQuill] = useState<Quill | null>(null);
   const [programmingLanguage, setProgrammingLanguage] = useState("javascript");
+  const [theme, setTheme] = useState<ThemeNames>("atom-one-dark");
 
   useEffect(() => {
     const editor = new Quill("#editor", {
@@ -142,32 +148,93 @@ function Editor({ socket }: EditorProps) {
     });
   }, [socket, quill]);
 
-  const handleChangeSelect = useCallback((e: SelectChangeEvent<string>) => {
-    setProgrammingLanguage(e.target.value);
+  const handleProgrammingLanguageSelectChange = useCallback(
+    (e: SelectChangeEvent) => {
+      setProgrammingLanguage(e.target.value);
+    },
+    []
+  );
+
+  const handleThemeSelectChange = useCallback((e: SelectChangeEvent) => {
+    setTheme(e.target.value as ThemeNames);
   }, []);
 
+  const getStylesheet = useCallback(() => {
+    switch (theme) {
+      case "atom-one-dark":
+        return (
+          <link
+            rel="stylesheet"
+            href="../../../node_modules/highlight.js/styles/atom-one-dark.css"
+          />
+        );
+      case "github-dark":
+        return (
+          <link
+            rel="stylesheet"
+            href="../../../node_modules/highlight.js/styles/github-dark.css"
+          />
+        );
+      case "monokai":
+        return (
+          <link
+            rel="stylesheet"
+            href="../../../node_modules/highlight.js/styles/monokai.css"
+          />
+        );
+      case "dark":
+        return (
+          <link
+            rel="stylesheet"
+            href="../../../node_modules/highlight.js/styles/dark.css"
+          />
+        );
+    }
+  }, [theme]);
+
   return (
-    <div id="scrolling-container" className={classes.scrollingContainer}>
-      <FormControl fullWidth style={{ margin: "1rem 0" }}>
-        <InputLabel id="programming-language-select-label">
-          Programming Language
-        </InputLabel>
-        <Select
-          labelId="programming-language-select-label"
-          id="programming-language-select"
-          value={programmingLanguage}
-          label="Programming Language"
-          onChange={handleChangeSelect}
-        >
-          {PROGRAMMING_LANGUAGES.map((each) => (
-            <MenuItem key={each} value={each}>
-              {each}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-      <div id="editor" className={classes.editor} />
-    </div>
+    <>
+      <Helmet>{getStylesheet()}</Helmet>
+      <div id="scrolling-container" className={classes.scrollingContainer}>
+        <FormControl fullWidth style={{ margin: "1rem 0" }}>
+          <InputLabel id="programming-language-select-label">
+            Programming Language
+          </InputLabel>
+          <Select
+            labelId="programming-language-select-label"
+            id="programming-language-select"
+            value={programmingLanguage}
+            label="Programming Language"
+            onChange={handleProgrammingLanguageSelectChange}
+          >
+            {PROGRAMMING_LANGUAGES.map((each) => (
+              <MenuItem key={each} value={each}>
+                {each}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+
+        <FormControl fullWidth style={{ margin: "1rem 0" }}>
+          <InputLabel id="code-editor-theme-select-label">Theme</InputLabel>
+          <Select
+            labelId="code-editor-theme-select-label"
+            id="code-editor-theme-select"
+            value={theme}
+            label="Theme"
+            onChange={handleThemeSelectChange}
+          >
+            {themeNames.map((each) => (
+              <MenuItem key={each} value={each}>
+                {each}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+
+        <div id="editor" className={classes.editor} />
+      </div>
+    </>
   );
 }
 
