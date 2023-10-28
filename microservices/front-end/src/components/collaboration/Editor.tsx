@@ -196,41 +196,50 @@ function Editor({ socket }: EditorProps) {
     <>
       <Helmet>{getStylesheet()}</Helmet>
       <div id="scrolling-container" className={classes.scrollingContainer}>
-        <FormControl fullWidth style={{ margin: "1rem 0" }}>
-          <InputLabel id="programming-language-select-label">
-            Programming Language
-          </InputLabel>
-          <Select
-            labelId="programming-language-select-label"
-            id="programming-language-select"
-            value={programmingLanguage}
-            label="Programming Language"
-            onChange={handleProgrammingLanguageSelectChange}
-          >
-            {PROGRAMMING_LANGUAGES.map((each) => (
-              <MenuItem key={each} value={each}>
-                {each}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "1rem",
+            margin: "1rem 0",
+          }}
+        >
+          <FormControl fullWidth>
+            <InputLabel id="programming-language-select-label">
+              Programming Language
+            </InputLabel>
+            <Select
+              labelId="programming-language-select-label"
+              id="programming-language-select"
+              value={programmingLanguage}
+              label="Programming Language"
+              onChange={handleProgrammingLanguageSelectChange}
+            >
+              {PROGRAMMING_LANGUAGES.map((each) => (
+                <MenuItem key={each} value={each}>
+                  {each}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
 
-        <FormControl fullWidth style={{ margin: "1rem 0" }}>
-          <InputLabel id="code-editor-theme-select-label">Theme</InputLabel>
-          <Select
-            labelId="code-editor-theme-select-label"
-            id="code-editor-theme-select"
-            value={theme}
-            label="Theme"
-            onChange={handleThemeSelectChange}
-          >
-            {themeNames.map((each) => (
-              <MenuItem key={each} value={each}>
-                {each}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+          <FormControl fullWidth>
+            <InputLabel id="code-editor-theme-select-label">Theme</InputLabel>
+            <Select
+              labelId="code-editor-theme-select-label"
+              id="code-editor-theme-select"
+              value={theme}
+              label="Theme"
+              onChange={handleThemeSelectChange}
+            >
+              {themeNames.map((each) => (
+                <MenuItem key={each} value={each}>
+                  {each}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </div>
 
         <div id="editor" className={classes.editor} />
       </div>
