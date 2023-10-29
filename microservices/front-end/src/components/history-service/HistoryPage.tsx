@@ -43,6 +43,19 @@ function HistoryPage(): JSX.Element {
           ))}
         </tbody>
       </table>
+
+      {historyItems.length === 0 && (
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontStyle: "italic",
+          }}
+        >
+          There are no attempts
+        </div>
+      )}
     </>
   );
 }
