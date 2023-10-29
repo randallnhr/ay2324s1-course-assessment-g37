@@ -10,6 +10,12 @@ import { useCallback, useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { Socket } from "socket.io-client";
 import classes from "./CollaborationPage.module.css";
+import prettier from "prettier/standalone";
+import BabelPlugin from "prettier/plugins/babel";
+import JsPlugin from "prettier/plugins/estree";
+import TsPlugin from "prettier/plugins/typescript";
+import estree from "prettier/plugins/estree";
+import { Button } from "@mui/material";
 
 interface EditorProps {
   socket: Socket | undefined;
@@ -89,6 +95,8 @@ function Editor({ socket }: EditorProps) {
       editor.formatLine(0, editorTextLength, { "code-block": true });
     }
 
+    editor.focus();
+
     // cleanup
     return () => {
       setQuill(null);
@@ -135,6 +143,7 @@ function Editor({ socket }: EditorProps) {
       source
     ) => {
       if (source === "user") {
+        // quill.formatText(0, quill.getLength(), { "code-block": true });
         socket.emit("client code changes", delta);
       }
     };
@@ -144,6 +153,13 @@ function Editor({ socket }: EditorProps) {
     socket.on("server code changes", (delta) => {
       quill.off("text-change", textChangeHandler);
       quill.updateContents(delta);
+      quill.on("text-change", textChangeHandler);
+    });
+
+    socket.on("server code format", (content) => {
+      quill.off("text-change", textChangeHandler);
+      quill.setContents(content);
+      quill.formatText(0, quill.getLength(), { "code-block": true });
       quill.on("text-change", textChangeHandler);
     });
   }, [socket, quill]);
@@ -192,6 +208,23 @@ function Editor({ socket }: EditorProps) {
     }
   }, [theme]);
 
+  const getFormatted = useCallback((text: string, language: string) => {
+    if (language == "javascript") {
+      return prettier.format(text, {
+        parser: "babel",
+        plugins: [BabelPlugin, JsPlugin],
+        semi: false,
+      });
+    } else if (language == "typescript") {
+      return prettier.format(text, {
+        parser: "typescript",
+        plugins: [TsPlugin, estree],
+        semi: false,
+      });
+    }
+    return Promise.resolve(text);
+  }, []);
+
   return (
     <>
       <Helmet>{getStylesheet()}</Helmet>
@@ -204,6 +237,30 @@ function Editor({ socket }: EditorProps) {
             margin: "1rem 0",
           }}
         >
+          <Button
+            onClick={() => {
+              if (quill == undefined || socket == undefined) {
+                return;
+              }
+              getFormatted(quill.getText(), programmingLanguage).then(
+                (formattedCode) => {
+                  quill.setText(formattedCode);
+                  quill.formatText(0, quill.getLength(), {
+                    "code-block": true,
+                  });
+                  socket.emit("client code format", quill.getContents());
+                }
+              );
+            }}
+            variant="contained"
+            style={{ minWidth: "150px" }}
+            disabled={
+              programmingLanguage != "javascript" &&
+              programmingLanguage != "typescript"
+            }
+          >
+            Format Code
+          </Button>
           <FormControl fullWidth>
             <InputLabel id="programming-language-select-label">
               Programming Language

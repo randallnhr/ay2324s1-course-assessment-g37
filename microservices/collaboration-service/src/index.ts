@@ -41,6 +41,10 @@ io.on("connection", (socket) => {
     socket.to(room).emit("server code changes", delta);
   });
 
+  socket.on("client code format", (code) => {
+    socket.to(room).emit("server code format", code);
+  });
+
   // chat events
   socket.on("send message", (text: string, time: string, name: string) => {
     socket.to(room).emit("receive message", text, time, name);
