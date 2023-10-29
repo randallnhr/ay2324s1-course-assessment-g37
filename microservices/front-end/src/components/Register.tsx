@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { Grid, Box, Card, Typography, Stack } from "@mui/material";
+import { Box, Card, Typography, Stack } from "@mui/material";
 import { Link } from "react-router-dom";
 
 import PageContainer from "./container/PageContainer";
@@ -10,6 +10,7 @@ import AuthRegister from "./auth/AuthRegister";
 import { useUserContext } from "../UserContext";
 import { useAppDispatch } from "../store/hook";
 import { enqueueSuccessSnackbarMessage } from "../store/slices/successSnackbarSlice";
+import authServiceUrl from "../utility/authServiceUrl";
 
 const Register: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -17,8 +18,8 @@ const Register: React.FC = () => {
   const [displayName, setDisplayName] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
-  const [role, setRole] = useState<"basic" | "admin">("basic");
-  const { currentUser, setCurrentUser } = useUserContext();
+  const role = "basic";
+  const { currentUser } = useUserContext();
 
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -63,7 +64,7 @@ const Register: React.FC = () => {
       return;
     }
     try {
-      const response = await axios.post("/api/auth/sign-up", {
+      const response = await axios.post(`${authServiceUrl}/api/auth/sign-up`, {
         username,
         displayName,
         password,

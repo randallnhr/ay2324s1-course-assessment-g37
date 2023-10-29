@@ -1,3 +1,4 @@
+import { Socket } from "socket.io-client";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
@@ -8,7 +9,6 @@ import Quill, { TextChangeHandler } from "quill";
 import "quill/dist/quill.snow.css";
 import { useCallback, useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
-import { Socket } from "socket.io-client";
 import classes from "./CollaborationPage.module.css";
 import prettier from "prettier/standalone";
 import BabelPlugin from "prettier/plugins/babel";
@@ -16,10 +16,6 @@ import JsPlugin from "prettier/plugins/estree";
 import TsPlugin from "prettier/plugins/typescript";
 import estree from "prettier/plugins/estree";
 import { Button } from "@mui/material";
-
-interface EditorProps {
-  socket: Socket | undefined;
-}
 
 const PROGRAMMING_LANGUAGES = [
   "xml",
@@ -63,6 +59,10 @@ const PROGRAMMING_LANGUAGES = [
 const themeNames = ["atom-one-dark", "github-dark", "monokai", "dark"] as const;
 
 type ThemeNames = (typeof themeNames)[number];
+
+interface EditorProps {
+  socket: Socket | undefined;
+}
 
 function Editor({ socket }: EditorProps) {
   const [quill, setQuill] = useState<Quill | null>(null);
@@ -139,7 +139,7 @@ function Editor({ socket }: EditorProps) {
 
     const textChangeHandler: TextChangeHandler = (
       delta,
-      oldContents,
+      _oldContents,
       source
     ) => {
       if (source === "user") {

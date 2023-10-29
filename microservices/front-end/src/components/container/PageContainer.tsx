@@ -1,4 +1,4 @@
-import React, { FC, ReactNode } from "react";
+import { FC, ReactNode } from "react";
 import { Helmet } from "react-helmet-async";
 // Need to wrap the root component within Helmet Provider!
 

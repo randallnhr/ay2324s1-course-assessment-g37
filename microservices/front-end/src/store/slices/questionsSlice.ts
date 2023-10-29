@@ -6,6 +6,7 @@ import {
 } from "@reduxjs/toolkit";
 import { RootState } from "..";
 import { Question } from "../../components/types";
+import authServiceUrl from "../../utility/authServiceUrl";
 
 const initialState: Question[] = [];
 
@@ -13,7 +14,7 @@ export const questionsSlice = createSlice({
   name: "questions",
   initialState,
   reducers: {
-    _setQuestions: (state, action: PayloadAction<Question[]>) => action.payload,
+    _setQuestions: (_state, action: PayloadAction<Question[]>) => action.payload,
 
     updateQuestionCategory: (
       state,
@@ -40,8 +41,8 @@ export function fetchQuestions(): ThunkAction<
   unknown,
   AnyAction
 > {
-  return async function thunk(dispatch, getState) {
-    const res = await fetch("/api/questions");
+  return async function thunk(dispatch) {
+    const res = await fetch(`${authServiceUrl}/api/questions`, { credentials: "include" });
     const questions: Question[] = await res.json();
     dispatch(_setQuestions(questions));
     return questions;

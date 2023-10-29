@@ -11,6 +11,7 @@ import { fetchHistory } from "../store/slices/historySlice";
 // components
 import PageContainer from "./container/PageContainer";
 import AuthLogin from "./auth/AuthLogin";
+import authServiceUrl from "../utility/authServiceUrl";
 
 const Login: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -42,7 +43,7 @@ const Login: React.FC = () => {
   const handleLogin = async () => {
     try {
       const response = await axios.post(
-        "/api/auth/log-in",
+        `${authServiceUrl}/api/auth/log-in`,
         {
           username,
           password,

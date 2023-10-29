@@ -1,13 +1,16 @@
 // This file should be in charge of API calls
 // For the Question type, need to have a shared type file!
+import authServiceUrl from "../utility/authServiceUrl";
 import { Question } from "./types";
 
+
+      
 // originally directly fetch then update, deep coupling
 // Now return a promise, let it de-couples from UI update
 // Remove both re-fetching (let the getQuestions handle) and set
 export const getQuestions = async (): Promise<Question[] | undefined> => {
   try {
-    const res = await fetch("/api/questions");
+    const res = await fetch(`${authServiceUrl}/api/questions`, { credentials: 'include' });
     const questions: Question[] = await res.json();
     return questions;
   } catch (error) {
@@ -32,7 +35,7 @@ export const addQuestion = async (newQuestion: Partial<Question>) => {
 
   // Removed the try-catch block
   // First fetch all questions to check for duplicates
-  const res = await fetch("/api/questions");
+  const res = await fetch(`${authServiceUrl}/api/questions`, { credentials: 'include' });
   const existingQuestions: Question[] = await res.json();
 
   const isDuplicateQuestion = existingQuestions.find(
@@ -44,12 +47,13 @@ export const addQuestion = async (newQuestion: Partial<Question>) => {
   }
 
   // If no duplicates, proceed to add question
-  const response = await fetch("/api/questions", {
+  const response = await fetch(`${authServiceUrl}/api/questions`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(newQuestion),
+    credentials: "include"
   });
 
   if (response.status !== 200) {
@@ -60,8 +64,9 @@ export const addQuestion = async (newQuestion: Partial<Question>) => {
 // When using async/await, there is no need to wrap the code in a Promise
 export const deleteQuestion = async (id: string): Promise<void> => {
   try {
-    const response = await fetch(`/api/questions/${id}`, {
+    const response = await fetch(`${authServiceUrl}/api/questions/${id}`, {
       method: "DELETE",
+      credentials: "include"
     });
 
     if (response.status !== 200) {
@@ -91,7 +96,7 @@ export const updateQuestion = async (
   try {
     // Do the duplicate check
     // the code will wait here, until the await function finishes
-    const res = await fetch("/api/questions");
+    const res = await fetch(`${authServiceUrl}/api/questions`, { credentials: 'include' });
     const existingQuestions: Question[] = await res.json();
 
     const isDuplicatedQuestion = existingQuestions.find(
@@ -103,12 +108,13 @@ export const updateQuestion = async (
       return false;
     }
 
-    const response = await fetch(`/api/questions/${id}`, {
+    const response = await fetch(`${authServiceUrl}/api/questions/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(updatedQuestion),
+      credentials: 'include'
     });
 
     if (response.status !== 200) {
