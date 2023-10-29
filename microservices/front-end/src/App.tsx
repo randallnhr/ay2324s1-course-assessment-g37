@@ -21,6 +21,7 @@ import { useAppDispatch } from "./store/hook";
 import { fetchQuestions } from "./store/slices/questionsSlice";
 import { fetchHistory } from "./store/slices/historySlice";
 import authServiceUrl from "./utility/authServiceUrl";
+import "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
 
 // useContext: create a global state, that can be accessed by any component
 function App() {

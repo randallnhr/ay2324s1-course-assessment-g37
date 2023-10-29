@@ -41,6 +41,11 @@ io.on("connection", (socket) => {
     socket.to(room).emit("server code changes", delta);
   });
 
+  // chat events
+  socket.on("send message", (text: string, time: string, name: string) => {
+    socket.to(room).emit("receive message", text, time, name);
+  });
+
   socket.on("other user has left", () => {
     console.log("Connection terminated because other user has left");
     socket.disconnect();
