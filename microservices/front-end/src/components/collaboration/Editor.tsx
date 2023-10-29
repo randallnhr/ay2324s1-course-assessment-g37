@@ -5,13 +5,17 @@ import "quill/dist/quill.snow.css";
 import { useEffect, useState } from "react";
 import { Socket } from "socket.io-client";
 import classes from "./CollaborationPage.module.css";
+import prettier from "prettier/standalone";
+import BabelPlugin from "prettier/plugins/babel";
+import JSPlugin from "prettier/plugins/estree";
+import { Button } from "@mui/material";
 
 interface EditorProps {
   socket: Socket | undefined;
 }
 
 function Editor({ socket }: EditorProps) {
-  const [, setQuill] = useState<Quill | null>();
+  const [quill, setQuill] = useState<Quill | null>();
 
   useEffect(() => {
     if (socket === undefined) {
@@ -24,13 +28,15 @@ function Editor({ socket }: EditorProps) {
         toolbar: [["code-block"]],
         syntax: {
           highlight: (text: string) => {
-            return hljs.highlight(text, { language: "javascript" }).value;
+            return hljs.highlightAuto(text, ["javascript", "python"]).value;
           },
         },
       },
       placeholder: "Write your code here...",
       scrollingContainer: "#scrolling-container",
     });
+
+    editor.formatText(0, 100, { "code-block": true });
 
     socket.on("room count", (count) => {
       if (count == 2) {
@@ -54,6 +60,7 @@ function Editor({ socket }: EditorProps) {
       source
     ) => {
       if (source === "user") {
+        editor.formatText(0, editor.getLength(), { "code-block": true });
         socket.emit("client code changes", delta);
       }
     };
@@ -66,6 +73,13 @@ function Editor({ socket }: EditorProps) {
       editor.on("text-change", textChangeHandler);
     });
 
+    socket.on("server code format", (content) => {
+      editor.off("text-change", textChangeHandler);
+      editor.setContents(content);
+      editor.formatText(0, editor.getLength(), { "code-block": true });
+      editor.on("text-change", textChangeHandler);
+    });
+
     setQuill(editor);
 
     // cleanup
@@ -73,9 +87,33 @@ function Editor({ socket }: EditorProps) {
   }, [socket]);
 
   return (
-    <div id="scrolling-container" className={classes.scrollingContainer}>
-      <div id="editor" className={classes.editor} />
-    </div>
+    <>
+      <Button
+        onClick={() => {
+          if (quill == undefined || socket == undefined) {
+            return;
+          }
+          prettier
+            .format(quill.getText(), {
+              parser: "babel",
+              plugins: [BabelPlugin, JSPlugin],
+              semi: false,
+            })
+            .then((formattedCode) => {
+              console.log(formattedCode);
+              quill.setText(formattedCode);
+              quill.formatText(0, quill.getLength(), { "code-block": true });
+              socket.emit("client code format", quill.getContents());
+            });
+        }}
+      >
+        {" "}
+        Format Code{" "}
+      </Button>
+      <div id="scrolling-container" className={classes.scrollingContainer}>
+        <div id="editor" className={classes.editor} />
+      </div>
+    </>
   );
 }
 
