@@ -244,7 +244,6 @@ function Editor({ socket }: EditorProps) {
               }
               getFormatted(quill.getText(), programmingLanguage).then(
                 (formattedCode) => {
-                  console.log(formattedCode);
                   quill.setText(formattedCode);
                   quill.formatText(0, quill.getLength(), {
                     "code-block": true,
@@ -260,8 +259,7 @@ function Editor({ socket }: EditorProps) {
               programmingLanguage != "typescript"
             }
           >
-            {" "}
-            Format Code{" "}
+            Format Code
           </Button>
           <FormControl fullWidth>
             <InputLabel id="programming-language-select-label">
