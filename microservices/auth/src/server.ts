@@ -4,6 +4,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
 import http from "http";
+import path from "path";
 import session from "express-session";
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
@@ -114,6 +115,7 @@ const corsOptions = {
   credentials: true
 }
 app.use(cors(corsOptions));
+app.use(express.static('frontend/dist'));
 app.use(express.json());
 
 // express-session middleware must be set up before passport middleware
@@ -132,6 +134,18 @@ app.use(
 
 app.use(passport.initialize());
 app.use(passport.session());
+
+// ============================================================================
+// front end
+// ============================================================================
+
+app.get("/", (_req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+app.get("/assets/:filename", (req, res) => {
+  res.sendFile(path.join(__dirname, 'assets', req.params.filename));
+});
 
 // ============================================================================
 // authentication

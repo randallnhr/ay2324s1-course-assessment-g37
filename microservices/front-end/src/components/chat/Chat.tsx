@@ -8,7 +8,6 @@ import {
   MessageList,
   Message,
   MessageInput,
-  ConversationHeader,
 } from "@chatscope/chat-ui-kit-react";
 
 interface ChatProps {
