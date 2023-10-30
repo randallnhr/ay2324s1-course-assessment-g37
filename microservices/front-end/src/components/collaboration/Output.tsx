@@ -1,14 +1,15 @@
+import classes from "./CollaborationPage.module.css";
+
 interface OutputProps {
   stdout: string;
-  stderr: string;
 }
 
-function Output({ stdout, stderr }: OutputProps) {
+function Output({ stdout }: OutputProps) {
   return (
-    <div>
-      {stdout}
-      {stderr}
-    </div>
+    <>
+      <h3>Output</h3>
+      <pre className={classes.output_box}>{stdout}</pre>
+    </>
   );
 }
 

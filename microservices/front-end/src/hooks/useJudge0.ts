@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback } from "react";
 
 interface Output {
   stdout: string;
@@ -35,23 +35,42 @@ const languages: Map<string, number> = new Map([
 ]);
 
 const useJudge0 = () => {
-  //   const [languages, setLanguages] = useState<Language[]>([]);
-  //   useEffect(() => {
-  //     const fetchLanguages = async () => {
-  //       const { data } = await axios.get(JUDGE0_URL + "/languages");
-  //       setLanguages(data as Language[]);
-  //     };
-  //     fetchLanguages();
-  //   }, []);
+  const encode = (str: string) => {
+    if (str == null) {
+      return null;
+    }
+    return btoa(unescape(encodeURIComponent(str || "")));
+  };
+
+  const decode = (str: string) => {
+    if (str == null) {
+      return null;
+    }
+    var escaped = escape(atob(str || ""));
+    try {
+      return decodeURIComponent(escaped);
+    } catch {
+      return unescape(escaped);
+    }
+  };
 
   const sendSubmission = useCallback(
     async (code: string, language: string) => {
       try {
+        if (code.length <= 1) {
+          return {
+            stdout: "",
+            stderr: "",
+            compile_output: "No code to run",
+            message: "",
+            time: "",
+          } as Output;
+        }
         const language_id = languages.get(language);
         const { data } = await axios.post(
           JUDGE0_URL + "/submissions",
           {
-            source_code: code,
+            source_code: encode(code),
             language_id: language_id,
           },
           {
@@ -59,11 +78,18 @@ const useJudge0 = () => {
               "Content-Type": "application/json",
             },
             params: {
+              base64_encoded: "true",
               wait: "true",
             },
           }
         );
-        return data as Output;
+        return {
+          stdout: decode(data.stdout),
+          stderr: decode(data.stderr),
+          compile_output: decode(data.compile_output),
+          message: decode(data.message),
+          time: data.time,
+        } as Output;
       } catch (error) {
         console.log(error);
       }
