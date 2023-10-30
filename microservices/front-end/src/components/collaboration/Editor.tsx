@@ -166,13 +166,19 @@ function Editor({ socket, setStdout, setIsoutputLoading }: EditorProps) {
       quill.formatText(0, quill.getLength(), { "code-block": true });
       quill.on("text-change", textChangeHandler);
     });
+
+    socket.on("server change language", (language) => {
+      setProgrammingLanguage(language);
+    });
   }, [socket, quill]);
 
   const handleProgrammingLanguageSelectChange = useCallback(
     (e: SelectChangeEvent) => {
+      if (socket == undefined) return;
       setProgrammingLanguage(e.target.value);
+      socket.emit("client change language", e.target.value);
     },
-    []
+    [socket]
   );
 
   const handleThemeSelectChange = useCallback((e: SelectChangeEvent) => {
@@ -278,7 +284,6 @@ function Editor({ socket, setStdout, setIsoutputLoading }: EditorProps) {
                 (res) => {
                   if (res == undefined) return;
                   setIsoutputLoading(false);
-                  console.log(res);
                   if (res.stderr != null) {
                     setStdout(res.stderr);
                   } else {

@@ -51,6 +51,10 @@ io.on("connection", (socket) => {
     socket.to(room).emit("server code format", code);
   });
 
+  socket.on("client change language", (language) => {
+    socket.to(room).emit("server change language", language);
+  });
+
   // chat events
   socket.on("send message", (text: string, time: string, name: string) => {
     socket.to(room).emit("receive message", text, time, name);
