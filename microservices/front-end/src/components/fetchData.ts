@@ -10,7 +10,7 @@ import { Question } from "./types";
 // Remove both re-fetching (let the getQuestions handle) and set
 export const getQuestions = async (): Promise<Question[] | undefined> => {
   try {
-    const res = await fetch(`${authServiceUrl}/api/questions`, { credentials: 'include' });
+    const res = await fetch(`${authServiceUrl}/api/questions`, { credentials: "include" });
     const questions: Question[] = await res.json();
     return questions;
   } catch (error) {

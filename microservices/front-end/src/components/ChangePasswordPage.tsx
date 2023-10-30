@@ -49,10 +49,16 @@ const ChangePasswordPage: React.FC = () => {
     }
 
     try {
-      const response = await axios.put(`${authServiceUrl}/api/users/${currentUser?.username}`, {
-        oldPassword,
-        newPassword,
-      });
+      const response = await axios.put(
+        `${authServiceUrl}/api/users/${currentUser?.username}`,
+        {
+          oldPassword,
+          newPassword,
+        },
+        {
+          withCredentials: true,
+        }
+      );
 
       if (response.status === 200) {
         dispatch(
