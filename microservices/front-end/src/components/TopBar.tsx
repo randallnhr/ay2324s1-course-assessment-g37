@@ -1,21 +1,7 @@
 // Use a separate component in nested routing to save repetitive codes
-import {
-  AppBar,
-  Toolbar,
-  Typography,
-  Button,
-  Drawer,
-  List,
-  ListItem,
-  IconButton,
-  ListItemText,
-  Box,
-  ListItemButton,
-  Divider,
-} from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
+import { AppBar, Button, Toolbar, Typography } from "@mui/material";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUserContext } from "../UserContext";
 import { User } from "./types";
@@ -24,8 +10,6 @@ import { Outlet } from "react-router-dom"; // allow render nested routes
 import authServiceUrl from "../utility/authServiceUrl";
 
 const TopBar: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(false);
-
   const { currentUser, setCurrentUser } = useUserContext();
   const navigate = useNavigate();
 
@@ -74,98 +58,30 @@ const TopBar: React.FC = () => {
       });
   };
 
-  const list = (
-    <Box sx={{ width: 250 }} role="presentation">
-      <List>
-        <ListItem disablePadding>
-          <ListItemButton
-            onClick={() => {
-              handleFindMatch();
-              setIsOpen(false);
-            }}
-            sx={{
-              "&:hover": {
-                backgroundColor: "rgba(0, 0, 0, 0.14)",
-              },
-            }}
-          >
-            <ListItemText primary="Find Match" />
-          </ListItemButton>
-        </ListItem>
-        <ListItem disablePadding>
-          <ListItemButton
-            onClick={() => {
-              handleQuestion();
-              setIsOpen(false);
-            }}
-            sx={{
-              "&:hover": {
-                backgroundColor: "rgba(0, 0, 0, 0.14)",
-              },
-            }}
-          >
-            <ListItemText primary="Question" />
-          </ListItemButton>
-        </ListItem>
-        <ListItem disablePadding>
-          <ListItemButton
-            onClick={() => {
-              handleHistory();
-              setIsOpen(false);
-            }}
-            sx={{
-              "&:hover": {
-                backgroundColor: "rgba(0, 0, 0, 0.14)",
-              },
-            }}
-          >
-            <ListItemText primary="History" />
-          </ListItemButton>
-        </ListItem>
-        <ListItem disablePadding>
-          <ListItemButton
-            onClick={() => {
-              handleProfile();
-              setIsOpen(false);
-            }}
-            sx={{
-              "&:hover": {
-                backgroundColor: "rgba(0, 0, 0, 0.14)",
-              },
-            }}
-          >
-            <ListItemText primary="Profile" />
-          </ListItemButton>
-        </ListItem>
-      </List>
-      <Divider />
-    </Box>
-  );
-
   return (
     <>
       <AppBar position="static">
         <Toolbar>
-          <IconButton
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            onClick={() => setIsOpen(true)}
-            sx={{ mr: 2 }} // add some margin to space HOME
-          >
-            <MenuIcon />
-          </IconButton>
           <Typography fontSize="1.5rem" style={{ flexGrow: 1 }}>
             HOME
           </Typography>
+          <Button color="inherit" onClick={handleFindMatch}>
+            Find Match
+          </Button>
+          <Button color="inherit" onClick={handleQuestion}>
+            Question
+          </Button>
+          <Button color="inherit" onClick={handleHistory}>
+            History
+          </Button>
+          <Button color="inherit" onClick={handleProfile}>
+            Profile
+          </Button>
           <Button color="inherit" onClick={handleSignout}>
             Log Out
           </Button>
         </Toolbar>
       </AppBar>
-      <Drawer anchor="left" open={isOpen} onClose={() => setIsOpen(false)}>
-        {list}
-      </Drawer>
       <Outlet /> {/* This will render the nested route */}
     </>
   );
