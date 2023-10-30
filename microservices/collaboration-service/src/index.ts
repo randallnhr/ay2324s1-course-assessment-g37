@@ -1,5 +1,7 @@
 import { Server } from "socket.io";
+import dotenv from "dotenv";
 
+dotenv.config();
 const PORT = Number(process.env.PORT) || 3111;
 const FRONT_END_URL = process.env.FRONT_END_URL ?? "http://127.0.0.1:5173";
 
