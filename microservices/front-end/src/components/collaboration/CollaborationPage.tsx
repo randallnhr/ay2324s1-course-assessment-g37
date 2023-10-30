@@ -15,7 +15,8 @@ import { QuestionComplexity } from "../types";
 import Chat from "../chat/Chat";
 
 function CollaborationPage() {
-  const COLLAB_SERVICE_URL = "http://localhost:3111";
+  const COLLAB_SERVICE_URL =
+    import.meta.env.VITE_COLLAB_SERVICE_URL ?? "http://127.0.0.1:3111";
   const navigate = useNavigate();
   const { roomId, difficulty } = useParams();
   const [socket, setSocket] = useState<Socket>();
@@ -46,7 +47,7 @@ function CollaborationPage() {
     return () => {
       socket.disconnect();
     };
-  }, []);
+  }, [roomId]);
 
   return (
     <>
@@ -69,27 +70,32 @@ function CollaborationPage() {
           )}
         </Box>
       </Modal>
+
       <div className={classes.collab_container}>
-        <div className={classes.questions_code_container}>
+        <div className={classes.grid_question}>
           <CollabQuestionPage difficulty={difficulty as QuestionComplexity} />
+        </div>
+        <div className={classes.grid_editor}>
           <Editor socket={socket} setStdout={setStdout} setStderr={setStderr} />
         </div>
-        <div className={classes.chat_output_container}>
-          <div style={{ width: "100%" }}>
-            <Chat socket={socket} />
-          </div>
-          <div style={{ width: "100%", backgroundColor: "#64f4f4" }}>
-            Output:
-            <br />
-            {stdout}
-            <br />
-            Error:
-            <br />
-            {stderr}
-            <br />
-          </div>
+        <div className={classes.grid_chat}>
+          <Chat socket={socket} />
+        </div>
+        <div
+          className={classes.grid_code_output}
+          style={{ backgroundColor: "#64f4f4" }}
+        >
+          Output:
+          <br />
+          {stdout}
+          <br />
+          Error:
+          <br />
+          {stderr}
+          <br />
         </div>
       </div>
+
       <Button
         variant="contained"
         onClick={handleEndSession}

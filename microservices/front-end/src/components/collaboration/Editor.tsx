@@ -1,3 +1,4 @@
+import { Socket } from "socket.io-client";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
@@ -8,7 +9,6 @@ import Quill, { TextChangeHandler } from "quill";
 import "quill/dist/quill.snow.css";
 import { useCallback, useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
-import { Socket } from "socket.io-client";
 import classes from "./CollaborationPage.module.css";
 import prettier from "prettier/standalone";
 import BabelPlugin from "prettier/plugins/babel";
@@ -143,7 +143,7 @@ function Editor({ socket, setStdout, setStderr }: EditorProps) {
 
     const textChangeHandler: TextChangeHandler = (
       delta,
-      oldContents,
+      _oldContents,
       source
     ) => {
       if (source === "user") {
@@ -321,6 +321,11 @@ function Editor({ socket, setStdout, setStderr }: EditorProps) {
               ))}
             </Select>
           </FormControl>
+        </div>
+
+        <div style={{ fontStyle: "italic", marginBottom: "1rem" }}>
+          <strong>Note</strong>: code formatting is only available for
+          JavaScript and TypeScript
         </div>
 
         <div id="editor" className={classes.editor} />

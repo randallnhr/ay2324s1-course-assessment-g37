@@ -29,7 +29,7 @@ function SuccessSnackbar(): JSX.Element {
   }, [dispatch, currentMessage, messageQueue.length, open]);
 
   const handleClose = useCallback(
-    (event: React.SyntheticEvent | Event, reason?: string) => {
+    (_event: React.SyntheticEvent | Event, reason?: string) => {
       // if user clicks away from the snack bar, do not close the snack bar
       if (reason === "clickaway") {
         return;

@@ -9,18 +9,18 @@ import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
 import { useAppDispatch } from "../store/hook";
 import { enqueueSuccessSnackbarMessage } from "../store/slices/successSnackbarSlice";
+import authServiceUrl from "../utility/authServiceUrl";
 
 // Should only allow change of password if old password matches!
 const ChangePasswordPage: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { currentUser, setCurrentUser } = useUserContext();
+  const { currentUser } = useUserContext();
   const [oldPassword, setOldPassword] = useState<string>("");
   const [newPassword, setNewPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
 
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
-
+  const success = true;
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const navigate = useNavigate();
@@ -49,7 +49,7 @@ const ChangePasswordPage: React.FC = () => {
     }
 
     try {
-      const response = await axios.put(`/api/users/${currentUser?.username}`, {
+      const response = await axios.put(`${authServiceUrl}/api/users/${currentUser?.username}`, {
         oldPassword,
         newPassword,
       });

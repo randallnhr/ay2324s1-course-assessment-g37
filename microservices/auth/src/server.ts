@@ -4,6 +4,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
 import http from "http";
+import path from "path";
 import session from "express-session";
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
@@ -33,7 +34,8 @@ const AUTH_MONGODB_URI = fs.existsSync(process.env.AUTH_MONGODB_URI)
 const AUTH_SESSION_SECRET = fs.existsSync(process.env.AUTH_SESSION_SECRET)
   ? fs.readFileSync(process.env.AUTH_SESSION_SECRET, "utf8").trim()
   : process.env.AUTH_SESSION_SECRET;
-
+//const useLocalhost = process.env.USE_LOCALHOST === "1";
+const FRONT_END_URL = process.env.FRONT_END_URL ?? "http://localhost:5173";
 const USER_SERVICE_URL =
   process.env.USER_SERVICE_URL ?? "http://localhost:3219";
 const QUESTION_SERVICE_URL =
@@ -108,7 +110,12 @@ passport.deserializeUser(async (username: string, done) => {
 // ============================================================================
 
 const app = express();
-app.use(cors());
+const corsOptions = {
+  origin: FRONT_END_URL,
+  credentials: true
+}
+app.use(cors(corsOptions));
+app.use(express.static('frontend/dist'));
 app.use(express.json());
 
 // express-session middleware must be set up before passport middleware
@@ -127,6 +134,18 @@ app.use(
 
 app.use(passport.initialize());
 app.use(passport.session());
+
+// ============================================================================
+// front end
+// ============================================================================
+
+app.get("/", (_req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+app.get("/assets/:filename", (req, res) => {
+  res.sendFile(path.join(__dirname, 'assets', req.params.filename));
+});
 
 // ============================================================================
 // authentication

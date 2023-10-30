@@ -21,6 +21,7 @@ import { useUserContext } from "../UserContext";
 import { User } from "./types";
 
 import { Outlet } from "react-router-dom"; // allow render nested routes
+import authServiceUrl from "../utility/authServiceUrl";
 
 const TopBar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -59,7 +60,7 @@ const TopBar: React.FC = () => {
 
   const handleSignout = () => {
     axios
-      .delete("/api/auth/log-out")
+      .delete(`${authServiceUrl}/api/auth/log-out`)
       .then((response) => {
         if (response.status === 200) {
           // reset user context

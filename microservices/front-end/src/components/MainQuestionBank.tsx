@@ -22,7 +22,7 @@ import { setFilteredCategory } from "../store/slices/categoryFilterSlice";
 const QuestionBank: React.FC = () => {
   const dispatch = useAppDispatch();
 
-  const [categorySummary, setCategorySummary] = useState<{
+  const [, setCategorySummary] = useState<{
     [key: string]: number;
   }>({});
 
@@ -42,7 +42,7 @@ const QuestionBank: React.FC = () => {
 
   // Need to fetch current user as well
   const [isFetching, setIsFetching] = useState<boolean>(true);
-  const { currentUser, setCurrentUser } = useUserContext();
+  const { currentUser } = useUserContext();
 
   // Add an additional step to clear the filters
   useEffect(() => {

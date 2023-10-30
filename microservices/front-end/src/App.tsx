@@ -8,7 +8,7 @@ import ProfilePage from "./components/ProfilePage";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import { User } from "./components/types";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import axios from "axios";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import TopBar from "./components/TopBar";
@@ -20,6 +20,7 @@ import HistoryPage from "./components/history-service/HistoryPage";
 import { useAppDispatch } from "./store/hook";
 import { fetchQuestions } from "./store/slices/questionsSlice";
 import { fetchHistory } from "./store/slices/historySlice";
+import authServiceUrl from "./utility/authServiceUrl";
 import "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
 
 // useContext: create a global state, that can be accessed by any component
@@ -36,7 +37,7 @@ function App() {
     if (Object.keys(currentUser).length === 0) {
       // initially currentUser = {}
       axios
-        .get("/api/auth/current-user")
+        .get(`${authServiceUrl}/api/auth/current-user`)
         .then((response) => {
           const userData: User = response.data;
           setCurrentUser(userData);
