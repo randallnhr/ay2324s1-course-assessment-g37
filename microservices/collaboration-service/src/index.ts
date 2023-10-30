@@ -1,8 +1,14 @@
 import { Server } from "socket.io";
+import dotenv from "dotenv";
 
-const io = new Server(3111, {
+dotenv.config();
+const PORT = Number(process.env.PORT) || 3111;
+const FRONT_END_URL = process.env.FRONT_END_URL ?? "http://127.0.0.1:5173";
+
+const io = new Server(PORT, {
   cors: {
-    origin: ["http://localhost:5173", "http://127.0.0.1:5173"],
+    origin: FRONT_END_URL,
+    credentials: true,
   },
 });
 
