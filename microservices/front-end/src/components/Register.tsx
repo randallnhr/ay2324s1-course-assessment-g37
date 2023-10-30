@@ -64,12 +64,18 @@ const Register: React.FC = () => {
       return;
     }
     try {
-      const response = await axios.post(`${authServiceUrl}/api/auth/sign-up`, {
-        username,
-        displayName,
-        password,
-        role,
-      });
+      const response = await axios.post(
+        `${authServiceUrl}/api/auth/sign-up`,
+        {
+          username,
+          displayName,
+          password,
+          role,
+        },
+        {
+          withCredentials: true,
+        }
+      );
 
       if (response.status == 200) {
         dispatch(
