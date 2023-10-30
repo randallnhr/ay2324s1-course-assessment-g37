@@ -44,7 +44,7 @@ function CollaborationPage() {
     return () => {
       socket.disconnect();
     };
-  }, []);
+  }, [roomId]);
 
   return (
     <>
@@ -67,20 +67,28 @@ function CollaborationPage() {
           )}
         </Box>
       </Modal>
+
       <div className={classes.collab_container}>
-        <div className={classes.questions_code_container}>
+        <div className={classes.grid_question}>
           <CollabQuestionPage difficulty={difficulty as QuestionComplexity} />
+        </div>
+
+        <div className={classes.grid_editor}>
           <Editor socket={socket} />
         </div>
-        <div className={classes.chat_output_container}>
-          <div style={{ width: "100%" }}>
-            <Chat socket={socket} />
-          </div>
-          <div style={{ width: "100%", backgroundColor: "#64f4f4" }}>
-            code output
-          </div>
+
+        <div className={classes.grid_chat}>
+          <Chat socket={socket} />
+        </div>
+
+        <div
+          className={classes.grid_code_output}
+          style={{ backgroundColor: "#64f4f4" }}
+        >
+          code output
         </div>
       </div>
+
       <Button
         variant="contained"
         onClick={handleEndSession}
