@@ -37,7 +37,9 @@ function App() {
     if (Object.keys(currentUser).length === 0) {
       // initially currentUser = {}
       axios
-        .get(`${authServiceUrl}/api/auth/current-user`)
+        .get(`${authServiceUrl}/api/auth/current-user`, {
+          withCredentials: true,
+        })
         .then((response) => {
           const userData: User = response.data;
           setCurrentUser(userData);

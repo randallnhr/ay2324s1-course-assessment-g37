@@ -61,7 +61,10 @@ const ChangeDisplayName: React.FC = () => {
       };
       const response = await axios.put(
         `${authServiceUrl}/api/users/${updatedUser.username}`,
-        updatedUser
+        updatedUser,
+        {
+          withCredentials: true,
+        }
       );
       if (response.status === 200) {
         dispatch(
