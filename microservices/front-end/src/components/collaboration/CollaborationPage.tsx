@@ -15,7 +15,7 @@ import { QuestionComplexity } from "../types";
 import Chat from "../chat/Chat";
 
 function CollaborationPage() {
-  const COLLAB_SERVICE_URL = import.meta.env.VITE_COLLAB_SERVICE_URL ?? "127.0.0.1:3111";
+  const COLLAB_SERVICE_URL = import.meta.env.VITE_COLLAB_SERVICE_URL ?? "http://127.0.0.1:3111";
   const navigate = useNavigate();
   const { roomId, difficulty } = useParams();
   const [socket, setSocket] = useState<Socket>();
