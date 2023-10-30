@@ -298,6 +298,11 @@ function Editor({ socket }: EditorProps) {
           </FormControl>
         </div>
 
+        <div style={{ fontStyle: "italic", marginBottom: "1rem" }}>
+          <strong>Note</strong>: code formatting is only available for
+          JavaScript and TypeScript
+        </div>
+
         <div id="editor" className={classes.editor} />
       </div>
     </>
