@@ -20,6 +20,7 @@
     "dev:matching-service": "cd microservices/matching-service && npm run dev",
     "dev:history-service": "cd microservices/history-service && npm run dev",
     "dev:collaboration-service": "cd microservices/collaboration-service && npm run start",
+    "dev:judge0": "cd microservices/judge0-v1.13.0 && npm run start",
     "dev-all": "concurrently -c \"red,green,yellow,blue,magenta,cyan,gray\" \"npm:dev:*\""
   },
   "author": "",

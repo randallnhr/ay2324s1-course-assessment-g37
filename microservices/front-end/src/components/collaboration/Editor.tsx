@@ -16,9 +16,12 @@ import JsPlugin from "prettier/plugins/estree";
 import TsPlugin from "prettier/plugins/typescript";
 import estree from "prettier/plugins/estree";
 import { Button } from "@mui/material";
+import useJudge0 from "../../hooks/useJudge0";
 
 interface EditorProps {
   socket: Socket | undefined;
+  setStdout: React.Dispatch<React.SetStateAction<string>>;
+  setStderr: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const PROGRAMMING_LANGUAGES = [
@@ -64,10 +67,11 @@ const themeNames = ["atom-one-dark", "github-dark", "monokai", "dark"] as const;
 
 type ThemeNames = (typeof themeNames)[number];
 
-function Editor({ socket }: EditorProps) {
+function Editor({ socket, setStdout, setStderr }: EditorProps) {
   const [quill, setQuill] = useState<Quill | null>(null);
   const [programmingLanguage, setProgrammingLanguage] = useState("javascript");
   const [theme, setTheme] = useState<ThemeNames>("atom-one-dark");
+  const { sendSubmission, checkLanguage } = useJudge0();
 
   useEffect(() => {
     const editor = new Quill("#editor", {
@@ -260,6 +264,27 @@ function Editor({ socket }: EditorProps) {
             }
           >
             Format Code
+          </Button>
+
+          <Button
+            variant="contained"
+            style={{ minWidth: "150px" }}
+            onClick={() => {
+              if (quill == undefined) {
+                return;
+              }
+              sendSubmission(quill.getText(), programmingLanguage).then(
+                (res) => {
+                  if (res == undefined) return;
+                  console.log(res);
+                  setStdout(res.stdout);
+                  setStderr(res.stderr);
+                }
+              );
+            }}
+            disabled={!!!checkLanguage(programmingLanguage)}
+          >
+            Run Code
           </Button>
           <FormControl fullWidth>
             <InputLabel id="programming-language-select-label">

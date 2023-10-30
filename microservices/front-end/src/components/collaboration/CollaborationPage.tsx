@@ -20,6 +20,8 @@ function CollaborationPage() {
   const { roomId, difficulty } = useParams();
   const [socket, setSocket] = useState<Socket>();
   const [modalText, setModalText] = useState<string>("");
+  const [stdout, setStdout] = useState<string>("");
+  const [stderr, setStderr] = useState<string>("");
 
   const handleEndSession = () => {
     if (!socket) return;
@@ -70,14 +72,21 @@ function CollaborationPage() {
       <div className={classes.collab_container}>
         <div className={classes.questions_code_container}>
           <CollabQuestionPage difficulty={difficulty as QuestionComplexity} />
-          <Editor socket={socket} />
+          <Editor socket={socket} setStdout={setStdout} setStderr={setStderr} />
         </div>
         <div className={classes.chat_output_container}>
           <div style={{ width: "100%" }}>
             <Chat socket={socket} />
           </div>
           <div style={{ width: "100%", backgroundColor: "#64f4f4" }}>
-            code output
+            Output:
+            <br />
+            {stdout}
+            <br />
+            Error:
+            <br />
+            {stderr}
+            <br />
           </div>
         </div>
       </div>
