@@ -80,7 +80,7 @@ const Chat: FC<ChatProps> = ({ socket }) => {
   }, [socket]);
 
   return (
-    <div style={{ position: "relative", height: "500px" }}>
+    <div style={{ position: "relative", height: "100%" }}>
       <MainContainer>
         <ChatContainer>
           {/* <ConversationHeader>

@@ -1,7 +1,4 @@
 .table_container {
-  margin-left: 5px;
-  margin-top: 5px;
-  width: 50%;
   padding: 2%;
 }
 
@@ -39,4 +36,9 @@
 
 .center_align_cell {
   text-align: center;
+}
+
+.wrapText > * {
+  /* the code snippets in the question details should wrap */
+  text-wrap: wrap;
 }
