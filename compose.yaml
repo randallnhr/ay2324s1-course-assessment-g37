@@ -1,4 +1,4 @@
-version: 'v2.21.0-desktop.1'
+version: "v2.21.0-desktop.1"
 
 services:
   question-server:
@@ -42,7 +42,7 @@ services:
     environment:
       AUTH_MONGODB_URI: /run/secrets/AUTH_MONGODB_URI
       AUTH_SESSION_SECRET: /run/secrets/AUTH_SESSION_SECRET
-      FRONT_END_URL: http://192.168.1.26:5173 
+      FRONT_END_URL: http://192.168.1.26:5173
       USER_SERVICE_URL: http://user-server:3219
       QUESTION_SERVICE_URL: http://question-server:3001
       RABBITMQ_URL: amqp://rabbitmq:5672
@@ -63,6 +63,17 @@ services:
       RABBITMQ_URL: amqp://rabbitmq:5672
     depends_on:
       - rabbitmq
+
+  collab-server:
+    container_name: collab-server
+    build:
+      context: ./microservices/collaboration-service
+      dockerfile: Dockerfile.collab
+    environment:
+      FRONT_END_URL: http://54.255.211.247:8080
+      PORT: 3111
+    ports:
+      - "3111:3111"
 
   rabbitmq:
     container_name: rabbitmq
