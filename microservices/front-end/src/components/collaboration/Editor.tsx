@@ -201,6 +201,11 @@ function Editor({ socket, setStdout, setIsOutputLoading }: EditorProps) {
     });
   }, [quill, programmingLanguage]);
 
+  const handleSaveCode = useCallback(() => {
+    // TODO Handle save code
+    console.log("save code");
+  }, []);
+
   const getStylesheet = useCallback(() => {
     switch (theme) {
       case "atom-one-dark":
@@ -264,6 +269,14 @@ function Editor({ socket, setStdout, setIsOutputLoading }: EditorProps) {
           }}
         >
           <Button
+            variant="contained"
+            style={{ minWidth: "140px" }}
+            onClick={handleSaveCode}
+          >
+            Save Code
+          </Button>
+
+          <Button
             onClick={() => {
               if (quill == undefined || socket == undefined) {
                 return;
@@ -279,7 +292,7 @@ function Editor({ socket, setStdout, setIsOutputLoading }: EditorProps) {
               );
             }}
             variant="contained"
-            style={{ minWidth: "150px" }}
+            style={{ minWidth: "140px" }}
             disabled={
               programmingLanguage != "javascript" &&
               programmingLanguage != "typescript"
@@ -290,12 +303,13 @@ function Editor({ socket, setStdout, setIsOutputLoading }: EditorProps) {
 
           <Button
             variant="contained"
-            style={{ minWidth: "150px" }}
+            style={{ minWidth: "140px" }}
             onClick={handleCodeExecution}
             disabled={!!!checkLanguage(programmingLanguage)}
           >
             Run Code
           </Button>
+
           <FormControl fullWidth>
             <InputLabel id="programming-language-select-label">
               Programming Language
