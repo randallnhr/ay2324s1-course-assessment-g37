@@ -31,7 +31,7 @@
     "question   editor"
     "chat       code_output";
   grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr 1fr;
+  grid-template-rows: 2fr 1fr;
 }
 
 .grid_question {
@@ -56,4 +56,15 @@
 .grid_code_output {
   grid-area: code_output;
   overflow-y: auto;
+  border: 1px lightgrey solid;
+  padding-left: 10px;
+}
+
+.output_box {
+  background-color: lightgray;
+  border-radius: 5px;
+  padding: 5px;
+  min-height: 30px;
+  overflow-y: scroll;
+  max-height: 150px;
 }

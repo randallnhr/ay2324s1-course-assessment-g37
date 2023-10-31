@@ -13,13 +13,17 @@ import { useNavigate, useParams } from "react-router-dom";
 import CollabQuestionPage from "./CollabQuestionPage";
 import { QuestionComplexity } from "../types";
 import Chat from "../chat/Chat";
+import Output from "./Output";
 
 function CollaborationPage() {
-  const COLLAB_SERVICE_URL = import.meta.env.VITE_COLLAB_SERVICE_URL ?? "http://127.0.0.1:3111";
+  const COLLAB_SERVICE_URL =
+    import.meta.env.VITE_COLLAB_SERVICE_URL ?? "http://127.0.0.1:3111";
   const navigate = useNavigate();
   const { roomId, difficulty } = useParams();
   const [socket, setSocket] = useState<Socket>();
   const [modalText, setModalText] = useState<string>("");
+  const [stdout, setStdout] = useState<string>("");
+  const [isOutputLoading, setIsOutputLoading] = useState<boolean>(false);
 
   const handleEndSession = () => {
     if (!socket) return;
@@ -72,20 +76,24 @@ function CollaborationPage() {
         <div className={classes.grid_question}>
           <CollabQuestionPage difficulty={difficulty as QuestionComplexity} />
         </div>
-
         <div className={classes.grid_editor}>
-          <Editor socket={socket} />
+          <Editor
+            socket={socket}
+            setStdout={setStdout}
+            setIsOutputLoading={setIsOutputLoading}
+          />
         </div>
-
         <div className={classes.grid_chat}>
           <Chat socket={socket} />
         </div>
-
-        <div
-          className={classes.grid_code_output}
-          style={{ backgroundColor: "#64f4f4" }}
-        >
-          code output
+        <div className={classes.grid_code_output}>
+          {isOutputLoading ? (
+            <CircularProgress
+              style={{ position: "relative", top: "50%", left: "50%" }}
+            />
+          ) : (
+            <Output stdout={stdout} />
+          )}
         </div>
       </div>
 

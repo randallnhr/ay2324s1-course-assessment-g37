@@ -16,6 +16,13 @@ import JsPlugin from "prettier/plugins/estree";
 import TsPlugin from "prettier/plugins/typescript";
 import estree from "prettier/plugins/estree";
 import { Button } from "@mui/material";
+import useJudge0 from "../../hooks/useJudge0";
+
+interface EditorProps {
+  socket: Socket | undefined;
+  setStdout: React.Dispatch<React.SetStateAction<string>>;
+  setIsOutputLoading: React.Dispatch<React.SetStateAction<boolean>>;
+}
 
 const PROGRAMMING_LANGUAGES = [
   "xml",
@@ -60,14 +67,11 @@ const themeNames = ["atom-one-dark", "github-dark", "monokai", "dark"] as const;
 
 type ThemeNames = (typeof themeNames)[number];
 
-interface EditorProps {
-  socket: Socket | undefined;
-}
-
-function Editor({ socket }: EditorProps) {
+function Editor({ socket, setStdout, setIsOutputLoading }: EditorProps) {
   const [quill, setQuill] = useState<Quill | null>(null);
   const [programmingLanguage, setProgrammingLanguage] = useState("javascript");
   const [theme, setTheme] = useState<ThemeNames>("atom-one-dark");
+  const { sendSubmission, checkLanguage } = useJudge0();
 
   useEffect(() => {
     const editor = new Quill("#editor", {
@@ -162,17 +166,44 @@ function Editor({ socket }: EditorProps) {
       quill.formatText(0, quill.getLength(), { "code-block": true });
       quill.on("text-change", textChangeHandler);
     });
+
+    socket.on("server change language", (language) => {
+      setProgrammingLanguage(language);
+    });
   }, [socket, quill]);
 
   const handleProgrammingLanguageSelectChange = useCallback(
     (e: SelectChangeEvent) => {
+      if (socket == undefined) return;
       setProgrammingLanguage(e.target.value);
+      socket.emit("client change language", e.target.value);
     },
-    []
+    [socket]
   );
 
   const handleThemeSelectChange = useCallback((e: SelectChangeEvent) => {
     setTheme(e.target.value as ThemeNames);
+  }, []);
+
+  const handleCodeExecution = useCallback(() => {
+    if (quill == undefined) {
+      return;
+    }
+    setIsOutputLoading(true);
+    sendSubmission(quill.getText(), programmingLanguage).then((res) => {
+      if (res == undefined) return;
+      setIsOutputLoading(false);
+      if (res.stderr != null) {
+        setStdout(res.stderr);
+      } else {
+        setStdout([res.compile_output, res.stdout].join("\n").trim());
+      }
+    });
+  }, [quill, programmingLanguage]);
+
+  const handleSaveCode = useCallback(() => {
+    // TODO Handle save code
+    console.log("save code");
   }, []);
 
   const getStylesheet = useCallback(() => {
@@ -238,6 +269,14 @@ function Editor({ socket }: EditorProps) {
           }}
         >
           <Button
+            variant="contained"
+            style={{ minWidth: "140px" }}
+            onClick={handleSaveCode}
+          >
+            Save Code
+          </Button>
+
+          <Button
             onClick={() => {
               if (quill == undefined || socket == undefined) {
                 return;
@@ -253,7 +292,7 @@ function Editor({ socket }: EditorProps) {
               );
             }}
             variant="contained"
-            style={{ minWidth: "150px" }}
+            style={{ minWidth: "140px" }}
             disabled={
               programmingLanguage != "javascript" &&
               programmingLanguage != "typescript"
@@ -261,6 +300,16 @@ function Editor({ socket }: EditorProps) {
           >
             Format Code
           </Button>
+
+          <Button
+            variant="contained"
+            style={{ minWidth: "140px" }}
+            onClick={handleCodeExecution}
+            disabled={!!!checkLanguage(programmingLanguage)}
+          >
+            Run Code
+          </Button>
+
           <FormControl fullWidth>
             <InputLabel id="programming-language-select-label">
               Programming Language

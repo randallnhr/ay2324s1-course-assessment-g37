@@ -7,7 +7,7 @@ const FRONT_END_URL = process.env.FRONT_END_URL ?? "http://127.0.0.1:5173";
 
 const io = new Server(PORT, {
   cors: {
-    origin: FRONT_END_URL,
+    origin: [FRONT_END_URL, "http://localhost:5173"],
     credentials: true,
   },
 });
@@ -49,6 +49,10 @@ io.on("connection", (socket) => {
 
   socket.on("client code format", (code) => {
     socket.to(room).emit("server code format", code);
+  });
+
+  socket.on("client change language", (language) => {
+    socket.to(room).emit("server change language", language);
   });
 
   // chat events
