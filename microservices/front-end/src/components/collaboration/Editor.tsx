@@ -21,7 +21,7 @@ import useJudge0 from "../../hooks/useJudge0";
 interface EditorProps {
   socket: Socket | undefined;
   setStdout: React.Dispatch<React.SetStateAction<string>>;
-  setIsoutputLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsOutputLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const PROGRAMMING_LANGUAGES = [
@@ -67,7 +67,7 @@ const themeNames = ["atom-one-dark", "github-dark", "monokai", "dark"] as const;
 
 type ThemeNames = (typeof themeNames)[number];
 
-function Editor({ socket, setStdout, setIsoutputLoading }: EditorProps) {
+function Editor({ socket, setStdout, setIsOutputLoading }: EditorProps) {
   const [quill, setQuill] = useState<Quill | null>(null);
   const [programmingLanguage, setProgrammingLanguage] = useState("javascript");
   const [theme, setTheme] = useState<ThemeNames>("atom-one-dark");
@@ -185,6 +185,22 @@ function Editor({ socket, setStdout, setIsoutputLoading }: EditorProps) {
     setTheme(e.target.value as ThemeNames);
   }, []);
 
+  const handleCodeExecution = useCallback(() => {
+    if (quill == undefined) {
+      return;
+    }
+    setIsOutputLoading(true);
+    sendSubmission(quill.getText(), programmingLanguage).then((res) => {
+      if (res == undefined) return;
+      setIsOutputLoading(false);
+      if (res.stderr != null) {
+        setStdout(res.stderr);
+      } else {
+        setStdout([res.compile_output, res.stdout].join("\n").trim());
+      }
+    });
+  }, [quill, programmingLanguage]);
+
   const getStylesheet = useCallback(() => {
     switch (theme) {
       case "atom-one-dark":
@@ -275,25 +291,7 @@ function Editor({ socket, setStdout, setIsoutputLoading }: EditorProps) {
           <Button
             variant="contained"
             style={{ minWidth: "150px" }}
-            onClick={() => {
-              if (quill == undefined) {
-                return;
-              }
-              setIsoutputLoading(true);
-              sendSubmission(quill.getText(), programmingLanguage).then(
-                (res) => {
-                  if (res == undefined) return;
-                  setIsoutputLoading(false);
-                  if (res.stderr != null) {
-                    setStdout(res.stderr);
-                  } else {
-                    setStdout(
-                      [res.compile_output, res.stdout].join("\n").trim()
-                    );
-                  }
-                }
-              );
-            }}
+            onClick={handleCodeExecution}
             disabled={!!!checkLanguage(programmingLanguage)}
           >
             Run Code

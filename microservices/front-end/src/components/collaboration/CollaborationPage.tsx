@@ -80,7 +80,7 @@ function CollaborationPage() {
           <Editor
             socket={socket}
             setStdout={setStdout}
-            setIsoutputLoading={setIsOutputLoading}
+            setIsOutputLoading={setIsOutputLoading}
           />
         </div>
         <div className={classes.grid_chat}>
