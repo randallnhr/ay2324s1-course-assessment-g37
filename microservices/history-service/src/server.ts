@@ -50,12 +50,13 @@ app.get("/api/history/:username", async (req, res) => {
 });
 
 app.post("/api/history", async (req, res) => {
-  const { username, questionId, text } = req.body;
+  const { username, questionId, text, programmingLanguage } = req.body;
 
   if (
     username === undefined ||
     questionId === undefined ||
-    text === undefined
+    text === undefined ||
+    programmingLanguage === undefined
   ) {
     res.sendStatus(400);
     return;
@@ -63,9 +64,9 @@ app.post("/api/history", async (req, res) => {
 
   try {
     const query =
-      "INSERT INTO history(username, timestamp, question_id, text) VALUES ($1, $2, $3, $4)";
+      "INSERT INTO history(username, timestamp, question_id, text, programming_language) VALUES ($1, $2, $3, $4, $5)";
 
-    const _ = await pgQuery(query, [username, new Date(), questionId, text]);
+    const _ = await pgQuery(query, [username, new Date(), questionId, text, programmingLanguage]);
 
     res.sendStatus(200);
   } catch (error: any) {

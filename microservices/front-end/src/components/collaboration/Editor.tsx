@@ -17,6 +17,7 @@ import TsPlugin from "prettier/plugins/typescript";
 import estree from "prettier/plugins/estree";
 import { Button } from "@mui/material";
 import useJudge0 from "../../hooks/useJudge0";
+import SaveCodeDialog from "./SaveCodeDialog";
 
 interface EditorProps {
   socket: Socket | undefined;
@@ -121,12 +122,12 @@ function Editor({ socket, setStdout, setIsOutputLoading }: EditorProps) {
   }, [programmingLanguage]);
 
   useEffect(() => {
-    if (socket === undefined || quill == null) {
+    if (socket === undefined || quill === null) {
       return;
     }
 
     socket.on("room count", (count) => {
-      if (count == 2) {
+      if (count === 2) {
         quill.enable();
       } else {
         quill.disable();
@@ -182,7 +183,10 @@ function Editor({ socket, setStdout, setIsOutputLoading }: EditorProps) {
 
   const handleProgrammingLanguageSelectChange = useCallback(
     (e: SelectChangeEvent) => {
-      if (socket == undefined) return;
+      if (socket === undefined) {
+        return;
+      }
+
       setProgrammingLanguage(e.target.value);
       socket.emit("client change language", e.target.value);
     },
@@ -194,25 +198,64 @@ function Editor({ socket, setStdout, setIsOutputLoading }: EditorProps) {
   }, []);
 
   const handleCodeExecution = useCallback(() => {
-    if (quill == undefined) {
+    if (quill === null) {
       return;
     }
+
     setIsOutputLoading(true);
     sendSubmission(quill.getText(), programmingLanguage).then((res) => {
-      if (res == undefined) return;
+      if (res === undefined) {
+        return;
+      }
+
       setIsOutputLoading(false);
-      if (res.stderr != null) {
+      if (res.stderr !== null) {
         setStdout(res.stderr);
       } else {
         setStdout([res.compile_output, res.stdout].join("\n").trim());
       }
     });
-  }, [quill, programmingLanguage]);
+  }, [
+    quill,
+    programmingLanguage,
+    sendSubmission,
+    setIsOutputLoading,
+    setStdout,
+  ]);
 
-  const handleSaveCode = useCallback(() => {
-    // TODO Handle save code
-    console.log("save code");
+  const getFormatted = useCallback((text: string, language: string) => {
+    if (language === "javascript") {
+      return prettier.format(text, {
+        parser: "babel",
+        plugins: [BabelPlugin, JsPlugin],
+        semi: false,
+      });
+    }
+
+    if (language === "typescript") {
+      return prettier.format(text, {
+        parser: "typescript",
+        plugins: [TsPlugin, estree],
+        semi: false,
+      });
+    }
+
+    return Promise.resolve(text);
   }, []);
+
+  const handleFormatCode = useCallback(() => {
+    if (quill === null || socket === undefined) {
+      return;
+    }
+
+    getFormatted(quill.getText(), programmingLanguage).then((formattedCode) => {
+      quill.setText(formattedCode);
+      quill.formatText(0, quill.getLength(), {
+        "code-block": true,
+      });
+      socket.emit("client code format", quill.getContents());
+    });
+  }, [getFormatted, programmingLanguage, quill, socket]);
 
   const getStylesheet = useCallback(() => {
     switch (theme) {
@@ -247,22 +290,9 @@ function Editor({ socket, setStdout, setIsOutputLoading }: EditorProps) {
     }
   }, [theme]);
 
-  const getFormatted = useCallback((text: string, language: string) => {
-    if (language == "javascript") {
-      return prettier.format(text, {
-        parser: "babel",
-        plugins: [BabelPlugin, JsPlugin],
-        semi: false,
-      });
-    } else if (language == "typescript") {
-      return prettier.format(text, {
-        parser: "typescript",
-        plugins: [TsPlugin, estree],
-        semi: false,
-      });
-    }
-    return Promise.resolve(text);
-  }, []);
+  const getTextFunction = useCallback(() => {
+    return quill?.getText();
+  }, [quill]);
 
   return (
     <>
@@ -276,34 +306,18 @@ function Editor({ socket, setStdout, setIsOutputLoading }: EditorProps) {
             margin: "1rem 0",
           }}
         >
-          <Button
-            variant="contained"
-            style={{ minWidth: "140px" }}
-            onClick={handleSaveCode}
-          >
-            Save Code
-          </Button>
+          <SaveCodeDialog
+            getTextFunction={getTextFunction}
+            programmingLanguage={programmingLanguage}
+          />
 
           <Button
-            onClick={() => {
-              if (quill == undefined || socket == undefined) {
-                return;
-              }
-              getFormatted(quill.getText(), programmingLanguage).then(
-                (formattedCode) => {
-                  quill.setText(formattedCode);
-                  quill.formatText(0, quill.getLength(), {
-                    "code-block": true,
-                  });
-                  socket.emit("client code format", quill.getContents());
-                }
-              );
-            }}
+            onClick={handleFormatCode}
             variant="contained"
             style={{ minWidth: "140px" }}
             disabled={
-              programmingLanguage != "javascript" &&
-              programmingLanguage != "typescript"
+              programmingLanguage !== "javascript" &&
+              programmingLanguage !== "typescript"
             }
           >
             Format Code
@@ -313,7 +327,7 @@ function Editor({ socket, setStdout, setIsOutputLoading }: EditorProps) {
             variant="contained"
             style={{ minWidth: "140px" }}
             onClick={handleCodeExecution}
-            disabled={!!!checkLanguage(programmingLanguage)}
+            disabled={!checkLanguage(programmingLanguage)}
           >
             Run Code
           </Button>

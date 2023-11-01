@@ -4,10 +4,12 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 interface HistoryPageItemFullTextProps {
   text: string;
+  programmingLanguage: string;
 }
 
 function HistoryPageItemFullText({
   text,
+  programmingLanguage,
 }: HistoryPageItemFullTextProps): JSX.Element {
   const [displayedText, setDisplayedText] = useState("");
   const [isFullTextShown, setIsFullTextShown] = useState(true);
@@ -89,7 +91,7 @@ function HistoryPageItemFullText({
         }}
         ref={ref}
         onClick={handleClick}
-        className="language-typescript"
+        className={`language-${programmingLanguage}`}
       >
         {displayedText}
       </code>
