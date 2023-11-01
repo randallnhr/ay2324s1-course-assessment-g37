@@ -37,10 +37,16 @@ io.on("connection", (socket) => {
   // emit number of clients in room to ensure room is ready
   io.in(room).emit("room count", io.sockets.adapter.rooms.get(room)?.size);
 
-  // Request for any exisiting code
+  // Request for any existing code
   socket.broadcast.to(room).emit("request code", socket.id);
   socket.on("send code", (id, code) => {
     io.to(id).emit("receive code", code);
+  });
+
+  // Request for current programming language when user joins room
+  socket.broadcast.to(room).emit("request language", socket.id);
+  socket.on("send language", (id, code) => {
+    io.to(id).emit("receive language", code);
   });
 
   socket.on("client code changes", (delta) => {

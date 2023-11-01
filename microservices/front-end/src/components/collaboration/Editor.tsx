@@ -141,6 +141,14 @@ function Editor({ socket, setStdout, setIsOutputLoading }: EditorProps) {
       quill.setContents(delta);
     });
 
+    socket.on("request language", (id) => {
+      socket.emit("send language", id, programmingLanguage);
+    });
+
+    socket.on("receive language", (programmingLanguage) => {
+      setProgrammingLanguage(programmingLanguage);
+    });
+
     const textChangeHandler: TextChangeHandler = (
       delta,
       _oldContents,
