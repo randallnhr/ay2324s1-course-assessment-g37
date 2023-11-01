@@ -87,7 +87,7 @@ services:
       context: ./microservices/collaboration-service
       dockerfile: Dockerfile.collab
     environment:
-      FRONT_END_URL: http://54.255.211.247:8080
+      FRONT_END_URL: http://192.168.1.26:8080
       PORT: 3111
     ports:
       - "3111:3111"

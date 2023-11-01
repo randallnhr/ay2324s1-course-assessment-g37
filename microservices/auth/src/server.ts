@@ -115,7 +115,7 @@ const corsOptions = {
   credentials: true
 }
 app.use(cors(corsOptions));
-app.use(express.static('frontend/dist'));
+app.use(express.static('front-end/dist'));
 app.use(express.json());
 
 // express-session middleware must be set up before passport middleware
@@ -623,8 +623,8 @@ app.post("/api/history", async (req, res) => {
 // miscellaneous
 // ============================================================================
 
-app.get("/", (req, res) => {
-  res.send("rainbow");
+app.get('*', function(req, res) {
+  res.redirect('/');
 });
 
 // ============================================================================
