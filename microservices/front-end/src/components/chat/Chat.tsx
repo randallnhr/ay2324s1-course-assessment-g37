@@ -44,18 +44,18 @@ const Chat: FC<ChatProps> = ({ socket }) => {
   };
 
   const messageSendHandler = (
-    _innerHtml: string,
+    innerHtml: string,
     _textContent: string,
-    innerText: string
+    _innerText: string
   ) => {
     const currentTime = get24HourTime();
     const SELF_REFERENCE = "You";
 
-    insertMessage(innerText, currentTime, SELF_REFERENCE, "outgoing");
+    insertMessage(innerHtml, currentTime, SELF_REFERENCE, "outgoing");
 
     socket?.emit(
       "send message",
-      innerText,
+      innerHtml,
       currentTime,
       currentUser.displayName
     );
