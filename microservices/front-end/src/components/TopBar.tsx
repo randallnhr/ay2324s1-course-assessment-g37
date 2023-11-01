@@ -44,7 +44,7 @@ const TopBar: React.FC = () => {
 
   const handleSignout = () => {
     axios
-      .delete(`${authServiceUrl}/api/auth/log-out`)
+      .delete(`${authServiceUrl}/api/auth/log-out`, { withCredentials: true })
       .then((response) => {
         if (response.status === 200) {
           // reset user context
@@ -63,7 +63,7 @@ const TopBar: React.FC = () => {
       <AppBar position="static">
         <Toolbar>
           <Typography fontSize="1.5rem" style={{ flexGrow: 1 }}>
-            HOME
+            PeerPrep
           </Typography>
           <Button color="inherit" onClick={handleFindMatch}>
             Find Match

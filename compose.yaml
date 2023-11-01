@@ -42,17 +42,34 @@ services:
     environment:
       AUTH_MONGODB_URI: /run/secrets/AUTH_MONGODB_URI
       AUTH_SESSION_SECRET: /run/secrets/AUTH_SESSION_SECRET
+      # the following line is only for development purposes
+      # FRONT_END_URL: http://localhost:5173
       FRONT_END_URL: http://192.168.1.26:5173
       USER_SERVICE_URL: http://user-server:3219
       QUESTION_SERVICE_URL: http://question-server:3001
+      HISTORY_SERVICE_URL: http://history-server:7999
       RABBITMQ_URL: amqp://rabbitmq:5672
     secrets:
       - AUTH_MONGODB_URI
       - AUTH_SESSION_SECRET
-    depends_on:
-      - user-server
-      - question-server
-      - matching-server
+
+  history-server:
+    container_name: history-server
+    build:
+      context: ./microservices/history-service
+      dockerfile: Dockerfile.history
+    ports:
+      - "7999:7999"
+    environment:
+      PGHOST: /run/secrets/HISTORY_HOST
+      PGDATABASE: postgres
+      PGPORT: 5432
+      PGUSER: /run/secrets/HISTORY_USERNAME
+      PGPASSWORD: /run/secrets/HISTORY_PASSWORD
+    secrets:
+      - HISTORY_USERNAME
+      - HISTORY_PASSWORD
+      - HISTORY_HOST
 
   matching-server:
     container_name: matching-server
@@ -95,3 +112,9 @@ secrets:
     file: ./secrets/user_service_password.txt
   USER_HOST:
     file: ./secrets/user_service_host.txt
+  HISTORY_USERNAME:
+    file: ./secrets/history_service_username.txt
+  HISTORY_PASSWORD:
+    file: ./secrets/history_service_password.txt
+  HISTORY_HOST:
+    file: ./secrets/history_service_host.txt

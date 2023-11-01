@@ -3,6 +3,7 @@ export interface PgHistoryItem {
   timestamp: Date;
   question_id: string;
   text: string;
+  programming_language: string;
 }
 
 export interface JsHistoryItem {
@@ -10,4 +11,5 @@ export interface JsHistoryItem {
   timestamp: Date;
   questionId: string;
   text: string;
+  programmingLanguage: string;
 }

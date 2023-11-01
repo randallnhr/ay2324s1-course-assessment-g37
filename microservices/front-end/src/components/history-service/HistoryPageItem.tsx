@@ -4,9 +4,10 @@ import { HistoryItem } from "../types";
 import HistoryPageItemFullText from "./HistoryPageItemFullText";
 
 interface HistoryPageItemProps {
+  timestamp: HistoryItem["timestamp"];
   questionId: HistoryItem["questionId"];
   text: HistoryItem["text"];
-  timestamp: HistoryItem["timestamp"];
+  programmingLanguage: HistoryItem["programmingLanguage"];
   index: number;
 }
 
@@ -15,9 +16,10 @@ const tdStyle: CSSProperties = {
 };
 
 function HistoryPageItem({
+  timestamp,
   questionId,
   text,
-  timestamp,
+  programmingLanguage,
   index,
 }: HistoryPageItemProps): JSX.Element {
   const question = useAppSelector((state) => {
@@ -36,7 +38,10 @@ function HistoryPageItem({
       )}
 
       <td style={tdStyle}>
-        <HistoryPageItemFullText text={text} />
+        <HistoryPageItemFullText
+          text={text}
+          programmingLanguage={programmingLanguage}
+        />
       </td>
       <td style={{ ...tdStyle, textAlign: "right" }}>
         {new Date(timestamp).toLocaleString("en-GB")}

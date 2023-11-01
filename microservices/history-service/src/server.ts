@@ -4,6 +4,7 @@ import express from "express";
 import { pgQuery } from "./db";
 import { PgHistoryItem } from "./types";
 import { convertFromPgToJs } from "./utilities/convertFromPgToJs";
+import fs from "fs";
 
 dotenv.config();
 
@@ -16,6 +17,18 @@ if (
 ) {
   throw new Error("dotenv is not configured!");
 }
+
+process.env.PGHOST = fs.existsSync(process.env.PGHOST)
+  ? fs.readFileSync(process.env.PGHOST, "utf-8").trim()
+  : process.env.PGHOST;
+
+process.env.PGUSER = fs.existsSync(process.env.PGUSER)
+  ? fs.readFileSync(process.env.PGUSER, "utf-8").trim()
+  : process.env.PGUSER;
+
+process.env.PGPASSWORD = fs.existsSync(process.env.PGPASSWORD)
+  ? fs.readFileSync(process.env.PGPASSWORD, "utf-8").trim()
+  : process.env.PGPASSWORD;
 
 const PORT = process.env.PORT !== undefined ? Number(process.env.PORT) : 7999;
 
@@ -50,12 +63,13 @@ app.get("/api/history/:username", async (req, res) => {
 });
 
 app.post("/api/history", async (req, res) => {
-  const { username, questionId, text } = req.body;
+  const { username, questionId, text, programmingLanguage } = req.body;
 
   if (
     username === undefined ||
     questionId === undefined ||
-    text === undefined
+    text === undefined ||
+    programmingLanguage === undefined
   ) {
     res.sendStatus(400);
     return;
@@ -63,9 +77,9 @@ app.post("/api/history", async (req, res) => {
 
   try {
     const query =
-      "INSERT INTO history(username, timestamp, question_id, text) VALUES ($1, $2, $3, $4)";
+      "INSERT INTO history(username, timestamp, question_id, text, programming_language) VALUES ($1, $2, $3, $4, $5)";
 
-    const _ = await pgQuery(query, [username, new Date(), questionId, text]);
+    const _ = await pgQuery(query, [username, new Date(), questionId, text, programmingLanguage]);
 
     res.sendStatus(200);
   } catch (error: any) {

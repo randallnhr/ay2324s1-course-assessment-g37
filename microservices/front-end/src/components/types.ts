@@ -22,24 +22,24 @@ export interface NewQuestion {
 }
 
 export type FindMatchRequest = {
-  userId: string
-  complexity: QuestionComplexity
-}
+  userId: string;
+  complexity: QuestionComplexity;
+};
 
 export type CancelMatchRequest = {
-  userId: string
-  complexity: null
-}
+  userId: string;
+  complexity: null;
+};
 
-export type MatchRequest = FindMatchRequest | CancelMatchRequest
+export type MatchRequest = FindMatchRequest | CancelMatchRequest;
 
 export type MatchResponse = FindMatchRequest & {
-  roomId:  string
-}
+  roomId: string;
+};
 
 export type SocketEventHandlers = {
-    [event: string]: () => void
-}
+  [event: string]: () => void;
+};
 
 // I must define this RootState here, somehow HistoryPage state is
 // able to crrectly recognise the state, while mine in MainQuestionBank asks for explicit type
@@ -60,4 +60,5 @@ export interface HistoryItem {
   timestamp: string;
   questionId: string;
   text: string;
+  programmingLanguage: string;
 }

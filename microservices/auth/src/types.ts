@@ -11,7 +11,7 @@ export interface UserWithoutPassword {
   role: "basic" | "admin";
 }
 
-export type Complexity = 'Easy' | 'Medium' | 'Hard';
+export type Complexity = "Easy" | "Medium" | "Hard";
 
 export interface Question {
   _id: string;
@@ -22,24 +22,25 @@ export interface Question {
 }
 
 export type FindMatchRequest = {
-  userId: string
-  complexity: Complexity
-}
+  userId: string;
+  complexity: Complexity;
+};
 
 export type CancelMatchRequest = {
-  userId: string
-  complexity: null
-}
+  userId: string;
+  complexity: null;
+};
 
-export type MatchRequest = FindMatchRequest | CancelMatchRequest
+export type MatchRequest = FindMatchRequest | CancelMatchRequest;
 
 export type MatchResponse = FindMatchRequest & {
-  roomId: string
-}
+  roomId: string;
+};
 
 export interface HistoryItem {
   username: string;
   timestamp: string;
   questionId: string;
   text: string;
+  programmingLanguage: string;
 }

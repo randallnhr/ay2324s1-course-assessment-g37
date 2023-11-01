@@ -54,7 +54,9 @@ const ProfilePage: React.FC = () => {
 
     axios
       // Should use `` instead of ""! "" will take ${user.username} literally, while `` will parse it
-      .delete(`${authServiceUrl}/api/users/${currentUser.username}`)
+      .delete(`${authServiceUrl}/api/users/${currentUser.username}`, {
+        withCredentials: true,
+      })
       .then((response) => {
         if (response.status === 200) {
           setCurrentUser({} as User);

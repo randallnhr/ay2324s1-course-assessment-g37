@@ -36,9 +36,10 @@ function HistoryPage(): JSX.Element {
             <HistoryPageItem
               key={`${each.username}::${each.timestamp}::${each.questionId}`}
               index={index}
+              timestamp={each.timestamp}
               questionId={each.questionId}
               text={each.text}
-              timestamp={each.timestamp}
+              programmingLanguage={each.programmingLanguage}
             />
           ))}
         </tbody>
