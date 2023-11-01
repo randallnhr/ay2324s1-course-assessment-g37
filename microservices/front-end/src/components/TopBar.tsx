@@ -63,7 +63,7 @@ const TopBar: React.FC = () => {
       <AppBar position="static">
         <Toolbar>
           <Typography fontSize="1.5rem" style={{ flexGrow: 1 }}>
-            HOME
+            PeerPrep
           </Typography>
           <Button color="inherit" onClick={handleFindMatch}>
             Find Match
