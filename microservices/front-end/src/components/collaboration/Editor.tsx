@@ -248,13 +248,18 @@ function Editor({ socket, setStdout, setIsOutputLoading }: EditorProps) {
       return;
     }
 
-    getFormatted(quill.getText(), programmingLanguage).then((formattedCode) => {
-      quill.setText(formattedCode);
-      quill.formatText(0, quill.getLength(), {
-        "code-block": true,
+    getFormatted(quill.getText(), programmingLanguage)
+      .then((formattedCode) => {
+        quill.setText(formattedCode);
+        quill.formatText(0, quill.getLength(), {
+          "code-block": true,
+        });
+        socket.emit("client code format", quill.getContents());
+        setStdout("Code formatted successfully!");
+      })
+      .catch((err) => {
+        setStdout(err.message);
       });
-      socket.emit("client code format", quill.getContents());
-    });
   }, [getFormatted, programmingLanguage, quill, socket]);
 
   const getStylesheet = useCallback(() => {
