@@ -84,8 +84,6 @@ const Register: React.FC = () => {
         navigate("/login");
       }
     } catch (error: unknown) {
-     
-
       if (axios.isAxiosError(error)) {
         if (error.response?.status === 422) {
           // Status code for repetitive account
