@@ -11,7 +11,13 @@ import { Strategy as LocalStrategy } from "passport-local";
 import fs from "fs";
 import { Server } from "socket.io";
 import { sendMatchRequest, isMatchRequest } from "./matchingService";
-import { HistoryItem, Question, User, UserWithoutPassword } from "./types";
+import {
+  HistoryItem,
+  Output,
+  Question,
+  User,
+  UserWithoutPassword,
+} from "./types";
 
 dotenv.config();
 
@@ -42,6 +48,7 @@ const QUESTION_SERVICE_URL =
   process.env.QUESTION_SERVICE_URL ?? "http://localhost:3001";
 const HISTORY_SERVICE_URL =
   process.env.HISTORY_SERVICE_URL ?? "http://localhost:7999";
+const JUDGE0_URL = process.env.VITE_JUDGE0_URL ?? "http://localhost:2358";
 
 const EVENT_FIND_MATCH = "match";
 const EVENT_MATCH_FOUND = "match found";
@@ -112,10 +119,10 @@ passport.deserializeUser(async (username: string, done) => {
 const app = express();
 const corsOptions = {
   origin: FRONT_END_URL,
-  credentials: true
-}
+  credentials: true,
+};
 app.use(cors(corsOptions));
-app.use(express.static('front-end/dist'));
+app.use(express.static("front-end/dist"));
 app.use(express.json());
 
 // express-session middleware must be set up before passport middleware
@@ -611,8 +618,8 @@ app.post("/api/history", async (req, res) => {
 // front end
 // ============================================================================
 
-app.get('*', function(req, res) {
-  res.sendFile(path.join(__dirname, '..', 'front-end', 'dist', 'index.html'));
+app.get("*", function (req, res) {
+  res.sendFile(path.join(__dirname, "..", "front-end", "dist", "index.html"));
 });
 
 // ============================================================================
@@ -653,4 +660,32 @@ socketIo.on("connection", (socket) => {
 
 server.listen(PORT, "::", () => {
   console.log(`Listening on http://localhost:${PORT}`);
+});
+
+// ============================================================================
+// code execution service
+// ============================================================================
+
+app.post("/api/execute", async (req, res) => {
+  if (!req.isAuthenticated()) {
+    res.sendStatus(401);
+    return;
+  }
+
+  try {
+    const queryParams = new URLSearchParams({
+      base64_encoded: "true",
+      wait: "true",
+    }).toString();
+    const response = await fetch(`${JUDGE0_URL}/submissions?${queryParams}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(req.body),
+    });
+    return res.status(200).json((await response.json()) as Output);
+  } catch (error) {
+    return res.status(500).json({ error: error });
+  }
 });

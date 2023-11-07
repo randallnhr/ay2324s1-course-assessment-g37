@@ -2,14 +2,15 @@ import axios from "axios";
 import { useCallback } from "react";
 
 interface Output {
-  stdout: string;
-  stderr: string;
-  compile_output: string;
+  stdout: string | null;
+  stderr: string | null;
+  compile_output: string | null;
   message: string;
   time: string;
 }
 
-const JUDGE0_URL = import.meta.env.VITE_JUDGE0_URL ?? "http://localhost:2358";
+const AUTH_SERVICE_URL =
+  import.meta.env.VITE_AUTH_SERVICE_URL ?? "http://localhost:8080";
 
 const languages: Map<string, number> = new Map([
   ["bash", 46],
@@ -59,8 +60,8 @@ const useJudge0 = () => {
       try {
         if (code.length <= 1) {
           return {
-            stdout: "",
-            stderr: "",
+            stdout: null,
+            stderr: null,
             compile_output: "No code to run",
             message: "",
             time: "",
@@ -68,20 +69,12 @@ const useJudge0 = () => {
         }
         const language_id = languages.get(language);
         const { data } = await axios.post(
-          JUDGE0_URL + "/submissions",
+          AUTH_SERVICE_URL + "/api/execute",
           {
             source_code: encode(code),
             language_id: language_id,
           },
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-            params: {
-              base64_encoded: "true",
-              wait: "true",
-            },
-          }
+          { withCredentials: true }
         );
         return {
           stdout: decode(data.stdout),
