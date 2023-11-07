@@ -159,3 +159,8 @@ button:focus-visible {
   width: 80%;
   margin: auto;
 }
+
+.wrapText > * {
+  /* the code snippets in the question details should wrap */
+  text-wrap: wrap;
+}
