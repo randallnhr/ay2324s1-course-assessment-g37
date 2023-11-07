@@ -37,11 +37,11 @@ export function fetchHistory(
 
     const historyItems: HistoryItem[] = await res.json();
 
-    // sort in place by earliest attempt first
+    // sort in place by latest attempt first
     historyItems.sort((a, b) => {
       const dateA = new Date(a.timestamp);
       const dateB = new Date(b.timestamp);
-      return dateA.getTime() - dateB.getTime();
+      return dateB.getTime() - dateA.getTime();
     });
 
     dispatch(_setHistoryItems(historyItems));
