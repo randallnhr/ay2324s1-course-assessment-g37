@@ -24,7 +24,6 @@ const Login: React.FC = () => {
   const { currentUser, setCurrentUser } = useUserContext();
 
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
 
   const navigate = useNavigate();
   const isAuthenticated =
@@ -68,10 +67,10 @@ const Login: React.FC = () => {
         dispatch(fetchHistory(userData.username));
         console.log(historyItems);
 
-        setSuccess("Successfully logged in!");
+   
       }
     } catch (error: unknown) {
-      setSuccess(null);
+    
 
       if (axios.isAxiosError(error)) {
         setError("Incorrect user credentials!");
@@ -153,7 +152,6 @@ const Login: React.FC = () => {
               password={password}
               error={error}
               onErrorChange={setError}
-              success={success}
             />
           </Card>
         </div>
