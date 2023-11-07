@@ -326,7 +326,7 @@ const QuestionTable: React.FC<QuestionTableProps> = ({
             {expandedQuestionId === question._id && (
               <tr>
                 <td colSpan={4}>
-                  <div
+                  <div className={styles.wrapText}
                     dangerouslySetInnerHTML={{
                       __html: question.description,
                     }}

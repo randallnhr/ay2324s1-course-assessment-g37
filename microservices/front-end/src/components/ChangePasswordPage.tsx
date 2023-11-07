@@ -20,7 +20,6 @@ const ChangePasswordPage: React.FC = () => {
   const [confirmPassword, setConfirmPassword] = useState<string>("");
 
   const [error, setError] = useState<string | null>(null);
-  const success = true;
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const navigate = useNavigate();
@@ -147,16 +146,6 @@ const ChangePasswordPage: React.FC = () => {
             <Alert severity="error" onClose={() => setError(null)}>
               <AlertTitle>Change Password Error</AlertTitle>
               {error}
-            </Alert>
-          </Box>
-        )}
-
-        {/* Provide feedback when success */}
-        {success && (
-          <Box mb={2}>
-            <Alert severity="success">
-              <AlertTitle>Change Password Success</AlertTitle>
-              {success}
             </Alert>
           </Box>
         )}

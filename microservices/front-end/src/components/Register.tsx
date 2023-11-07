@@ -22,7 +22,6 @@ const Register: React.FC = () => {
   const { currentUser } = useUserContext();
 
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -85,8 +84,6 @@ const Register: React.FC = () => {
         navigate("/login");
       }
     } catch (error: unknown) {
-      setSuccess(null);
-
       if (axios.isAxiosError(error)) {
         if (error.response?.status === 422) {
           // Status code for repetitive account
@@ -182,7 +179,6 @@ const Register: React.FC = () => {
               confirmPassword={confirmPassword}
               error={error}
               onErrorChange={setError}
-              success={success}
               isSubmitting={isSubmitting}
             />
           </Card>

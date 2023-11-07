@@ -20,7 +20,6 @@ interface AuthRegisterProps {
   confirmPassword: string;
   error: string | null;
   onErrorChange: (error: string | null) => void;
-  success: string | null;
   isSubmitting: boolean;
 }
 
@@ -39,7 +38,6 @@ const AuthRegister: FC<AuthRegisterProps> = ({
   confirmPassword,
   error,
   onErrorChange,
-  success,
   isSubmitting,
 }) => (
   <Box display="flex" flexDirection="column">
@@ -145,16 +143,6 @@ const AuthRegister: FC<AuthRegisterProps> = ({
             <Alert severity="error" onClose={() => onErrorChange(null)}>
               <AlertTitle>Registeration Error</AlertTitle>
               {error}
-            </Alert>
-          </Box>
-        )}
-
-        {/* Provide feedback when success */}
-        {success && (
-          <Box mt={2}>
-            <Alert severity="success">
-              <AlertTitle>Sign-up Success</AlertTitle>
-              {success}
             </Alert>
           </Box>
         )}

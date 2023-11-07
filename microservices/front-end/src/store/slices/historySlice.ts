@@ -29,6 +29,12 @@ export function fetchHistory(
       credentials: "include",
     });
 
+    if (res.status === 204) {
+      // this user has no attempts
+      dispatch(_setHistoryItems([]));
+      return;
+    }
+
     const historyItems: HistoryItem[] = await res.json();
 
     // sort in place by earliest attempt first

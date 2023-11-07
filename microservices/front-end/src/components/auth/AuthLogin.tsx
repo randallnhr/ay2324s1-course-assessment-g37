@@ -16,7 +16,6 @@ interface AuthLoginProps {
   password: string;
   error: string | null;
   onErrorChange: (error: string | null) => void;
-  success: string | null;
 }
 
 const AuthLogin: FC<AuthLoginProps> = ({
@@ -30,7 +29,6 @@ const AuthLogin: FC<AuthLoginProps> = ({
   password,
   error,
   onErrorChange,
-  success,
 }) => (
   <>
     {title ? (
@@ -100,16 +98,6 @@ const AuthLogin: FC<AuthLoginProps> = ({
           <Alert severity="error" onClose={() => onErrorChange(null)}>
             <AlertTitle>Sign-in Error</AlertTitle>
             {error}
-          </Alert>
-        </Box>
-      )}
-
-      {/* Provide feedback when success */}
-      {success && (
-        <Box mb={2}>
-          <Alert severity="success">
-            <AlertTitle>Sign-in Success</AlertTitle>
-            {success}
           </Alert>
         </Box>
       )}

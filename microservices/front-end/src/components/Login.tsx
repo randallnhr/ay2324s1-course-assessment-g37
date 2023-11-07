@@ -5,7 +5,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useUserContext } from "../UserContext";
 import { User } from "./types";
-import { useAppDispatch, useAppSelector } from "../store/hook";
+import { useAppDispatch } from "../store/hook";
 import { fetchQuestions } from "../store/slices/questionsSlice";
 import { fetchHistory } from "../store/slices/historySlice";
 // components
@@ -15,16 +15,11 @@ import authServiceUrl from "../utility/authServiceUrl";
 
 const Login: React.FC = () => {
   const dispatch = useAppDispatch();
-  const questions = useAppSelector((state) => state.questions);
-
-  const historyItems = useAppSelector((state) => state.history);
-
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const { currentUser, setCurrentUser } = useUserContext();
 
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
 
   const navigate = useNavigate();
   const isAuthenticated =
@@ -56,23 +51,12 @@ const Login: React.FC = () => {
       if (response.status === 200) {
         const userData: User = response.data;
         setCurrentUser(userData);
-        console.log("Current user set");
-        console.log(userData.username);
-        // navigate("/question-bank");
 
         // fetch the question and history here
-        const fetchedQuestions = await dispatch(fetchQuestions());
-        console.log(fetchedQuestions);
-        console.log(questions);
-
+        dispatch(fetchQuestions());
         dispatch(fetchHistory(userData.username));
-        console.log(historyItems);
-
-        setSuccess("Successfully logged in!");
       }
     } catch (error: unknown) {
-      setSuccess(null);
-
       if (axios.isAxiosError(error)) {
         setError("Incorrect user credentials!");
       } else {
@@ -153,7 +137,6 @@ const Login: React.FC = () => {
               password={password}
               error={error}
               onErrorChange={setError}
-              success={success}
             />
           </Card>
         </div>

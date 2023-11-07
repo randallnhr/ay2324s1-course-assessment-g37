@@ -18,7 +18,6 @@ const ChangeDisplayName: React.FC = () => {
   const [displayName, setDisplayName] = useState<string>("");
 
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -77,7 +76,6 @@ const ChangeDisplayName: React.FC = () => {
       }
     } catch (error: unknown) {
       // display name can just allow update
-      setSuccess(null);
       setError("Changing of display name failed");
       console.error("An unknown error occurred:", error);
     } finally {
@@ -116,16 +114,6 @@ const ChangeDisplayName: React.FC = () => {
             <Alert severity="error" onClose={() => setError(null)}>
               <AlertTitle>Change Display Name Error</AlertTitle>
               {error}
-            </Alert>
-          </Box>
-        )}
-
-        {/* Provide feedback when success */}
-        {success && (
-          <Box mb={2}>
-            <Alert severity="success">
-              <AlertTitle>Change Display Name Success</AlertTitle>
-              {success}
             </Alert>
           </Box>
         )}
