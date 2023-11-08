@@ -14,9 +14,10 @@ import Select, { SelectChangeEvent } from "@mui/material/Select";
 import axios from "axios";
 import { useCallback, useState } from "react";
 import { useUserContext } from "../../UserContext";
-import { useAppSelector } from "../../store/hook";
+import { useAppDispatch, useAppSelector } from "../../store/hook";
 import { selectSortedFilteredQuestions } from "../../store/slices/questionFilterSlice";
 import authServiceUrl from "../../utility/authServiceUrl";
+import { setIsDirtyEditor } from "../../store/slices/isDirtyEditorSlice";
 
 interface SaveCodeDialogProps {
   getTextFunction: () => string | undefined;
@@ -27,6 +28,7 @@ function SaveCodeDialog({
   getTextFunction,
   programmingLanguage,
 }: SaveCodeDialogProps): JSX.Element {
+  const dispatch = useAppDispatch();
   const sortedQuestions = useAppSelector(selectSortedFilteredQuestions);
   const [open, setOpen] = useState(false);
   const [isPostingToHistoryService, setIsPostingToHistoryService] =
@@ -79,6 +81,7 @@ function SaveCodeDialog({
 
       if (response.status === 200) {
         handleClose();
+        dispatch(setIsDirtyEditor(false));
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -88,7 +91,14 @@ function SaveCodeDialog({
         console.error(error);
       }
     }
-  }, [currentUser.username, handleClose, questionId, getTextFunction]);
+  }, [
+    currentUser.username,
+    handleClose,
+    questionId,
+    getTextFunction,
+    programmingLanguage,
+    dispatch,
+  ]);
 
   const handleQuestionIdSelectChange = useCallback(
     (e: SelectChangeEvent<string>) => {

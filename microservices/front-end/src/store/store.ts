@@ -4,8 +4,9 @@ import questionsReducer from "./slices/questionsSlice";
 import historyReducer from "./slices/historySlice";
 import questionFilterReducer from "./slices/questionFilterSlice";
 import categoryFilterReducer from "./slices/categoryFilterSlice";
-import addFormReducer from './slices/addFormSlice';
+import addFormReducer from "./slices/addFormSlice";
 import questionTableReducer from "./slices/questionTableSlice";
+import isDirtyEditorReducer from "./slices/isDirtyEditorSlice";
 
 export const store = configureStore({
   reducer: {
@@ -15,7 +16,8 @@ export const store = configureStore({
     questionFilter: questionFilterReducer,
     categoryFilter: categoryFilterReducer,
     addForm: addFormReducer,
-    questionTable: questionTableReducer
+    questionTable: questionTableReducer,
+    isDirtyEditor: isDirtyEditorReducer,
   },
 });
 

@@ -18,6 +18,8 @@ import estree from "prettier/plugins/estree";
 import { Button } from "@mui/material";
 import useJudge0 from "../../hooks/useJudge0";
 import SaveCodeDialog from "./SaveCodeDialog";
+import { useAppDispatch } from "../../store/hook";
+import { setIsDirtyEditor } from "../../store/slices/isDirtyEditorSlice";
 
 interface EditorProps {
   socket: Socket | undefined;
@@ -55,6 +57,7 @@ const themeNames = ["atom-one-dark", "github-dark", "monokai", "dark"] as const;
 type ThemeNames = (typeof themeNames)[number];
 
 function Editor({ socket, setStdout, setIsOutputLoading }: EditorProps) {
+  const dispatch = useAppDispatch();
   const [quill, setQuill] = useState<Quill | null>(null);
   const [programmingLanguage, setProgrammingLanguage] = useState("javascript");
   const [theme, setTheme] = useState<ThemeNames>("atom-one-dark");
@@ -141,6 +144,8 @@ function Editor({ socket, setStdout, setIsOutputLoading }: EditorProps) {
       _oldContents,
       source
     ) => {
+      dispatch(setIsDirtyEditor(true));
+
       if (source === "user") {
         // quill.formatText(0, quill.getLength(), { "code-block": true });
         socket.emit("client code changes", delta);
@@ -165,7 +170,7 @@ function Editor({ socket, setStdout, setIsOutputLoading }: EditorProps) {
     socket.on("server change language", (language) => {
       setProgrammingLanguage(language);
     });
-  }, [socket, quill]);
+  }, [socket, quill, programmingLanguage, dispatch]);
 
   const handleProgrammingLanguageSelectChange = useCallback(
     (e: SelectChangeEvent) => {
@@ -246,7 +251,7 @@ function Editor({ socket, setStdout, setIsOutputLoading }: EditorProps) {
       .catch((err) => {
         setStdout(err.message);
       });
-  }, [getFormatted, programmingLanguage, quill, socket]);
+  }, [getFormatted, programmingLanguage, quill, socket, setStdout]);
 
   const getStylesheet = useCallback(() => {
     switch (theme) {
