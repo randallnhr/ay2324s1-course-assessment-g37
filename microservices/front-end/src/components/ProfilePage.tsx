@@ -107,7 +107,11 @@ const ProfilePage: React.FC = () => {
         >
           Change Display Name
         </button>
-        <button className={styles.action_button} onClick={handleOpenDialog}>
+        <button
+          className={styles.action_button}
+          onClick={handleOpenDialog}
+          style={{ color: "#e40000" }}
+        >
           Delete Account
         </button>
 
@@ -136,7 +140,7 @@ const ProfilePage: React.FC = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialog}>Cancel</Button>
-          <Button onClick={handleDelete} autoFocus>
+          <Button color="error" onClick={handleDelete}>
             Confirm
           </Button>
         </DialogActions>

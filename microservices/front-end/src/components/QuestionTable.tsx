@@ -306,6 +306,7 @@ const QuestionTable: React.FC<QuestionTableProps> = ({
                       <>
                         <button
                           className={styles.action_button}
+                          style={{ color: "#e40000" }}
                           onClick={() => dispatch(deleteQuestion(question._id))}
                         >
                           Delete
@@ -326,7 +327,8 @@ const QuestionTable: React.FC<QuestionTableProps> = ({
             {expandedQuestionId === question._id && (
               <tr>
                 <td colSpan={4}>
-                  <div className={styles.wrapText}
+                  <div
+                    className={styles.wrapText}
                     dangerouslySetInnerHTML={{
                       __html: question.description,
                     }}
