@@ -50,16 +50,24 @@ const AuthLogin: FC<AuthLoginProps> = ({
         >
           Username
         </Typography>
-        <CustomTextField
-          id="username"
-          type="text"
-          fullWidth
-          value={username}
-          onChange={(e) => {
-            onUsernameChange(e.target.value);
-            onErrorChange(null); // clear the error when user types
+
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            onSubmit();
           }}
-        />
+        >
+          <CustomTextField
+            id="username"
+            type="text"
+            fullWidth
+            value={username}
+            onChange={(e) => {
+              onUsernameChange(e.target.value);
+              onErrorChange(null); // clear the error when user types
+            }}
+          />
+        </form>
       </Box>
       <Box mt="25px">
         <Typography
@@ -71,17 +79,24 @@ const AuthLogin: FC<AuthLoginProps> = ({
         >
           Password
         </Typography>
-        <CustomTextField
-          id="password"
-          type="password"
-          variant="outlined"
-          fullWidth
-          value={password}
-          onChange={(e) => {
-            onPasswordChange(e.target.value);
-            onErrorChange(null); // clear the error when user types
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            onSubmit();
           }}
-        />
+        >
+          <CustomTextField
+            id="password"
+            type="password"
+            variant="outlined"
+            fullWidth
+            value={password}
+            onChange={(e) => {
+              onPasswordChange(e.target.value);
+              onErrorChange(null); // clear the error when user types
+            }}
+          />
+        </form>
       </Box>
       <Stack
         justifyContent="space-between"
