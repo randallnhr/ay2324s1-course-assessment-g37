@@ -14,6 +14,7 @@ import CollabQuestionPage from "./CollabQuestionPage";
 import { QuestionComplexity } from "../types";
 import Chat from "../chat/Chat";
 import Output from "./Output";
+import EndCollaborationSessionButton from "./EndCollaborationSessionButton";
 
 const COLLAB_SERVICE_URL =
   import.meta.env.VITE_COLLAB_SERVICE_URL ?? "http://127.0.0.1:3111";
@@ -25,12 +26,6 @@ function CollaborationPage() {
   const [modalText, setModalText] = useState<string>("");
   const [stdout, setStdout] = useState<string>("");
   const [isOutputLoading, setIsOutputLoading] = useState<boolean>(false);
-
-  const handleEndSession = () => {
-    if (!socket) return;
-    socket.disconnect();
-    navigate("/find-match");
-  };
 
   useEffect(() => {
     const socket = io(COLLAB_SERVICE_URL, { query: { roomId: roomId } });
@@ -98,13 +93,7 @@ function CollaborationPage() {
         </div>
       </div>
 
-      <Button
-        variant="contained"
-        onClick={handleEndSession}
-        style={{ position: "fixed", bottom: "20px", right: "20px" }}
-      >
-        End session
-      </Button>
+      <EndCollaborationSessionButton socket={socket} />
     </>
   );
 }

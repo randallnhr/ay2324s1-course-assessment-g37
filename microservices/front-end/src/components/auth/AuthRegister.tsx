@@ -61,16 +61,23 @@ const AuthRegister: FC<AuthRegisterProps> = ({
         >
           Username
         </Typography>
-        <CustomTextField
-          id="username"
-          variant="outlined"
-          fullWidth
-          value={username}
-          onChange={(e) => {
-            onUsernameChange(e.target.value);
-            onErrorChange(null);
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            onSignup();
           }}
-        />
+        >
+          <CustomTextField
+            id="username"
+            variant="outlined"
+            fullWidth
+            value={username}
+            onChange={(e) => {
+              onUsernameChange(e.target.value);
+              onErrorChange(null);
+            }}
+          />
+        </form>
 
         <Typography
           variant="subtitle1"
@@ -82,16 +89,23 @@ const AuthRegister: FC<AuthRegisterProps> = ({
         >
           Display Name
         </Typography>
-        <CustomTextField
-          id="displayName"
-          variant="outlined"
-          fullWidth
-          value={displayName}
-          onChange={(e) => {
-            onDisplayNameChange(e.target.value);
-            onErrorChange(null);
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            onSignup();
           }}
-        />
+        >
+          <CustomTextField
+            id="displayName"
+            variant="outlined"
+            fullWidth
+            value={displayName}
+            onChange={(e) => {
+              onDisplayNameChange(e.target.value);
+              onErrorChange(null);
+            }}
+          />
+        </form>
 
         <Typography
           variant="subtitle1"
@@ -103,17 +117,24 @@ const AuthRegister: FC<AuthRegisterProps> = ({
         >
           Password
         </Typography>
-        <CustomTextField
-          id="password"
-          type="password"
-          variant="outlined"
-          fullWidth
-          value={password}
-          onChange={(e) => {
-            onPasswordChange(e.target.value);
-            onErrorChange(null);
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            onSignup();
           }}
-        />
+        >
+          <CustomTextField
+            id="password"
+            type="password"
+            variant="outlined"
+            fullWidth
+            value={password}
+            onChange={(e) => {
+              onPasswordChange(e.target.value);
+              onErrorChange(null);
+            }}
+          />
+        </form>
 
         <Typography
           variant="subtitle1"
@@ -125,23 +146,30 @@ const AuthRegister: FC<AuthRegisterProps> = ({
         >
           Confirm Password
         </Typography>
-        <CustomTextField
-          id="confirmPassword"
-          type="password"
-          variant="outlined"
-          fullWidth
-          value={confirmPassword}
-          onChange={(e) => {
-            onConfirmPasswordChange(e.target.value);
-            onErrorChange(null);
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            onSignup();
           }}
-        />
+        >
+          <CustomTextField
+            id="confirmPassword"
+            type="password"
+            variant="outlined"
+            fullWidth
+            value={confirmPassword}
+            onChange={(e) => {
+              onConfirmPasswordChange(e.target.value);
+              onErrorChange(null);
+            }}
+          />
+        </form>
 
         {/* Handle error situation */}
         {error && (
           <Box mt={2}>
             <Alert severity="error" onClose={() => onErrorChange(null)}>
-              <AlertTitle>Registeration Error</AlertTitle>
+              <AlertTitle>Registration Error</AlertTitle>
               {error}
             </Alert>
           </Box>
