@@ -44,3 +44,11 @@ export interface HistoryItem {
   text: string;
   programmingLanguage: string;
 }
+
+export interface Output {
+  stdout: string | null;
+  stderr: string | null;
+  compile_output: string | null;
+  message: string;
+  time: string;
+}
