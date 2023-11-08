@@ -40,16 +40,14 @@ const PROGRAMMING_LANGUAGES = [
   "lua",
   "perl",
   "objectivec",
+  "php",
   "plaintext",
   "python",
-  "python-repl",
   "r",
   "rust",
-  "shell",
   "swift",
   "typescript",
   "vbnet",
-  "wasm",
 ];
 
 const themeNames = ["atom-one-dark", "github-dark", "monokai", "dark"] as const;
