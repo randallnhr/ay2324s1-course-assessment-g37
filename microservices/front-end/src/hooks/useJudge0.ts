@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { useCallback } from "react";
 
 interface Output {
@@ -85,6 +85,13 @@ const useJudge0 = () => {
         } as Output;
       } catch (error) {
         console.log(error);
+        return {
+          stdout: null,
+          stderr: "Invalid code given.",
+          compile_output: null,
+          message: "",
+          time: "",
+        } as Output;
       }
     },
     [languages]

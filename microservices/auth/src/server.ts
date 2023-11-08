@@ -684,8 +684,16 @@ app.post("/api/execute", async (req, res) => {
       },
       body: JSON.stringify(req.body),
     });
-    return res.status(200).json((await response.json()) as Output);
+
+    if (response.status !== 201) {
+      res.sendStatus(response.status);
+      return;
+    }
+
+    const result = await response.json();
+    return res.status(200).json(result);
   } catch (error) {
-    return res.status(500).json({ error: error });
+    console.log(error);
+    return res.status(500).json({ stderr: error });
   }
 });
