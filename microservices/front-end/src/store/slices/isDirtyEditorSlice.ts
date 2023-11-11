@@ -6,7 +6,7 @@ export const isDirtyEditorSlice = createSlice({
   name: "isDirtyEditor",
   initialState,
   reducers: {
-    setIsDirtyEditor: (state, action) => action.payload,
+    setIsDirtyEditor: (_state, action) => action.payload,
   },
 });
 

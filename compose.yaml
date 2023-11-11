@@ -1,5 +1,12 @@
 version: "v2.21.0-desktop.1"
 
+x-logging:
+  &default-logging
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+
 services:
   question-server:
     container_name: question-server
@@ -49,6 +56,7 @@ services:
       QUESTION_SERVICE_URL: http://question-server:3001
       HISTORY_SERVICE_URL: http://history-server:7999
       RABBITMQ_URL: amqp://rabbitmq:5672
+      VITE_JUDGE0_URL: http://judge0-server:2358
     secrets:
       - AUTH_MONGODB_URI
       - AUTH_SESSION_SECRET
@@ -98,6 +106,52 @@ services:
       - "5672:5672"
       - "15672:15672"
     image: rabbitmq
+
+  server:
+    container_name: judge0-server
+    image: judge0/judge0:1.13.0
+    volumes:
+      - ./microservices/judge0-v1.13.0/judge0.conf:/judge0.conf:ro
+    ports:
+      - "2358:2358"
+    privileged: true
+    <<: *default-logging
+    depends_on:
+      - db
+      - redis
+
+  workers:
+    image: judge0/judge0:1.13.0
+    command: ["./scripts/workers"]
+    volumes:
+      - ./microservices/judge0-v1.13.0/judge0.conf:/judge0.conf:ro
+    privileged: true
+    <<: *default-logging
+    depends_on:
+      - db
+      - redis
+
+  db:
+    image: postgres:13.0
+    env_file: ./microservices/judge0-v1.13.0/judge0.conf
+    volumes:
+      - postgres-data:/var/lib/postgresql/data/
+    <<: *default-logging
+
+  redis:
+    image: redis:6.0
+    command: [
+      "bash", "-c",
+      'docker-entrypoint.sh --appendonly yes --requirepass "$$REDIS_PASSWORD"'
+    ]
+    env_file: ./microservices/judge0-v1.13.0/judge0.conf
+    volumes:
+      - redis-data:/data
+    <<: *default-logging
+
+volumes:
+  postgres-data:
+  redis-data:
 
 secrets:
   AUTH_MONGODB_URI:
