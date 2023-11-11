@@ -116,7 +116,6 @@ services:
       - "2358:2358"
     privileged: true
     <<: *default-logging
-    restart: always
     depends_on:
       - db
       - redis
@@ -128,7 +127,6 @@ services:
       - ./microservices/judge0-v1.13.0/judge0.conf:/judge0.conf:ro
     privileged: true
     <<: *default-logging
-    restart: always
     depends_on:
       - db
       - redis
