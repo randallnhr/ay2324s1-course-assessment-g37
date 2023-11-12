@@ -19,6 +19,7 @@ const Chat: FC<ChatProps> = ({ socket }) => {
   const { currentUser } = useUserContext();
   const [messages, setMessages] = useState<JSX.Element[]>([]);
   const [otherTyping, setOtherTyping] = useState<boolean>(false);
+  const [otherDisplayName, setOtherDisplayName] = useState<string>("");
 
   const insertMessage = (
     text: string,
@@ -66,7 +67,7 @@ const Chat: FC<ChatProps> = ({ socket }) => {
   };
 
   const typingHandler = () => {
-    socket?.emit("user typing");
+    socket?.emit("user typing", currentUser.displayName);
   };
 
   const stopTypingHandler = () => {
@@ -82,7 +83,8 @@ const Chat: FC<ChatProps> = ({ socket }) => {
       insertMessage(text, time, displayName, "incoming");
     };
 
-    const onOtherTyping = () => {
+    const onOtherTyping = (displayName: string) => {
+      setOtherDisplayName(displayName);
       setOtherTyping(true);
     };
 
@@ -112,7 +114,7 @@ const Chat: FC<ChatProps> = ({ socket }) => {
           <MessageList
             typingIndicator={
               otherTyping && (
-                <TypingIndicator content="other person is typing" />
+                <TypingIndicator content={`${otherDisplayName} is typing`} />
               )
             }
           >

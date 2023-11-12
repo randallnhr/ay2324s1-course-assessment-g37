@@ -66,8 +66,8 @@ io.on("connection", (socket) => {
     socket.to(room).emit("receive message", text, time, name);
   });
 
-  socket.on("user typing", () => {
-    socket.to(room).emit("other person typing");
+  socket.on("user typing", (name: string) => {
+    socket.to(room).emit("other person typing", name);
   });
 
   socket.on("user stopped typing", () => {
