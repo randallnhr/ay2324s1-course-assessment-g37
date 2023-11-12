@@ -27,7 +27,8 @@ dotenv.config();
 
 if (
   process.env.AUTH_MONGODB_URI === undefined ||
-  process.env.AUTH_SESSION_SECRET === undefined
+  process.env.AUTH_SESSION_SECRET === undefined ||
+  process.env.JUDGE0_API_KEY === undefined
 ) {
   throw new Error("dotenv is not configured!");
 }
@@ -48,9 +49,10 @@ const QUESTION_SERVICE_URL =
   process.env.QUESTION_SERVICE_URL ?? "http://localhost:3001";
 const HISTORY_SERVICE_URL =
   process.env.HISTORY_SERVICE_URL ?? "http://localhost:7999";
-const JUDGE0_URL =
-  process.env.VITE_JUDGE0_URL ?? "https://judge0-ce.p.rapidapi.com";
-const JUDGE0_API_KEY = process.env.JUDGE0_API_KEY;
+const JUDGE0_URL = "https://judge0-ce.p.rapidapi.com";
+const JUDGE0_API_KEY = fs.existsSync(process.env.JUDGE0_API_KEY)
+  ? fs.readFileSync(process.env.JUDGE0_API_KEY, "utf8").trim()
+  : process.env.JUDGE0_API_KEY;
 
 const EVENT_FIND_MATCH = "match";
 const EVENT_MATCH_FOUND = "match found";
