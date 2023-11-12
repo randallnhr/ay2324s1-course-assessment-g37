@@ -66,6 +66,14 @@ io.on("connection", (socket) => {
     socket.to(room).emit("receive message", text, time, name);
   });
 
+  socket.on("user typing", () => {
+    socket.to(room).emit("other person typing");
+  });
+
+  socket.on("user stopped typing", () => {
+    socket.to(room).emit("other person stopped typing");
+  });
+
   socket.on("other user has left", () => {
     console.log("Connection terminated because other user has left");
     socket.disconnect();

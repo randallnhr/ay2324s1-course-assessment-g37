@@ -8,6 +8,7 @@ import {
   MessageList,
   Message,
   MessageInput,
+  TypingIndicator,
 } from "@chatscope/chat-ui-kit-react";
 
 interface ChatProps {
@@ -17,6 +18,7 @@ interface ChatProps {
 const Chat: FC<ChatProps> = ({ socket }) => {
   const { currentUser } = useUserContext();
   const [messages, setMessages] = useState<JSX.Element[]>([]);
+  const [otherTyping, setOtherTyping] = useState<boolean>(false);
 
   const insertMessage = (
     text: string,
@@ -59,6 +61,16 @@ const Chat: FC<ChatProps> = ({ socket }) => {
       currentTime,
       currentUser.displayName
     );
+
+    socket?.emit("user stopped typing");
+  };
+
+  const typingHandler = () => {
+    socket?.emit("user typing");
+  };
+
+  const stopTypingHandler = () => {
+    socket?.emit("user stopped typing");
   };
 
   useEffect(() => {
@@ -72,6 +84,14 @@ const Chat: FC<ChatProps> = ({ socket }) => {
 
     socket?.on("receive message", onReceiveMessage);
 
+    socket?.on("other person typing", () => {
+      setOtherTyping(true);
+    });
+
+    socket?.on("other person stopped typing", () => {
+      setOtherTyping(false);
+    });
+
     const cleanup = () => {
       socket?.off("receive message", onReceiveMessage);
     };
@@ -83,15 +103,21 @@ const Chat: FC<ChatProps> = ({ socket }) => {
     <div style={{ position: "relative", height: "100%" }}>
       <MainContainer>
         <ChatContainer>
-          {/* <ConversationHeader>
-            <ConversationHeader.Content userName="Emily" /> // get display name
-            on initial setup
-          </ConversationHeader> */}
-          <MessageList>{...messages}</MessageList>
+          <MessageList
+            typingIndicator={
+              otherTyping && (
+                <TypingIndicator content="other person is typing" />
+              )
+            }
+          >
+            {...messages}
+          </MessageList>
           <MessageInput
             placeholder="Type message here"
             attachButton={false}
             onSend={messageSendHandler}
+            onChange={typingHandler}
+            onBlur={stopTypingHandler}
           />
         </ChatContainer>
       </MainContainer>
