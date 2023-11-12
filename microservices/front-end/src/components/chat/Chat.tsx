@@ -8,6 +8,7 @@ import {
   MessageList,
   Message,
   MessageInput,
+  TypingIndicator,
 } from "@chatscope/chat-ui-kit-react";
 
 interface ChatProps {
@@ -17,6 +18,8 @@ interface ChatProps {
 const Chat: FC<ChatProps> = ({ socket }) => {
   const { currentUser } = useUserContext();
   const [messages, setMessages] = useState<JSX.Element[]>([]);
+  const [otherTyping, setOtherTyping] = useState<boolean>(false);
+  const [otherDisplayName, setOtherDisplayName] = useState<string>("");
 
   const insertMessage = (
     text: string,
@@ -59,6 +62,16 @@ const Chat: FC<ChatProps> = ({ socket }) => {
       currentTime,
       currentUser.displayName
     );
+
+    socket?.emit("user stopped typing");
+  };
+
+  const typingHandler = () => {
+    socket?.emit("user typing", currentUser.displayName);
+  };
+
+  const stopTypingHandler = () => {
+    socket?.emit("user stopped typing");
   };
 
   useEffect(() => {
@@ -70,10 +83,25 @@ const Chat: FC<ChatProps> = ({ socket }) => {
       insertMessage(text, time, displayName, "incoming");
     };
 
+    const onOtherTyping = (displayName: string) => {
+      setOtherDisplayName(displayName);
+      setOtherTyping(true);
+    };
+
+    const onOtherStoppedTyping = () => {
+      setOtherTyping(false);
+    };
+
     socket?.on("receive message", onReceiveMessage);
+
+    socket?.on("other person typing", onOtherTyping);
+
+    socket?.on("other person stopped typing", onOtherStoppedTyping);
 
     const cleanup = () => {
       socket?.off("receive message", onReceiveMessage);
+      socket?.off("other person typing", onOtherTyping);
+      socket?.off("other person stopped typing", onOtherStoppedTyping);
     };
 
     return cleanup;
@@ -83,15 +111,21 @@ const Chat: FC<ChatProps> = ({ socket }) => {
     <div style={{ position: "relative", height: "100%" }}>
       <MainContainer>
         <ChatContainer>
-          {/* <ConversationHeader>
-            <ConversationHeader.Content userName="Emily" /> // get display name
-            on initial setup
-          </ConversationHeader> */}
-          <MessageList>{...messages}</MessageList>
+          <MessageList
+            typingIndicator={
+              otherTyping && (
+                <TypingIndicator content={`${otherDisplayName} is typing`} />
+              )
+            }
+          >
+            {...messages}
+          </MessageList>
           <MessageInput
             placeholder="Type message here"
             attachButton={false}
             onSend={messageSendHandler}
+            onChange={typingHandler}
+            onBlur={stopTypingHandler}
           />
         </ChatContainer>
       </MainContainer>
