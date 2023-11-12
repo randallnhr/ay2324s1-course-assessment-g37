@@ -82,18 +82,24 @@ const Chat: FC<ChatProps> = ({ socket }) => {
       insertMessage(text, time, displayName, "incoming");
     };
 
+    const onOtherTyping = () => {
+      setOtherTyping(true);
+    };
+
+    const onOtherStoppedTyping = () => {
+      setOtherTyping(false);
+    };
+
     socket?.on("receive message", onReceiveMessage);
 
-    socket?.on("other person typing", () => {
-      setOtherTyping(true);
-    });
+    socket?.on("other person typing", onOtherTyping);
 
-    socket?.on("other person stopped typing", () => {
-      setOtherTyping(false);
-    });
+    socket?.on("other person stopped typing", onOtherStoppedTyping);
 
     const cleanup = () => {
       socket?.off("receive message", onReceiveMessage);
+      socket?.off("other person typing", onOtherTyping);
+      socket?.off("other person stopped typing", onOtherStoppedTyping);
     };
 
     return cleanup;
